@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+// setting
+@import "setting/vars";
+@import "setting/resets";
+@import "setting/common";
+@import "setting/fonts";
+
+//section
+@import "section/header.scss";
+@import "section/nav.scss";
+
+//components 여기에 기능별로 새로운 거 추가
