@@ -3,11 +3,13 @@
 merge 전에 카톡으로 연락해주세요~.<br>
 기능별로 브랜치를 나눕니다<br>
 기능 리스트 (폴더별로 정리되어 있음)<br>
+<br>
 1.letter
 2.login
 3.mypage
 4.section
 5. ...추가
+<br>
 <br>적당히 commit convention해주면 더 좋을 것 같아요~
 
 
