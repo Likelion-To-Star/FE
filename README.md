@@ -7,8 +7,8 @@ merge 전에 카톡으로 연락해주세요~.<br>
 2.login
 3.mypage
 4.section
--...추가
-###적당히 commit convention해주면 더 좋을 것 같아요~
+5. ...추가
+<br>적당히 commit convention해주면 더 좋을 것 같아요~
 
 
 ### ✅ Commit Convention
