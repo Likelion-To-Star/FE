@@ -1,6 +1,6 @@
 import React from 'react'
-import Logo from '../../assets/img/upper-logo.svg'
-import Mypage from '../../assets/img/mypage.svg'
+import Logo from '../../../assets/img/upper-logo.svg'
+import Mypage from '../../../assets/img/mypage.svg'
 
 const Header = () => {
   return (
@@ -9,7 +9,6 @@ const Header = () => {
             <img className="logo"src={Logo} alt="logo" />
             <button><img src={Mypage} alt="Tomypage" /></button>
         </div>
-
     </div>
   )
 }
