@@ -1,13 +1,16 @@
 # npm i로 설치하고 시작~~
-#소규모 팀이기 때문에 각 기능별 브랜치에서 작업하고 push합니다.
-#merge 전에 카톡으로 연락해주세요~.
-#기능별로 브랜치를 나눕니다
+###소규모 팀이기 때문에 각 기능별 브랜치에서 작업하고 push합니다.
+###merge 전에 카톡으로 연락해주세요~.
+###기능별로 브랜치를 나눕니다
 기능 리스트 (폴더별로 정리되어 있음)
--letter
--login
--mypage
--section
+1.letter
+2.login
+3.mypage
+4.section
 -...추가
+###적당히 commit convention해주면 더 좋을 것 같아요~
+
+
 ### ✅ Commit Convention
 
 | 태그 이름      | 설명 |
