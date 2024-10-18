@@ -2,8 +2,8 @@ import React from 'react'
 
 const Community = () => {
   return (
-    <div>
-      community
+    <div className='community-wrap'>
+        <div className='select-com'></div>
     </div>
   )
 }
