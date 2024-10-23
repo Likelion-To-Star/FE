@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import ComImg from '../../../assets/img/com-img1.png'
 import MkImg from '../../../assets/img/mkCom.svg'
+import { useNavigate } from 'react-router-dom';
 
 const Community = () => {
   const [activeTab, setActiveTab] = useState('ongoing'); // 기본 상태: 'ongoing'
-
+  const navigate = useNavigate();
+  const handleButtonClick= ()=>{
+    setTimeout(() => {
+      navigate('/main/mkcom');
+    }, 100);
+  }
   return (
     <div className="community-wrap">
       <div className="select-com">
@@ -31,7 +37,7 @@ const Community = () => {
           </div>
         </div>
       </div>
-      <button className='mk-com'><img src={MkImg} alt="" /><p>커뮤니티 만들기</p></button>
+      <button className='mk-com' onClick={handleButtonClick}><img src={MkImg} alt="" /><p>커뮤니티 만들기</p></button>
     </div>
   );
 };
