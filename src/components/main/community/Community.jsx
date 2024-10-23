@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ComImg from '../../../assets/img/com-img1.png'
+import MkImg from '../../../assets/img/mkCom.svg'
 
 const Community = () => {
   const [activeTab, setActiveTab] = useState('ongoing'); // 기본 상태: 'ongoing'
@@ -6,25 +8,30 @@ const Community = () => {
   return (
     <div className="community-wrap">
       <div className="select-com">
-        {/* 참여 중인 커뮤니티 버튼 */}
         <button
           className={`ongoing-com ${activeTab === 'ongoing' ? 'active' : ''}`}
           onClick={() => setActiveTab('ongoing')}
         >
-          참여 중인 커뮤니티
+         <p> 참여 중인 커뮤니티</p>
         </button>
-
-        {/* 모든 커뮤니티 버튼 */}
         <button
           className={`all-com ${activeTab === 'all' ? 'active' : ''}`}
           onClick={() => setActiveTab('all')}
         >
-          모든 커뮤니티
+          <p>모든 커뮤니티</p>
         </button>
-
-        {/* 슬라이더 배경: 버튼 활성화에 따라 이동 */}
         <div className={`slider-bg ${activeTab === 'all' ? 'move-right' : 'move-left'}`}></div>
       </div>
+      <div className='coms'>
+        <div className='contents'>
+          <img src={ComImg} alt="예시 이미지" />
+          <div className='text'>
+            <h1>반짝이는 기억들</h1>
+            <p>우리 아이와 함께했던 행복한 순간들을 기억하고 기념해요</p>
+          </div>
+        </div>
+      </div>
+      <button className='mk-com'><img src={MkImg} alt="" /><p>커뮤니티 만들기</p></button>
     </div>
   );
 };
