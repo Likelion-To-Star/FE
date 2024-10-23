@@ -155,5 +155,6 @@ html, body {
   
   #root {
     flex: 1; /* 내용이 없을 때도 페이지가 화면 전체를 차지하도록 설정 */
-    background-color: var(--white);
+    background: linear-gradient(180.17deg, #3A305E 0.13%, #625799 28.37%, #6E5BB5 46.38%, #7865C2 63.94%, #917EE8 76.42%, #B49EF6 85.43%, #DDC2F8 93.52%, #EACEF9 98.84%);
+
   }
