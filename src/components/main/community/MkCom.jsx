@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios'; // Axios를 추가하세요
 import PreviewImg from '../../../assets/img/foot.svg';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
+import NoticeIcon from '../../../assets/img/notice-icon.svg';
 
 const MkCom = () => {
   const [imagePreview, setImagePreview] = useState(null); // 이미지 미리보기 상태
   const [communityName, setCommunityName] = useState(''); // 커뮤니티 이름 상태
   const [communityDescription, setCommunityDescription] = useState(''); // 커뮤니티 설명 상태
+  const [requireContents, setRequireContents] = useState(true); // 필수 항목 상태
 
   // 파일 선택 시 이미지 미리보기 설정
   const handleImageUpload = (event) => {
@@ -29,8 +31,15 @@ const MkCom = () => {
   const handleSubmit = async (event) => {
     event.preventDefault(); // 기본 제출 동작 방지
 
+    // 필수 입력 항목 검증
+    const imageFile = document.getElementById('imageUploadInput').files[0];
+    if (!communityName || !communityDescription || !imageFile) {
+      setRequireContents(false); // 필수 항목이 충족되지 않으면 메시지 표시
+      return;
+    }
+
     const formData = new FormData();
-    formData.append('image', document.getElementById('imageUploadInput').files[0]); // 이미지 파일 추가
+    formData.append('image', imageFile); // 이미지 파일 추가
     formData.append('title', communityName); // 커뮤니티명 추가
     formData.append('description', communityDescription); // 커뮤니티 소개 추가
 
@@ -42,6 +51,7 @@ const MkCom = () => {
         },
       });
       console.log('서버 응답:', response.data);
+      setRequireContents(true); // 성공 시 필수 항목 메시지 초기화
       // 추가적인 성공 처리
     } catch (error) {
       console.error('에러 발생:', error);
@@ -86,7 +96,6 @@ const MkCom = () => {
             value={communityName} 
             onChange={(e) => setCommunityName(e.target.value)} 
             placeholder="커뮤니티명을 작성해주세요." 
-            required 
           />
         <div className='say description'>
           <h2>커뮤니티 소개</h2>
@@ -97,9 +106,15 @@ const MkCom = () => {
             onChange={(e) => setCommunityDescription(e.target.value)} 
             placeholder="간략한 소개를 작성해주세요." 
             maxLength={200} 
-            required 
         />
-        <button className="submit" type="submit">등록하기</button>
+
+        <div className='bottom-content'>
+          {!requireContents && <div className="notice">
+            <img src={NoticeIcon} alt="notice" /><p>필수 입력 항목을 모두 작성해주세요.</p></div>}
+
+          <button className="submit" type="submit">등록하기</button>
+        </div>
+
       </form>
     </div>
   );
