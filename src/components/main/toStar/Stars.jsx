@@ -2,7 +2,7 @@ import React from 'react'
 
 const Stars = () => {
   return (
-    <div>
+    <div className='stars-wrap'>
       stars
     </div>
   )
