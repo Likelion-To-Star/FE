@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Axios를 추가하세요
+import axios from 'axios';
 import PreviewImg from '../../../assets/img/foot.svg';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 import NoticeIcon from '../../../assets/img/notice-icon.svg';

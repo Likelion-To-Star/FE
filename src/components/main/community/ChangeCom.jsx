@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import Bkimg from '../../../assets/img/bk-img.png';
 import Profile from '../../../assets/img/profile.png';
+import Exit from '../../../assets/img/exit.svg';
 
-
-const EnterCom = () => {
+const ChangeCom = () => {
     const [communityData, setcommunityData] = useState(null);
-    const [assign,setAssign] =useState(false);
-
+    const [popup,setPopup] = useState(false);
+    const navigate = useNavigate();
     useEffect(()=>{
         const getcommunityData = async () => {
             try{
@@ -27,13 +28,20 @@ const EnterCom = () => {
         getcommunityData();
     },[]);
   
-    const handleAssignClick = () => {
-        setAssign(true); 
-        
+    const handlePopup = () => {
+        setPopup(true);
     };
-  
+
+    const popupRemove = () => {
+        // 여기에 삭제 로직 추가
+        console.log("삭제 확인");
+        setPopup(false); 
+    };
+    const handleEdit = () => {
+        navigate('/main/community/editcom');
+    };
     return (
-    <div className='entercom-wrap'  style={{
+    <div className='changecom-wrap'  style={{
         backgroundImage: communityData ? `url(${communityData.communityProfileImage})` : `url(${Bkimg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -44,9 +52,22 @@ const EnterCom = () => {
             <p>아이들이 작은 별처럼 반짝이며 남긴 이야기들을 나누는 공간입니다. 작은 이야기들을 모아 큰 추억을 만들어 봐요 :)</p>
             
         </div>
-        <button onClick={handleAssignClick}> {assign ? "커뮤니티 떠나기" : "커뮤니티 참여하기"}</button>
+        <div className='change-btn'>
+            <button className='left' onClick={handleEdit}>수정하기</button>
+            <button className='right' onClick={handlePopup}>삭제하기</button>
+        </div>
+        {popup && (
+                <div className='del-popup'>
+                    <img src={Exit} alt="exit" onClick={popupRemove}/>
+                    <p>정말로 삭제하시겠습니까?</p>
+                    <div className='pop-btn'>
+                        <button className='left' onClick={popupRemove}>확인</button>
+                        <button className='right' onClick={popupRemove}>취소</button>
+                    </div>
+                </div>
+            )}
     </div>
   )
 }
 
-export default EnterCom
+export default ChangeCom
