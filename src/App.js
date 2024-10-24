@@ -6,6 +6,7 @@ import Community from "./components/main/community/Community.jsx";
 import Stars from "./components/main/toStar/Stars.jsx"; 
 import './assets/scss/styles.scss';
 import MkCom from "./components/main/community/MkCom.jsx";
+import EnterCom from "./components/main/community/EnterCom.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           {/* Main 내부 하위 라우팅 */}
           <Route path='community' element={<Community />} />
           <Route path='community/mkcom' element={<MkCom />} />
+          <Route path='community/entercom' element={<EnterCom/>} />
           <Route path='friends' element={<Friends />} />
           <Route path='stars' element={<Stars />} />
         </Route>
