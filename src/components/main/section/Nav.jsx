@@ -1,32 +1,31 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Nav = () => {
   const navigate = useNavigate();
-  const [activeButton, setActiveButton] = useState(''); // 초기 버튼 상태 설정
+  const location = useLocation(); // 현재 경로 정보를 가져옴
 
   const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName); // 클릭한 버튼의 이름으로 상태 업데이트
-    navigate('/main/' + buttonName); // 경로로 이동
+    navigate('/main/' + buttonName); // 클릭 시 경로로 이동
   };
 
   return (
     <div className='nav-wrap'>
       <button 
         onClick={() => handleButtonClick('friends')}
-        style={{ color: activeButton === 'friends' ? 'var(--purple)' : 'var(--black200)' }}
+        style={{ color: location.pathname.startsWith( '/main/friends' )? 'var(--purple)' : 'var(--black200)' }}
       >
         친구들과
       </button>
       <button 
         onClick={() => handleButtonClick('community')}
-        style={{ color: activeButton === 'community' ? 'var(--purple)' : 'var(--black200)' }}
+        style={{ color: location.pathname.startsWith('/main/community') ? 'var(--purple)' : 'var(--black200)' }}
       >
         커뮤니티
       </button>
       <button 
         onClick={() => handleButtonClick('stars')}
-        style={{ color: activeButton === 'stars' ? 'var(--purple)' : 'var(--black200)' }}
+        style={{ color: location.pathname.startsWith( '/main/stars') ? 'var(--purple)' : 'var(--black200)' }}
       >
         별이에게
       </button>
@@ -35,4 +34,5 @@ const Nav = () => {
 }
 
 export default Nav;
+
 

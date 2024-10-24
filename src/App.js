@@ -15,7 +15,7 @@ function App() {
         <Route path='/main/*' element={<Main />} >
           {/* Main 내부 하위 라우팅 */}
           <Route path='community' element={<Community />} />
-          <Route path='mkcom' element={<MkCom />} />
+          <Route path='community/mkcom' element={<MkCom />} />
           <Route path='friends' element={<Friends />} />
           <Route path='stars' element={<Stars />} />
         </Route>

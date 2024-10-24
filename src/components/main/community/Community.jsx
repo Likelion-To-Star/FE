@@ -8,7 +8,7 @@ const Community = () => {
   const navigate = useNavigate();
   const handleButtonClick= ()=>{
     setTimeout(() => {
-      navigate('/main/mkcom');
+      navigate('/main/community/mkcom');
     }, 100);
   }
   return (
