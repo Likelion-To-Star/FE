@@ -9,6 +9,10 @@ import MkCom from "./components/main/community/MkCom.jsx";
 import EnterCom from "./components/main/community/EnterCom.jsx";
 import ChangeCom from "./components/main/community/ChangeCom.jsx";
 import EditCom from "./components/main/community/EditCom.jsx";
+import Letter from "./components/main/toStar/Letter.jsx";
+import FinLoad from "./components/main/toStar/FinLoad.jsx";
+import ToStar from "./components/main/toStar/ToStar.jsx";
+import FromStar from "./components/main/toStar/FromStar.jsx";
 
 function App() {
   return (
@@ -25,6 +29,10 @@ function App() {
           <Route path='friends' element={<Friends />} />
           <Route path='stars' element={<Stars />} />
         </Route>
+        <Route path='stars/letter' element={<Letter />} />
+        <Route path='stars/finload' element={<FinLoad />} />
+        <Route path='stars/tostar' element={<ToStar />} />
+        <Route path='stars/fromstar' element={<FromStar />} />
       </Routes>
     </BrowserRouter>
   );

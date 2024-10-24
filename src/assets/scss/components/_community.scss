@@ -175,11 +175,12 @@
     .input-img {
       cursor: pointer;
       position: relative;
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
+      width: 88px;
+      height: 124px;
+      border-radius: 5px;
+
       background-color: var(--white);
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4); 
+      box-shadow: 0px 2px 5px 0px #00000040;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -192,15 +193,15 @@
         border-radius: 50%;
       }
       .upload-icon {
-        width: 60%;
-        height: 60%;
+        width: 63.09px;
+        height: 63.09px;
       }
       .add-icon {
         position: absolute;
-        bottom: 10px;
-        right: 0px;
-        width: 21px;
-        height: 21px;
+        bottom: -5px;
+        right: -5px;
+        width: 23px;
+        height: 23px;
         background-color: var(--purple400);
         border-radius: 50%;
         display: flex;
@@ -224,7 +225,8 @@
       border-radius: 5px;
       background-color: var(--white);
       border: 0.5px solid var(--purple500);
-      box-shadow: 0px 4px 6px 0px var(--black500) ;
+      box-shadow: 0px 4px 4px 0px #00000040;
+
       
       padding: 12.5px 17px;
       font-family: 'YiSunShin Dotum M';
@@ -247,7 +249,7 @@
       margin-bottom: 10px;
     }
     .comDescription{
-      box-shadow: 0px 4px 6px 0px var(--black500) ;
+      box-shadow: 0px 4px 4px 0px #00000040;
       width: 334px;
       height: 99px;
       border-radius: 5px;
@@ -304,7 +306,6 @@
     }
     
   }
-
   .entercom-wrap{
     min-height:  calc(100vh - 123px);
     display: flex;
@@ -352,9 +353,7 @@
       background-color: var(--white);
       margin-bottom: 35px;
     }
-  }
-    
-  
+  } 
   .changecom-wrap{
     min-height:  calc(100vh - 123px);
     display: flex;
