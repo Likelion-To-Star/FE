@@ -1,20 +1,18 @@
+.main-wrap {
+  .nav-wrap {
+    display: flex;
+    background-color: var(--white);
+    justify-content: space-around;
+    button {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 20.2px;
+      text-align: center;
 
-.main-wrap{
-    .nav-wrap{
-        display: flex;
-        background-color: var(--white);
-        justify-content: space-around;
-        button{
-            
-            font-size: 18px;
-            font-weight: 600;
-            line-height: 20.2px;
-            text-align: center;
-
-            color:var(--black200);
-            width: 131px;
-            height: 60px;
-            background-color: var(--white);
-        }
+      color: var(--black200);
+      width: 131px;
+      height: 60px;
+      background-color: var(--white);
     }
+  }
 }

@@ -1,4 +1,81 @@
-.main-wrap{
+.main-wrap {
+  width: 100%;
+  margin: 0 auto;
+
+  .main-container {
     width: 100%;
-    margin: 0 auto;
+    height: 100%; // 페이지 전체 높이
+    display: block;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+
+    .main-toStar {
+      display: block;
+      padding: 30px;
+
+      p {
+        margin-bottom: 20px;
+        font-size: 21px;
+        color: #7058cb;
+        font-weight: bold;
+        font-family: "retendard-SemiBold";
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #7058cb;
+        color: #7058cb;
+        font-family: "retendard-SemiBold";
+        font-size: 17px;
+        font-weight: bolder;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          background-color: #7058cb;
+          color: #fff;
+        }
+      }
+    }
+    .main-starFriends {
+      display: block;
+      padding: 0 30px;
+      font-family: "retendard-SemiBold";
+
+      p {
+        margin-bottom: 20px;
+        font-size: 21px;
+        font-weight: bold;
+        color: #7058cb;
+      }
+
+      .friends-slide {
+        display: flex;
+        overflow: scroll;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        .friend-pro {
+          display: block;
+          margin-right: 15px;
+          img {
+            width: 96px;
+            height: 96px;
+            margin-bottom: 5px;
+            border-radius: 50%;
+          }
+          p {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
 }

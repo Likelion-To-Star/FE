@@ -1,0 +1,55 @@
+@use "../setting/fonts";
+
+.mypage-wrap {
+  width: 100%;
+  margin: 0 auto;
+}
+.mypage-container {
+  width: 100%;
+  height: 87vh; // 페이지 전체 높이
+  display: block;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+.mypage-pro {
+  display: flex;
+  padding: 20px;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #f8f8f8;
+  img {
+    width: 96px;
+    height: 96px;
+  }
+  .pro-info {
+    font-family: "Pretendard-SemiBold";
+    h4 {
+      color: #7058cb;
+      font-size: 22px;
+    }
+    span {
+      color: #8a8888;
+    }
+  }
+}
+
+.mypage-container2 {
+  display: block;
+  padding: 20px;
+
+  .mypage-about {
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    img {
+      width: 21.33px;
+      height: 21.33px;
+      margin: 20px;
+    }
+    p {
+      font-size: 20px;
+      font-family: "Pretendard-SemiBold";
+    }
+  }
+}
