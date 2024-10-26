@@ -13,6 +13,7 @@ import Letter from "./components/main/toStar/Letter.jsx";
 import FinLoad from "./components/main/toStar/FinLoad.jsx";
 import ToStar from "./components/main/toStar/ToStar.jsx";
 import FromStar from "./components/main/toStar/FromStar.jsx";
+import Chatting from "./components/main/community/Chatting.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path='community/editcom' element={<EditCom/>} />
           <Route path='community/entercom' element={<EnterCom/>} />
           <Route path='community/changecom' element={<ChangeCom/>} />
+          <Route path='community/chatting' element={<Chatting/>} />
           <Route path='friends' element={<Friends />} />
           <Route path='stars' element={<Stars />} />
         </Route>
