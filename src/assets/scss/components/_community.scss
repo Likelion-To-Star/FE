@@ -1,0 +1,613 @@
+
+.community-wrap {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+  
+      .select-com {
+        margin-top: 18px;
+        position: relative;
+        width: 339px;        /* 버튼 컨테이너의 너비 */
+        height: 42px;
+        border-radius: 25px;
+        border: 1px solid var(--purple);
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+        background-color: var(--white);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        button {
+          p{
+            font-family: 'YiSunShin Dotum B', Arial, sans-serif;
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 17.17px;
+            text-align: center;
+          }
+          flex: 1;
+          z-index: 2;
+          border: none;
+          background: none;
+          cursor: pointer;
+          font-size: 14px;
+          transition: color 0.3s ease;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--purple);
+  
+          &.active {
+            color: #fff;  /* 활성화된 버튼의 텍스트 색상 */
+          }
+        }
+    
+        /* 슬라이더 배경 */
+        .slider-bg {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 50%;   /* 버튼 너비의 절반 */
+          height: 100%;
+          background-color: var(--purple);
+          border-radius: 25px;
+          transition: left 0.3s ease; /* 좌우 이동 애니메이션 */
+        }
+    
+        /* 배경이 왼쪽으로 이동 (참여 중인 커뮤니티) */
+        .move-left {
+          left: 0;
+        }
+    
+        /* 배경이 오른쪽으로 이동 (모든 커뮤니티) */
+        .move-right {
+          left: 50%;
+        }
+      }
+      .coms{
+        padding: 10px;
+        padding-top: 15px;
+        .contents{
+          display: flex;
+          width: 339px;
+          height: 84px;
+          background-color: var(--white);
+          border-radius: 5px;
+          border: var(--purple) solid 1px;
+          justify-content: center;
+          align-items: center;
+          padding: 0 10px;
+          margin-top: 10px;
+          img{
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+          }
+          .text{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 8px;
+            h1{
+              font-family: 'YiSunShin Dotum B';
+              font-size: 16px;
+              font-weight: 400;
+              line-height: 16.16px;
+              text-align: left;
+              color: var(--purple);
+              padding-bottom: 5px;
+            }
+            p{
+              font-family: 'YiSunShin Dotum M';
+              font-size: 13px;
+              font-weight: 400;
+              line-height: 13.13px;
+              text-align: left;
+              color: var(--black200);
+            }
+          }
+        }
+      }
+      .mk-com{
+        position: fixed;
+        bottom: 100px;
+        right:30px;
+        box-sizing: content-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width:134px;
+        height: 41px;
+        border-radius: 17px;
+        border: solid var(--purple) 1px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        color: var(--purple);
+        img{
+          width: 16.88px;
+          height: 16.87px;
+          background-size: cover;
+          margin-right: 5px;
+        }
+        p{
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 16.16px;
+          text-align: center;
+          
+        }
+        &:active {
+          background-color: var(--black300);
+          color: var(--white);
+        }
+      }
+      
+    }
+  .MkCom-wrap{
+      padding: 18px 30px;
+      background-color: var(--white300);
+      min-height:  calc(100vh - 123px);
+      position: relative;
+    .say{
+      font-family: 'YiSunShin Dotum M';
+      display: flex;
+      h2{
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 19.19px;
+        text-align: left;
+       color:var(--purple);
+      }
+      p{
+        font-size: 9px;
+        font-weight: 400;
+        line-height: 9.09px;
+        text-align: left;
+        color: #BABABA;
+        display: flex;
+        align-items: end;
+        margin-bottom: 2px;
+        margin-left: 10px;
+      }
+      
+    }
+    .name{
+      margin-bottom: 10px;
+    }
+    .input-img {
+      cursor: pointer;
+      position: relative;
+      width: 88px;
+      height: 124px;
+      border-radius: 5px;
+
+      background-color: var(--white);
+      box-shadow: 0px 2px 5px 0px #00000040;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 25px auto;
+      margin-bottom: 40px;
+      .image-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .upload-icon {
+        width: 63.09px;
+        height: 63.09px;
+      }
+      .add-icon {
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+        width: 23px;
+        height: 23px;
+        background-color: var(--purple400);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        img{
+          width: 11px;
+          height: 11px;
+        }
+      }
+      .add-icon-text {
+        color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+    .comName{
+      width: 334px;
+      height: 44px;
+      border-radius: 5px;
+      background-color: var(--white);
+      border: 0.5px solid var(--purple500);
+      box-shadow: 0px 4px 4px 0px #00000040;
+
+      
+      padding: 12.5px 17px;
+      font-family: 'YiSunShin Dotum M';
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 14.14px;
+      text-align: left;
+      color:var(--fontcolor);
+      &::placeholder{
+        color:var(--black500);
+      }
+     &:focus{
+      outline: none;
+      outline: 1px solid var(--purple)
+    } 
+    }
+
+    .description{
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+    .comDescription{
+      box-shadow: 0px 4px 4px 0px #00000040;
+      width: 334px;
+      height: 99px;
+      border-radius: 5px;
+      border: 0.5px solid var(--purple500);
+      background-color: var(--white);
+      padding: 12.5px 17px;
+      font-family: 'YiSunShin Dotum M';
+      color:var(--fontcolor);
+      &::placeholder {
+        color:var(--black500);
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 14.14px;
+        text-align: left;
+      }
+      &:focus{
+        outline: none;
+        outline: 1px solid var(--purple)
+      } 
+    }
+    .bottom-content{
+      position: absolute;
+      bottom:10%;
+      left:50%;
+      transform: translate(-50%, -50%);
+      .notice{
+        display: flex;
+        justify-content: center;
+        img{
+          width: 14px;
+          height: 14px;
+          margin-right: 2px;
+        }
+        p{
+          font-family: "YiSunShin Dotum M";
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 13.13px;
+          text-align: left;
+          color: var(--fontcolor);
+        }
+        margin-bottom: 8px;
+      }
+      .submit{  //나중에 핸드폰 화면으로 테스트해야 함
+
+        width: 339px;
+        height: 42px;
+        box-shadow: 0px 2px 4px 0px #00000040;
+        color:var(--purple);
+        border: 1px solid var(--purple);
+        border-radius: 5px;
+        background-color: var(--white);
+      }
+    }
+    
+  }
+  .entercom-wrap{
+    min-height:  calc(100vh - 123px);
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    .cen-align{
+      width: 341px;
+      min-height: 48px;
+      .profile{
+        display: flex;
+        align-items: end;
+        margin-bottom: 5px;
+        img{
+          width: 47px;
+          height: 47px;
+        }
+        p{
+          margin: 5px 10px;
+        }
+        
+      }
+      h1{
+        color:var(--white);
+        margin-bottom: 10px;
+      }
+      p{
+        color:var(--white);
+        font-family: 'YiSunShin Dotum M';
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 16.16px;
+        text-align: left;
+        margin-bottom: 25px;
+      }
+    }
+    
+    button{
+      width: 339px;
+      height: 42px;
+      box-shadow: 0px 2px 4px 0px #00000040;
+      color:var(--purple);
+      border: 1px solid var(--purple);
+      border-radius: 5px;
+      background-color: var(--white);
+      margin-bottom: 35px;
+    }
+  } 
+  .changecom-wrap{
+    min-height:  calc(100vh - 123px);
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    position: relative;
+    .cen-align{
+      width: 341px;
+      min-height: 48px;
+      .profile{
+        display: flex;
+        align-items: end;
+        margin-bottom: 5px;
+        img{
+          width: 47px;
+          height: 47px;
+        }
+        p{
+          margin: 5px 10px;
+        }
+        
+      }
+      h1{
+        color:var(--white);
+        margin-bottom: 10px;
+      }
+      p{
+        color:var(--white);
+        font-family: 'YiSunShin Dotum M';
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 16.16px;
+        text-align: left;
+        margin-bottom: 25px;
+      }
+    }
+    .change-btn{
+      width: 341px;
+      margin-bottom: 35px;
+      display: flex;
+      justify-content: space-between;
+      button{
+        width: 160px;
+        height: 42px;
+        box-shadow: 0px 2px 4px 0px #00000040;
+        
+        border: 1px solid var(--purple);
+        border-radius: 5px;
+       
+      }
+      .left{
+        color:var(--purple);
+        background-color: var(--white);
+      }
+      .right{
+        color: var(--white);
+        background-color: var(--purple);
+      }
+    }
+    .del-popup{
+      position: absolute;
+      top:30%;
+      background-color: var(--white);
+      width: 339px;
+      height: 187px;
+      border-radius: 5px;
+      border: 1px solid var(--purple);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
+      img{
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        top: 6px;
+        right:6px;
+      }
+      p{
+        font-family: 'YiSunShin Dotum M';
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 19.19px;
+        text-align: center;
+        color:var(--black200);
+        margin-top: 20px;
+      }
+      .pop-btn{
+        display: flex;
+        margin-top: 35px;
+        margin-bottom: -20px;
+        button{
+          width: 137px;
+          height: 42px;
+          box-shadow: 0px 2px 4px 0px #00000040;
+          border: 1px solid var(--purple);
+          border-radius: 5px;
+        }
+        .left{
+          color:var(--purple);
+          background-color: var(--white);
+        }
+        .right{
+          color: var(--white);
+          background-color: var(--purple);
+          margin-left: 25px;
+        }
+      }
+
+    }
+
+  }
+
+  .chat-wrap {
+    padding: 18px 30px;
+    background-color: var(--white300);
+    min-height: calc(100vh - 123px);
+    position: relative;
+  
+    .chat-flat {
+      height: 100vh;
+      
+      .other-container {
+        position: relative;
+        margin-bottom: 15px;
+        
+        .other {
+          width: 228px;
+          border-radius: 5px;
+          background-color: var(--purple700);
+          box-shadow: 0px 2px 4px 0px #00000040;
+          padding: 11px; 
+          
+          p {
+            font-family: 'YiSunShin Dotum L';
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 13.13px;
+            letter-spacing: -0.408px;
+            text-align: left;
+
+          }
+        }
+  
+        .other::after {
+          content: ""; 
+          position: absolute; 
+          top: 10px; 
+          left: -13px;
+          border-right: 13px solid var(--purple700);
+          border-top: 18px solid transparent; 
+          border-bottom: 18px solid transparent;
+        }
+  
+        .other::before {
+          content: ""; 
+          position: absolute; 
+          top: 10px; 
+          left: -14px;
+          border-right: 11px solid rgba(0, 0, 0, 0.2);
+          border-top: 18px solid transparent; 
+          border-bottom: 18px solid transparent;
+          filter: blur(2px); 
+          transform: translate(1px, 1px);
+        }
+      }
+  
+      .me-container {
+        display: flex;
+        justify-content: flex-end; 
+        position: relative;
+        margin-bottom: 15px;
+  
+        .me {
+          width: 228px;
+          border-radius: 5px;
+          background-color: var(--white400);
+          box-shadow: 0px 2px 4px 0px #00000040;
+          padding: 11px;
+  
+          p {
+            font-family: 'YiSunShin Dotum L';
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 13.13px;
+            letter-spacing: -0.408px;
+            
+            text-align: left;
+            white-space: pre-wrap;
+          }
+        }
+  
+        .me::after {
+          content: ""; 
+          position: absolute; 
+          top: 10px; 
+          right: -12px;
+          border-left: 13px solid var(--white400);
+          border-top: 18px solid transparent; 
+          border-bottom: 18px solid transparent;
+        }
+  
+        .me::before {
+          content: ""; 
+          position: absolute; 
+          top: 10px; 
+          right: -12px;
+          border-left: 11px solid rgba(0, 0, 0, 0.2);
+          border-top: 18px solid transparent; 
+          border-bottom: 18px solid transparent;
+          filter: blur(2px);
+          transform: translate(1px, 1px);
+        }
+      }
+    }
+  
+    .enter-chat {
+      width: 100vw;
+      height: 60px;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 5px;
+      background-color: var(--white);
+      box-shadow: 0px 0px 2px 1px #00000040;
+  
+      .input-wrap {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%, +50%);
+        
+        input {
+          width: 365px;
+          height: 36px;
+          padding: 7px 8px;
+          border-radius: 10px;
+          background-color: #8480801A;
+        }
+  
+        button {
+          position: absolute;
+          top: 50%;
+          right: 5px;
+          transform: translateY(-50%);
+          
+          img {
+            width: 23px;
+            height: 23px;
+          }
+        }
+      }
+    }
+  }
+  

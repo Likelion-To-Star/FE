@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./section/Header";
 import Nav from "./section/Nav";
+import { Outlet } from "react-router-dom";
 import mainImg from "../../assets/img/main-img.png";
 import moon from "../../assets/img/moon.svg";
 import friends1 from "../../assets/img/friends-1.svg";
@@ -13,6 +14,7 @@ const Main = () => {
     <div className="main-wrap">
       <Header />
       <Nav />
+      <Outlet />
       <div className="main-container">
         <img className="main-img" src={mainImg}></img>
         <div className="main-toStar">

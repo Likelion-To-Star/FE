@@ -138,3 +138,23 @@ select {
     text-indent: -9999px;
     white-space: nowrap;
 }
+//화면전체 색
+html, body {
+    height: 100%; /* 브라우저 창 높이에 맞게 설정 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    min-height: 100vh; /* 최소 높이를 화면 전체로 설정 */
+    background-color: #f0f0f0; /* 원하는 배경색 설정 */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #root {
+    flex: 1; /* 내용이 없을 때도 페이지가 화면 전체를 차지하도록 설정 */
+    background: linear-gradient(180.17deg, #3A305E 0.13%, #625799 28.37%, #6E5BB5 46.38%, #7865C2 63.94%, #917EE8 76.42%, #B49EF6 85.43%, #DDC2F8 93.52%, #EACEF9 98.84%);
+
+  }

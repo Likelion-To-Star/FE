@@ -2,12 +2,21 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
 :root {
-    --mainfont: "pretendard";
+    --mainfont:'YiSunShin Dotum B';;
+    --fontcolor:#3A305E;
 
     // 메인 컬러 
+    --purple:  #7058CB;
     --purple100: #5b5ee3;
     --purple200: #8b66de;
     --purple300: #7865C2; //헤더
+    --purple400: #8C78D5;
+    --purple500:#C6BCEA;
+    --purple600:#6E5BB5;
+    --purple700:#F3EFFF;
+
+
+
 
     // 각종 검정색-회색
     --black: #151515;
@@ -16,12 +25,14 @@
 ;
     --black300: #E2E8F0;
     --black400: #969AA3;
-
+    --black500: #ADADAD;
 
     // 하얀색
     --white: #fff;
     --white100:#F7F8FA;
     --white200:#E2E8F0;
+    --white300: #FAF7FE; //배경
+    --white400: #F8F8F8;
 
     // 투명
     --none: #00000000;
