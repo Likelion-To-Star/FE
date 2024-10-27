@@ -471,11 +471,10 @@
   .chat-wrap {
     padding: 18px 30px;
     background-color: var(--white300);
-    min-height: calc(100vh - 123px);
+    min-height:  calc(100vh - 123px);
     position: relative;
   
     .chat-flat {
-      height: 100vh;
       
       .other-container {
         position: relative;
