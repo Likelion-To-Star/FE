@@ -23,8 +23,6 @@ const Friends = () => {
   };
   return (
     <div className="main-wrap">
-      <Header></Header>
-      <Nav></Nav>
       <div className="main-container">
         <div className="main-starFriends">
           <div className="slide-cnt">
