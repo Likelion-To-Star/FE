@@ -3,8 +3,10 @@
   margin: 0 auto;
   background-color: var(--white);
   min-height: 100%;
+  font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
   .main-container {
+    font-family: "YiSunShin Dotum B", Arial, sans-serif;
     width: 100%;
     margin: 0 auto;
     background-color: var(--white);
@@ -24,7 +26,7 @@
         font-size: 21px;
         color: #7058cb;
         font-weight: bold;
-        font-family: "retendard-SemiBold";
+        font-family: "YiSunShin Dotum B", Arial, sans-serif;
       }
       button {
         width: 100%;
@@ -47,8 +49,8 @@
     }
     .main-starFriends {
       display: block;
-      padding: 0 30px;
-      font-family: "retendard-SemiBold";
+      padding: 10px 30px;
+      font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
       p {
         margin-bottom: 20px;
@@ -82,5 +84,19 @@
         }
       }
     }
+  }
+}
+
+.main-coms-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+  h4 {
+    color: #7058cb;
+    font-size: 21px;
+  }
+  button {
+    color: #8a8888;
+    text-decoration: underline;
   }
 }

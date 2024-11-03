@@ -49,6 +49,10 @@ const SignUp = () => {
     fileInputRef.current.click(); // 파일 입력 열기
   };
 
+  const handleSignupGo = () => {
+    navigate("/signup-go");
+  };
+
   const handleDateChange = (date) => setBirthDate(date);
   const handleDateChange2 = (date) => setStarDate(date);
   const handleAnimalChange = (event) => setSelectedAnimal(event.target.value);
@@ -209,7 +213,7 @@ const SignUp = () => {
             </div>
 
             {/* 다음 버튼 */}
-            <button type="submit" className="signup-button">
+            <button type="submit" className="signup-button" onClick={handleSignupGo}>
               다음
             </button>
           </form>
