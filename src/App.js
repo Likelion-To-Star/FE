@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
 import Main from "./components/main/Main.jsx";
 import MkCom from "./components/main/community/MkCom.jsx";
 import EnterCom from "./components/main/community/EnterCom.jsx";
@@ -10,12 +9,10 @@ import Letter from "./components/main/toStar/Letter.jsx";
 import ToStar from "./components/main/toStar/ToStar.jsx";
 import FromStar from "./components/main/toStar/FromStar.jsx";
 import Chatting from "./components/main/community/Chatting.jsx";
-
 import Friends from "./components/main/friends/Friends.jsx";
-import Community from "./components/main/community/Community.jsx"; // 커뮤니티 관련 컴포넌트
-import Stars from "./components/main/toStar/Stars.jsx"; // 별이에게 관련 컴포넌트
-import Login from "./components/main/login/Login.jsx"; // 로그인 페이지 컴포넌트
-import "./assets/scss/styles.scss";
+import Community from "./components/main/community/Community.jsx";
+import Stars from "./components/main/toStar/Stars.jsx";
+import Login from "./components/main/login/Login.jsx";
 import SignUp from "./components/main/login/SignUp.jsx";
 import Agree1 from "./components/main/login/Agree1.jsx";
 import Agree2 from "./components/main/login/Agree2.jsx";
@@ -23,6 +20,10 @@ import SignUpNext from "./components/main/login/SignUpNext.jsx";
 import SignUpGo from "./components/main/login/SignUpGo.jsx";
 import Mypage from "./components/main/section/Mypage.jsx";
 import NewPost from "./components/main/friends/NewPost.jsx";
+import FriendsSearch from "./components/main/friends/Friends-search.jsx";
+
+import "./assets/scss/styles.scss";
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
 

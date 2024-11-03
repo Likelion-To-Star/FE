@@ -1,24 +1,28 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "./section/Header";
 import Nav from "./section/Nav";
 import { Outlet } from "react-router-dom";
 import mainImg from "../../assets/img/main-img.png";
-import moon from "../../assets/img/moon.svg";
 import friends1 from "../../assets/img/friends-1.svg";
 import friends2 from "../../assets/img/friends-2.svg";
 import friends3 from "../../assets/img/friends-3.svg";
 import friends4 from "../../assets/img/friends-4.svg";
+import ComImg from "../../assets/img/com-img1.png";
+import "../../assets/scss/components/_community.scss";
 
 const Main = () => {
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const handleToStar = () => {
+    navigate("/main/community");
+  };
   return (
     <div className="main-wrap">
       <Header />
       <Nav />
       <Outlet />
-      {location.pathname === "/main" && (
+      {location.pathname === "/" && (
         <div className="main-container">
           <img className="main-img" src={mainImg} alt="Main Visual" />
           <div className="main-toStar">
@@ -43,6 +47,21 @@ const Main = () => {
               <div className="friend-pro">
                 <img src={friends4} alt="초코" />
                 <p>초코</p>
+              </div>
+            </div>
+          </div>
+          <div className="main-coms-header">
+            <h4>별빛 커뮤니티</h4>
+            <button onClick={handleToStar}>더보기</button>
+          </div>
+          <div className="community-wrap">
+            <div className="coms">
+              <div className="contents" style={{ width: "100%" }}>
+                <img src={ComImg} alt="예시 이미지" />
+                <div className="text">
+                  <h1>반짝이는 기억들</h1>
+                  <p>우리 아이와 함께했던 행복한 순간들을 기억하고 기념해요</p>
+                </div>
               </div>
             </div>
           </div>
