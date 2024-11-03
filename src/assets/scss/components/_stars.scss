@@ -3,14 +3,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-   
+    background-color: var(--white);
     .content{
         width: 339px;
         height: 174px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         border-radius: 5px;
         padding: 10px;
         position: relative;
+        box-shadow: 0px 2px 4px 0px #00000040;
+
         .stamp{
             position: absolute;
             top:8px;
@@ -123,10 +125,14 @@
             letter-spacing: -0.40799999237060547px;
             text-align: left;
             background-color: transparent;
+            color:var(--white);
         }
         textarea::placeholder{
             color: #FEFEFE;
 
+        }
+        textarea:focus{
+          outline:none;
         }
         .bk-img{
             position:absolute;

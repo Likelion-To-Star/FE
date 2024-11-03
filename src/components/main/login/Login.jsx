@@ -5,28 +5,44 @@ import loginLogo from "../../../assets/img/login-logo.svg";
 import mainLogo from "../../../assets/img/main-logo.svg";
 import star from "../../../assets/img/star.svg";
 import errorIcon from "../../../assets/img/error-icon.svg";
+import axios from 'axios';
+
 const Login = ({ onLogin }) => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [email, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // 페이지 리로드 방지
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     // 유효성 검증
     if (email.trim() === "" && password.trim() === "") {
       setErrorMessage("이메일과 비밀번호를 정확히 입력해주세요.");
+      return;
     } else if (email.trim() === "") {
       setErrorMessage("이메일을 입력해주세요.");
+      return;
     } else if (password.trim() === "") {
       setErrorMessage("비밀번호를 입력해주세요.");
-    } else if (email === "email" && password === "password") {
-      //로그인 성공
-      setErrorMessage(""); // 에러 메시지 초기화
-      onLogin(); // 로그인 성공 시 onLogin 호출
-      navigate("/"); //Main.jsx
-    } else {
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${BASE_URL}/api/user/login`, { email, password });
+      const token = response.data.result.accessToken; 
+
+      if (token) {
+        setErrorMessage(""); // 에러 메시지 초기화
+        localStorage.setItem("token", token);
+        onLogin(token); // 로그인 성공 시 onLogin 호출 및 토큰 전달
+        navigate("/"); // 메인 페이지로 이동
+      } else {
+        setErrorMessage("로그인에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
       setErrorMessage("이메일이나 비밀번호가 잘못되었습니다.");
     }
   };

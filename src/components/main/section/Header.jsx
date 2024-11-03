@@ -1,32 +1,36 @@
-import React from 'react'
-import Logo from '../../../assets/img/upper-logo.svg'
+import React from 'react';
+import Logo from '../../../assets/img/upper-logo.svg';
 import BackBtn from '../../../assets/img/back-btn.svg';
-import { useNavigate, useLocation } from "react-router-dom"; // useLocation 추가
-import MypageLogo from "../../../assets/img/mypage.svg"; // MyPage 로고 import
+import { useNavigate, useLocation } from "react-router-dom"; 
+import MypageLogo from "../../../assets/img/mypage.svg";
 import MypageLogo2 from "../../../assets/img/mypage2.svg";
 
 const Header = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 현재 경로 확인
+  const location = useLocation();
 
-  // 페이지에 따라 로고 변경
   const currentLogo = location.pathname === "/mypage" ? MypageLogo2 : MypageLogo;
 
   const handleMypage = () => {
     navigate("/mypage");
   };
 
+  const handleBack = () => {
+    navigate(-1); // 이전 페이지로 이동
+  };
+
   return (
     <div className='header-wrap'>
-      
-        <div className='hd-title'>
-         {/* 경로에 따라 로고를 다르게 표시 */}
-         <img className="logo" src={Logo} alt="logo" />
-        <button>
-          <img src={currentLogo} alt="Tomypage" onClick={handleMypage} />
+      <div className='hd-title'>
+        <button className='bk' onClick={handleBack}>
+          <img src={BackBtn} alt="뒤로가기" className='back-btn'/>
+        </button>
+        <img className="logo" src={Logo} alt="logo" />
+        <button className='my' onClick={handleMypage}>
+          <img src={currentLogo} alt="Tomypage" />
         </button>
       </div>
-        </div>
+    </div>
   );
 };
 

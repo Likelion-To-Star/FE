@@ -1,35 +1,85 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MkImg from '../../../assets/img/mkCom.svg'
-import Stamp from '../../../assets/img/stamp.svg'
-import StampWhite from '../../../assets/img/stamp-white.svg'
+import axios from 'axios';
+import MkImg from '../../../assets/img/mkCom.svg';
+import Stamp from '../../../assets/img/stamp.svg';
+import StampWhite from '../../../assets/img/stamp-white.svg';
 
 const Stars = () => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
-  const handleButtonClick= ()=>{
+  const [letters, setLetters] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const handleButtonClick = () => {
     setTimeout(() => {
       navigate('/main/stars/letter');
     }, 100);
-  }
+  };
+
+  const handleLetterButtonClick = (letterId, fromto) => {
+    localStorage.setItem('desLetterId', letterId); // letterId를 localStorage에 저장
+    navigate(`/stars/${fromto}star`); // fromto에 따라 경로 이동
+  };
+
+  useEffect(() => {
+    const fetchLetters = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        // 토큰이 존재하지 않을 경우 처리
+        if (!token) {
+          alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+          return;
+        }
+        const response = await axios.get(`${BASE_URL}/api/letters`, {
+          params: { page: 1, size: 4 },
+          headers: {
+            Authorization: `${token}`, // 가져온 토큰 사용
+          },
+        });
+
+        if (response.data.isSuccess) {
+          setLetters(response.data.result.slice(0, 8));
+        } else {
+          console.error('편지가져오기 실패: ', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLetters();
+  }, []);
+
   return (
     <div className='stars-wrap'>
-      <div className='content from'>
-        <img src={StampWhite} alt="stamp" className='stamp'/>
-        <h1>FROM. 달이</h1>
-        <h2>2024.11.16</h2>
-        <p>언니, 안녕. 내가 별나라로 떠난 후에도 이렇게 따듯한 마음으로 날 생각해 줘서 고마워.여기 별나라는 따한 햇살도 가득하고 아름다워. 언니의 무릎에</p>
-        <button>달이의 마음 확인하기</button>
-      </div>
-      <div className='content to'>
-      <img src={Stamp} alt="stamp" className='stamp'/>
-         <h1>TO. 달이에게</h1>
-        <h2>2024.11.15</h2>
-        <p>안녕 나의 소중한 달이야. 그곳은 어떠니? 별나라에서 예쁘게 빛나고 있겠지? 네가 떠난 후 시간이 많이 흘렀지만, 네가 남긴 흔적들은 여전히 내 마음속에</p>
-        <button>보냈던 마음 확인하기</button>
-      </div>
-      <button className='mk-com' onClick={handleButtonClick}><img src={MkImg} alt="" /><p>마음보내기</p></button>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        letters.map((letter) => {
+          const fromto = letter.sender === 'USER' ? 'to' : 'from'; // fromto 변수 설정
+          return (
+            <div key={letter.letterId} className={`content ${fromto}`}>
+              <img src={letter.sender === 'USER' ? Stamp : StampWhite} alt="stamp" className='stamp' />
+              <h1>{letter.sender === 'USER' ? `TO. ${letter.petName}에게` : `FROM. ${letter.petName}`}</h1>
+              <h2>{letter.createdAt}</h2>
+              <p>{letter.content}</p>
+              <button onClick={() => handleLetterButtonClick(letter.letterId, fromto)}>
+                {letter.sender === 'USER' ? '보냈던 마음 확인하기' : '달이의 마음 확인하기'}
+              </button>
+            </div>
+          );
+        })
+      )}
+      <button className='mk-com' onClick={handleButtonClick}>
+        <img src={MkImg} alt="" />
+        <p>마음보내기</p>
+      </button>
     </div>
-  )
-}
+  );
+};
 
-export default Stars
+export default Stars;
