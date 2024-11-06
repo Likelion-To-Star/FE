@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 const SignUpNext = () => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
   const location = useLocation();
   const { name, email, password } = location.state || {}; // 이전 페이지에서 받은 정보
@@ -62,7 +63,7 @@ const SignUpNext = () => {
         }
 
         // 회원가입 API 요청
-        const response = await axios.post("/api/user/join", formData, {
+        const response = await axios.post(`${BASE_URL}/api/user/join`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
