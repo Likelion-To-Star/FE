@@ -26,10 +26,21 @@ import "./assets/scss/styles.scss";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
-
+  
   const handleLogin = () => {
-    setIsLoggedIn(true); // 로그인 상태를 true로 변경
-  };
+    const loginTime = localStorage.getItem("loginTime");
+    if (loginTime) {
+      const currentTime = new Date().getTime();
+      const timeDiff = currentTime - loginTime;
+
+      // 24시간(24 * 60 * 60 * 1000 밀리초) 이내라면 로그인 상태 유지
+      if (timeDiff <= 24 * 60 * 60 * 1000) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false); // 24시간이 지나면 로그아웃 처리
+      }
+  }}
+  ;
 
   return (
     <BrowserRouter>

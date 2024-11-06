@@ -13,7 +13,7 @@ const Stars = () => {
 
   const handleButtonClick = () => {
     setTimeout(() => {
-      navigate('/main/stars/letter');
+      navigate('/stars/letter');
     }, 100);
   };
 
@@ -33,14 +33,14 @@ const Stars = () => {
           return;
         }
         const response = await axios.get(`${BASE_URL}/api/letters`, {
-          params: { page: 1, size: 4 },
+          params: { page: 1, size: 16 },
           headers: {
             Authorization: `${token}`, // 가져온 토큰 사용
           },
         });
 
         if (response.data.isSuccess) {
-          setLetters(response.data.result.slice(0, 8));
+          setLetters(response.data.result.reverse()); //.slice(0, 8)
         } else {
           console.error('편지가져오기 실패: ', response.data.message);
         }

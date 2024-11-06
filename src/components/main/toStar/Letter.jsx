@@ -69,7 +69,7 @@ const Letter = () => {
 
       if (response.data.isSuccess) {
         console.log("편지 보내기성공!");
-        localStorage.setItem('desLetterId', 0); 
+        localStorage.setItem('desLetterId', response.data.result.receivedLetter); 
       } else {
         alert(response.data.message);
       }

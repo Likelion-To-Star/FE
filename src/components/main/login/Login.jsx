@@ -36,6 +36,7 @@ const Login = ({ onLogin }) => {
       if (token) {
         setErrorMessage(""); // 에러 메시지 초기화
         localStorage.setItem("token", token);
+        localStorage.setItem("loginTime", new Date().getTime());
         onLogin(token); // 로그인 성공 시 onLogin 호출 및 토큰 전달
         navigate("/"); // 메인 페이지로 이동
       } else {
