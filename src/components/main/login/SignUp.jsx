@@ -6,26 +6,24 @@ import errorIcon from "../../../assets/img/error-icon.svg"; // 에러 아이콘 
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [isAgreedAll, setIsAgreedAll] = useState(false); // 약관 전체 동의 상태
-  const [isAgreed1, setIsAgreed1] = useState(false); // 만 14세 이상 동의 상태
-  const [isAgreed2, setIsAgreed2] = useState(false); // 개인정보 수집 동의 상태
-  const [isAgreed3, setIsAgreed3] = useState(false); // 서비스 이용 약관 동의 상태
-  const [isAgreed4, setIsAgreed4] = useState(false); // 서비스 이용 약관 동의 상태
-  const [isAgreed5, setIsAgreed5] = useState(false); // 서비스 이용 약관 동의 상태
+  const [isAgreedAll, setIsAgreedAll] = useState(false);
+  const [isAgreed1, setIsAgreed1] = useState(false);
+  const [isAgreed2, setIsAgreed2] = useState(false);
+  const [isAgreed3, setIsAgreed3] = useState(false);
+  const [isAgreed4, setIsAgreed4] = useState(false);
+  const [isAgreed5, setIsAgreed5] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({}); // 에러 메시지 상태
+  const [errors, setErrors] = useState({});
 
   const handleLogin = () => {
     navigate("/login");
   };
 
-  // 약관 전체 동의 및 개별 약관 동의 상태 관리
   const handleCheckboxChange = (e) => {
     const { id, checked } = e.target;
-
     if (id === "terms") {
       setIsAgreedAll(checked);
       setIsAgreed1(checked);
@@ -46,7 +44,6 @@ const SignUp = () => {
     }
   };
 
-  // 개별 체크박스가 변경될 때 전체 동의 상태도 업데이트
   React.useEffect(() => {
     if (isAgreed1 && isAgreed2 && isAgreed3 && isAgreed4 && isAgreed5) {
       setIsAgreedAll(true);
@@ -56,37 +53,24 @@ const SignUp = () => {
   }, [isAgreed1, isAgreed2, isAgreed3, isAgreed4, isAgreed5]);
 
   const handleNext = (e) => {
-    e.preventDefault(); // 페이지 리로드 방지
-
-    // 에러 상태 초기화
+    e.preventDefault();
     setErrors({});
 
-    // 유효성 검사
     let newErrors = {};
-    if (!name) {
-      newErrors.name = "이름을 입력해주세요.";
-    }
-    if (!email) {
-      newErrors.email = "올바른 이메일 형식이 아닙니다. 이메일을 입력해주세요.";
-    }
-    if (!password) {
-      newErrors.password = "비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다. 비밀번호를 입력해주세요.";
-    }
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
-    }
+    if (!name) newErrors.name = "이름을 입력해주세요.";
+    if (!email) newErrors.email = "올바른 이메일 형식이 아닙니다. 이메일을 입력해주세요.";
+    if (!password) newErrors.password = "비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다.";
+    if (password !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
 
-    // 에러가 없으면 다음 단계로 진행
     if (Object.keys(newErrors).length === 0) {
-      console.log("이름:", name, "이메일:", email, "비밀번호:", password);
-      // 다음 단계로 이동 (여기서 페이지 이동을 수행)
-      navigate("/signup-next");
+      navigate("/signup-next", {
+        state: { name, email, password },
+      });
     } else {
-      setErrors(newErrors); // 에러 상태 업데이트
+      setErrors(newErrors);
     }
   };
 
-  // 모든 필수 입력값 및 동의 사항 확인
   const isNextButtonEnabled = name && email && password && confirmPassword === password && isAgreed1 && isAgreed2 && isAgreed3 && isAgreed4 && isAgreed5;
 
   return (
