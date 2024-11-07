@@ -69,7 +69,7 @@ const SignUpNext = () => {
 
         // 응답 확인 후 처리
         if (response.data.isSuccess) {
-          navigate("/");
+          navigate("/login");
         } else {
           setErrors({ submit: response.data.message });
         }
@@ -86,7 +86,7 @@ const SignUpNext = () => {
     <div className="signup-background">
       <div className="signup-container">
         <div className="signup-header">
-          <img src={backbtn} onClick={() => navigate("/login")} alt="Back" />
+          <img src={backbtn} onClick={() => navigate("/signup")} alt="Back" />
           <h4>회원가입</h4>
         </div>
         <div className="signup-body">

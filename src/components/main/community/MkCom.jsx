@@ -5,6 +5,7 @@ import PlusIcon from '../../../assets/img/plus-icon.svg';
 import NoticeIcon from '../../../assets/img/notice-icon.svg';
 
 const MkCom = () => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [imagePreview, setImagePreview] = useState(null); // 이미지 미리보기 상태
   const [communityName, setCommunityName] = useState(''); // 커뮤니티 이름 상태
   const [communityDescription, setCommunityDescription] = useState(''); // 커뮤니티 설명 상태
@@ -44,9 +45,17 @@ const MkCom = () => {
     formData.append('description', communityDescription); // 커뮤니티 소개 추가
 
     try {
-      const response = await axios.post('/api/community', formData, {
+            // 로컬 스토리지에서 토큰 가져오기
+            const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+
+            // 토큰이 존재하지 않을 경우 처리
+            if (!token) {
+              alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+              return;
+            }
+      const response = await axios.post(`${BASE_URL}/api/community`, formData, {
         headers: {
-          'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // 여기에 실제 토큰을 입력하세요
+          'Authorization': token, // 여기에 실제 토큰을 입력하세요
           'Content-Type': 'multipart/form-data', // 멀티파트 형식으로 전송
         },
       });

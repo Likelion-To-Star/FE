@@ -5,15 +5,26 @@ import Profile from '../../../assets/img/profile.png';
 
 
 const EnterCom = () => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const [communityData, setcommunityData] = useState(null);
     const [assign,setAssign] =useState(false);
-
+    const communityId = localStorage.getItem("ComId");
+    
     useEffect(()=>{
         const getcommunityData = async () => {
             try{
-                const response = await axios.get('http://13.209.61.158:8080/api/community/1/preview', { //{communityId}는 현재 커뮤니티에 따라 달라짐
+                    // 로컬 스토리지에서 토큰 가져오기
+                  const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+                 
+                  // 토큰이 존재하지 않을 경우 처리
+                  if (!token) {
+                    alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+                    return;
+                  }
+                  
+                const response = await axios.get(`${BASE_URL}/api/community/${communityId}/preview`, { 
                     headers: {
-                      Authorization: 'Bearer YOUR_JWT_TOKEN', // 발급받은 JWT 토큰 삽입
+                      Authorization: token, // 발급받은 JWT 토큰 삽입
                     },
                   });
                   if(response.data.isSuccess){
@@ -24,13 +35,100 @@ const EnterCom = () => {
                 console.error("error getcommunityData", error);
             }
         };
+        const getIsmemeber = async () => {
+          try{
+            // 로컬 스토리지에서 토큰 가져오기
+          const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+         
+          // 토큰이 존재하지 않을 경우 처리
+          if (!token) {
+            alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+            return;
+          }
+          
+        const response = await axios.get(`${BASE_URL}/api/community/${communityId}/membership-check`, {
+            headers: {
+              Authorization: token, // 발급받은 JWT 토큰 삽입
+            },
+          });
+          if(response.data.isSuccess){
+            setAssign(response.data.result);
+          }
+    }
+    catch(error){
+        console.error("error getIsmemeber", error);
+    }
+        };
         getcommunityData();
+        getIsmemeber();
     },[]);
   
-    const handleAssignClick = () => {
-        setAssign(true); 
+    const handleAssignClick  = async () => {
+      if(!assign){
+        setAssign(true);
+      try {
+        // 로컬 스토리지에서 토큰 가져오기
+        const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+  
+        // 토큰이 존재하지 않을 경우 처리
+        if (!token) {
+          alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+          return;
+        }
+        const response = await axios.post(
+          `${BASE_URL}/api/community/${communityId}/join`, // URL
+          {}, // POST 요청의 body (빈 객체로 설정)
+          {
+            headers: {
+              Authorization: `${token}`, // Bearer 접두어 추가
+            },
+          }
+        );
+        if (response.data.isSuccess) {
+          setcommunityData(response.data.result);
+        } else {
+          console.error('Failed to fetch communities:', response.data.message);
+        }
+      } catch (error) {
+        console.error("error postcommunityJoin", error);
+      }
+    }
+      else{
+        setAssign(false); 
+       
+        try {
+          // 로컬 스토리지에서 토큰 가져오기
+          const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+          
+          // 토큰이 존재하지 않을 경우 처리
+          if (!token) {
+            alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+            return;
+          }
         
-    };
+          // 요청 전송
+          const response = await axios.post(
+            `${BASE_URL}/api/community/${communityId}/leave`, // URL
+            {}, // POST 요청의 body (빈 객체로 설정)
+            {
+              headers: {
+                Authorization: `${token}`, // Bearer 접두어 추가
+              },
+            }
+          );
+        
+          if (response.data.isSuccess) {
+            setcommunityData(response.data.result);
+          } else {
+            console.error("Failed to leave community:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Error in post community leave:", error);
+        }
+        
+      }
+        
+      };
   
     return (
     <div className='entercom-wrap'  style={{
