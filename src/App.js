@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Main from "./components/main/Main.jsx";
 import MkCom from "./components/main/community/MkCom.jsx";
@@ -25,22 +25,37 @@ import FriendsSearch from "./components/main/friends/Friends-search.jsx";
 import "./assets/scss/styles.scss";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
-  
-  const handleLogin = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const loginTime = localStorage.getItem("loginTime");
     if (loginTime) {
       const currentTime = new Date().getTime();
       const timeDiff = currentTime - loginTime;
+      return timeDiff <= 24 * 60 * 60 * 1000; // 24시간이 지나지 않았을 경우 true 반환
+    }
+    return false;
+  });
 
-      // 24시간(24 * 60 * 60 * 1000 밀리초) 이내라면 로그인 상태 유지
-      if (timeDiff <= 24 * 60 * 60 * 1000) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false); // 24시간이 지나면 로그아웃 처리
+  useEffect(() => {
+    // 로그인 여부를 정기적으로 확인하여 만료된 세션을 감지할 수도 있음
+    const interval = setInterval(() => {
+      const loginTime = localStorage.getItem("loginTime");
+      if (loginTime) {
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - loginTime;
+        if (timeDiff > 24 * 60 * 60 * 1000) {
+          setIsLoggedIn(false);
+          localStorage.removeItem("loginTime");
+        }
       }
-  }}
-  ;
+    }, 60000); // 1분마다 확인
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLogin = () => {
+    const loginTime = new Date().getTime();
+    localStorage.setItem("loginTime", loginTime);
+    setIsLoggedIn(true);
+  };
 
   return (
     <BrowserRouter>
@@ -54,10 +69,10 @@ function App() {
         <Route path="/signup-next" element={<SignUpNext />} />
         <Route path="/signup-go" element={<SignUpGo />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
         {/* 메인 경로 */}
         <Route path="/main/*" element={<Main />}>
-          {/* Main 내부 하위 라우팅 */}
-          <Route path="community" element={isLoggedIn ? <Community /> : <Navigate to="/login" />}  />
+          <Route path="community" element={isLoggedIn ? <Community /> : <Navigate to="/login" />} />
           <Route path="community/mkcom" element={<MkCom />} />
           <Route path="community/editcom" element={<EditCom />} />
           <Route path="community/entercom" element={<EnterCom />} />
