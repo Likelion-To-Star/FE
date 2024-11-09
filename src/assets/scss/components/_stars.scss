@@ -66,13 +66,18 @@
         }
     }
     .from{
-      height: 200px;
         background-color: var(--purple700);
-
+        
+      h2{
+        margin-bottom: 5px;
+      }
         p{
           font-family: 'Nanum JungHagSaeng';
-          font-size: 17px;
-          line-height: 1.2;
+          font-size: 12px;
+          line-height: 1.1;
+        }
+        button{
+          margin-top: 10px;
         }
 
     }
