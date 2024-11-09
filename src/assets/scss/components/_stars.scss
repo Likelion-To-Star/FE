@@ -118,8 +118,10 @@
     position: relative;
     min-height: 100vh;
     .write{
-        position:relative;
-        margin-top: 25px;
+      position:absolute;
+      top:75px;
+      left:50%;
+      transform: translateX(-50%);
         textarea{
             position:absolute;
             top:90px;
@@ -135,6 +137,7 @@
             text-align: left;
             background-color: transparent;
             color:var(--white);
+            white-space: pre-line;
         }
         textarea::placeholder{
             color: #FEFEFE;
@@ -963,8 +966,10 @@
     position: relative;
     min-height: 100vh;
     .write{
-        position:relative;
-        margin-top: 25px;
+        position:absolute;
+        top:75px;
+        left:50%;
+        transform: translateX(-50%);
         .text{
             position:absolute;
             top:90px;
@@ -980,6 +985,7 @@
             text-align: left;
             background-color: transparent;
             color: #FEFEFE;
+            white-space: pre-line;
         }
         
         .bk-img{
@@ -987,8 +993,7 @@
             top:0;
             left:50%;
             transform: translateX(-50%);
-            width: 414px;
-            height: 523px;
+            width: 24.5rem;
     
         }
     }
@@ -1000,8 +1005,10 @@
     min-height: 100vh;
     width: 100%;
     .write{
-        position:relative;
-        margin-top: 25px;
+      position:absolute;
+      top:75px;
+      left:50%;
+      transform: translateX(-50%);
         .text{
             position:absolute;
             top:90px;
@@ -1018,22 +1025,28 @@
 
             background-color: transparent;
             color: #FEFEFE;
+            white-space: pre-line;
         }
         .paper{
             position:absolute;
                 top:0;
                 left:50%;
                 transform: translateX(-50%);
+                width: 23rem;
+                height: 41.75rem;
             .bk-img{
-                width: 414px;
-                height: 523px;
+              position:absolute;
+              top:0;
+              left:50%;
+              transform: translateX(-50%);
+              width: 23rem;
             }
             .yellofoot{
                 width: 35px;
                 height: 35px;
                 position:absolute;
-                bottom:38px;
-                right: 65px;
+                bottom:48px;
+                right: 42px;
             }
         }
         

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from '.././section/Header';
-import LetterDesign from '../../../assets/img/letter.svg';
+import LetterDesign from '../../../assets/img/Tostar-bk.svg';
 
 const ToStar = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;

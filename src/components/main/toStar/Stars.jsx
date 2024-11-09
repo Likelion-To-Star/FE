@@ -10,7 +10,7 @@ const Stars = () => {
   const navigate = useNavigate();
   const [letters, setLetters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1); // 페이지 상태 추가
+  const [page, setPage] = useState(0); // 페이지 상태 추가
   const [hasMore, setHasMore] = useState(true); // 데이터 추가 여부 확인
 
   const observer = useRef();
@@ -25,10 +25,10 @@ const Stars = () => {
     localStorage.setItem('desLetterId', letterId);
     navigate(`/stars/${fromto}star`);
   };
-
   const lastLetterElementRef = useCallback(
     (node) => {
-      if (loading) return;
+     
+      if (loading || letters.length < 4) return; // 데이터가 4개 미만이면 observer 작동 안 함
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
@@ -37,11 +37,13 @@ const Stars = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore]
+    [loading, hasMore, letters.length]
   );
+  
 
   useEffect(() => {
     const fetchLetters = async () => {
+      
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
@@ -52,15 +54,15 @@ const Stars = () => {
         }
 
         const response = await axios.get(`${BASE_URL}/api/letters`, {
-          params: { page, size: 8 },
+          params: { page, size: 4 },
           headers: {
             Authorization: `${token}`,
           },
         });
-
-        if (response.data.isSuccess) {
+        if (response.data.isSuccess&&response.data.result.length > 0) {
           const newLetters = response.data.result;
           setLetters((prevLetters) => [...prevLetters, ...newLetters]);
+          console.log(letters.length);
           setHasMore(newLetters.length > 0);
         } else {
           console.error('편지가져오기 실패: ', response.data.message);
@@ -84,7 +86,8 @@ const Stars = () => {
         return (
           <div
             key={letter.letterId}
-            ref={letters.length === index + 1 ? lastLetterElementRef : null} // 마지막 요소에 ref 할당
+            ref={letters.length >= 4 && letters.length === index + 1 ? lastLetterElementRef : null}
+ // 마지막 요소에 ref 할당
             className={`content ${fromto}`}
           >
             <img src={letter.sender === 'USER' ? Stamp : StampWhite} alt="stamp" className='stamp' />
@@ -98,7 +101,6 @@ const Stars = () => {
         );
       })}
       {loading && <p>Loading...</p>}
-      {!loading && !hasMore && <p>No more letters</p>}
       <button className='mk-com' onClick={handleButtonClick}>
         <img src={MkImg} alt="" />
         <p>마음보내기</p>
