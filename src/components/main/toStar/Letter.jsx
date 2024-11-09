@@ -15,6 +15,8 @@ const Letter = () => {
   const [showSubmit, setShowSubmit] = useState(false);
   const [minTime, setMinTime] =useState(1);
   const navigate = useNavigate();
+  const petName = localStorage.getItem('petName');
+  const userName = localStorage.getItem('userName');
 
   useEffect(() => {
     let timer01, timer02, timer03;
@@ -89,7 +91,7 @@ const Letter = () => {
       <Header />
       <div className='write'>
         <textarea 
-          placeholder="달이에게 전하고 싶은 마음을 작성해주세요." 
+          placeholder={`${petName}에게 전하고 싶은 마음을 작성해주세요.`}
           maxLength={500}
           value={letterContent} // textarea의 값 설정
           onChange={(e) => setLetterContent(e.target.value)} // 값이 변경되면 상태 업데이트
@@ -111,11 +113,11 @@ const Letter = () => {
       {isLoading && (
 <div className='loads'>
             {minTime === 1 ? (
-                <p className='text rocket-text'>달이에게 마음이 전해지고 있어요...</p>
+                <p className='text rocket-text'>{petName}에게 마음이 전해지고 있어요...</p>
             ) : minTime === 2 ? (
-                <p className='text type-text'>달이가 보호자님의 마음을 읽으며 <br/>답장을 쓰고 있어요.</p>
+                <p className='text type-text'>{petName}가 보호자님의 마음을 읽으며 <br/>답장을 쓰고 있어요.</p>
             ) : (
-                <p className='text final-text'>달이의 소중한 답장이 도착했어요.</p>
+                <p className='text final-text'>{petName}의 소중한 답장이 도착했어요.</p>
             )}
                 
                 
@@ -159,7 +161,7 @@ const Letter = () => {
                             </ul>
                     </div>
                     </div>
-                    {showSubmit && <button className='submit' onClick={checkFromLetter}>달이의 마음 확인하기</button>}
+                    {showSubmit && <button className='submit' onClick={checkFromLetter}>{petName}의 마음 확인하기</button>}
                 </div>
             )}
         </div>

@@ -32,7 +32,11 @@ const Login = ({ onLogin }) => {
     try {
       const response = await axios.post(`${BASE_URL}/api/user/login`, { email, password });
       const token = response.data.result.accessToken; 
-
+      const petName = response.data.result.petName;
+      const userName = response.data.result.userName;
+      localStorage.setItem("petName",petName);
+      localStorage.setItem("userName",userName);
+      
       if (token) {
         setErrorMessage(""); // 에러 메시지 초기화
         localStorage.setItem("token", token);

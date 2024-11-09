@@ -95,7 +95,7 @@ const Stars = () => {
             <h2>{letter.createdAt}</h2>
             <p>{letter.content}</p>
             <button onClick={() => handleLetterButtonClick(letter.letterId, fromto)}>
-              {letter.sender === 'USER' ? '보냈던 마음 확인하기' : '달이의 마음 확인하기'}
+              {letter.sender === 'USER' ? '보냈던 마음 확인하기' : `${letter.petName}의 마음 확인하기`}
             </button>
           </div>
         );
