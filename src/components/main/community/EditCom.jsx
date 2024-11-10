@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PreviewImg from '../../../assets/img/foot.svg';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 
 const EditCom = () => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const [imagePreview, setImagePreview] = useState(null); // 이미지 미리보기 상태
     const [communityName, setCommunityName] = useState(''); // 커뮤니티 이름 상태
     const [communityDescription, setCommunityDescription] = useState(''); // 커뮤니티 설명 상태
-  
+    const communityId = localStorage.getItem("ComId");
+    const navigate = useNavigate();
     // 파일 선택 시 이미지 미리보기 설정
     const handleImageUpload = (event) => {
       const file = event.target.files[0];
@@ -38,13 +41,19 @@ const EditCom = () => {
       formData.append('description', communityDescription); // 커뮤니티 소개 추가
   
       try {
-        const response = await axios.post('/api/community', formData, {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.');
+          return;
+        }
+        const response = await axios.put(`${BASE_URL}/api/community/${communityId}`, formData, {
           headers: {
-            'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // 여기에 실제 토큰을 입력하세요
+            Authorization: token, // 여기에 실제 토큰을 입력하세요
             'Content-Type': 'multipart/form-data', // 멀티파트 형식으로 전송
           },
         });
         console.log('서버 응답:', response.data);
+        navigate('/main/community');
       } catch (error) {
         console.error('에러 발생:', error);
         // 에러 처리

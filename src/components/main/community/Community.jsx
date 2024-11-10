@@ -21,10 +21,8 @@ const Community = () => {
   const handleAllCommunitiesClick = async () => {
     
     try {
-      // 로컬 스토리지에서 토큰 가져오기
-      const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+      const token = localStorage.getItem("token"); 
 
-      // 토큰이 존재하지 않을 경우 처리
       if (!token) {
         alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
         return;
@@ -89,9 +87,35 @@ const Community = () => {
     }
   }, [activeTab]);
 
-  const handleCommunityClick = (communityId) => {
+  const handleCommunityClick = async(communityId) => {
     localStorage.setItem("ComId", communityId);
-    navigate('/main/community/entercom');
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.');
+        return;
+      }
+
+      const response = await axios.get(`${BASE_URL}/api/community/${communityId}/preview`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (response.data.isSuccess) {
+        if(response.data.result.isOwner===false)
+          navigate('/main/community/entercom');
+        else
+          navigate('/main/community/changecom');
+      }
+    } catch (error) {
+      console.error('error getcommunityData', error);
+    }
+  };
+  const handleChattingClick = (communityId) => {
+    localStorage.setItem("ComId", communityId);
+    navigate('/main/community/chatting');
+    console.log("chatting이동")
   };
 
   return (
@@ -118,10 +142,12 @@ const Community = () => {
             <button
               key={community.communityId}
               className='contents'
-              onClick={() => handleCommunityClick(community.communityId)}
             >
+              <div className='img-wrap' onClick={() => handleCommunityClick(community.communityId)}>
               <img src={community.profileImage || ComImg} alt="커뮤니티 이미지" />
-              <div className='text'>
+              </div>
+              <div className='text'
+              onClick={() => handleChattingClick(community.communityId)}>
                 <h1>{community.title}</h1>
                 <p>{community.description}</p>
               </div>
@@ -129,9 +155,12 @@ const Community = () => {
           ))
         ) : (
           mycommunities.map((community) => (
-            <button key={community.communityId} className='contents' onClick={() => handleCommunityClick(community.communityId)}>
-              <img src={community.profileImage || ComImg} alt="커뮤니티 이미지" />
-              <div className='text'>
+            <button key={community.communityId} className='contents' >
+              <div className='img-wrap' onClick={() => handleCommunityClick(community.communityId)}>
+                <img src={community.profileImage || ComImg} alt="커뮤니티 이미지" />
+              </div>
+              <div className='text'
+              onClick={() => handleChattingClick(community.communityId)}>
                 <h1>{community.title}</h1>
                 <p>{community.description}</p>
               </div>

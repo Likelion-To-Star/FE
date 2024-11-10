@@ -34,8 +34,10 @@ const Login = ({ onLogin }) => {
       const token = response.data.result.accessToken; 
       const petName = response.data.result.petName;
       const userName = response.data.result.userName;
+      const userEmail = response.data.result.email;
       localStorage.setItem("petName",petName);
       localStorage.setItem("userName",userName);
+      localStorage.setItem("userEmail",userEmail);
       
       if (token) {
         setErrorMessage(""); // 에러 메시지 초기화

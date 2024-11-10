@@ -6,31 +6,73 @@ import Profile from '../../../assets/img/profile.png';
 import Exit from '../../../assets/img/exit.svg';
 
 const ChangeCom = () => {
+    const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const [communityData, setcommunityData] = useState(null);
+    const communityId = localStorage.getItem("ComId");
     const [popup,setPopup] = useState(false);
     const navigate = useNavigate();
     useEffect(()=>{
-        const getcommunityData = async () => {
-            try{
-                const response = await axios.get('http://13.209.61.158:8080/api/community/1/preview', { //{communityId}는 현재 커뮤니티에 따라 달라짐
-                    headers: {
-                      Authorization: 'Bearer YOUR_JWT_TOKEN', // 발급받은 JWT 토큰 삽입
-                    },
-                  });
-                  if(response.data.isSuccess){
-                    setcommunityData(response.data.result);
-                  }
-            }
-            catch(error){
-                console.error("error getcommunityData", error);
-            }
-        };
-        getcommunityData();
-    },[]);
+        //특정 페이지 가져오기
+          const getcommunityData = async () => {
+              try{
+                      // 로컬 스토리지에서 토큰 가져오기
+                    const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
+                   
+                    // 토큰이 존재하지 않을 경우 처리
+                    if (!token) {
+                      alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+                      return;
+                    }
+                    
+                  const response = await axios.get(`${BASE_URL}/api/community/${communityId}/preview`, { 
+                      headers: {
+                        Authorization: token, // 발급받은 JWT 토큰 삽입
+                      },
+                    });
+                    if(response.data.isSuccess){
+                      setcommunityData(response.data.result);
+                    }
+              }
+              catch(error){
+                  console.error("error getcommunityData", error);
+              }
+          };
+
+  
+          getcommunityData();
+  
+      },[]);
   
     const handlePopup = () => {
         setPopup(true);
     };
+  // 커뮤니티 삭제 요청
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.');
+        return;
+      }
+
+      const response = await axios.delete(`${BASE_URL}/api/community/${communityId}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      if (response.data.isSuccess) {
+        navigate('/main/community'); // 메인 페이지로 이동
+      } else {
+        alert(`삭제 실패: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error('Error in handleDelete:', error);
+      alert('커뮤니티 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setPopup(false);
+    }
+  };
 
     const popupRemove = () => {
         // 여기에 삭제 로직 추가
@@ -47,10 +89,13 @@ const ChangeCom = () => {
         backgroundPosition: 'center',
       }}>
         <div className='cen-align'>
-            <div className='profile'><img src={Profile} alt="주인이미지" /><p>토토</p></div>
-            <h1>작은 별들의 이야기</h1>
-            <p>아이들이 작은 별처럼 반짝이며 남긴 이야기들을 나누는 공간입니다. 작은 이야기들을 모아 큰 추억을 만들어 봐요 :)</p>
-            
+            <div className='profile'>
+              <div className='img-wrap'>
+                <img src={ communityData && communityData.ownerPetProfileImage ? communityData.ownerPetProfileImage : Profile} alt="주인이미지" />
+              </div>
+              <p>{ communityData ? communityData.ownerPetName: "이름 없음"}</p></div>
+            <h1>{ communityData ? communityData.communityName: '로딩중'}</h1>
+            <p>{ communityData ? communityData.communityDescription: '로딩중'}</p>
         </div>
         <div className='change-btn'>
             <button className='left' onClick={handleEdit}>수정하기</button>
@@ -61,7 +106,7 @@ const ChangeCom = () => {
                     <img src={Exit} alt="exit" onClick={popupRemove}/>
                     <p>정말로 삭제하시겠습니까?</p>
                     <div className='pop-btn'>
-                        <button className='left' onClick={popupRemove}>확인</button>
+                        <button className='left' onClick={handleDelete}>확인</button>
                         <button className='right' onClick={popupRemove}>취소</button>
                     </div>
                 </div>

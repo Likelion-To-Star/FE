@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PreviewImg from '../../../assets/img/foot.svg';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
@@ -10,7 +11,7 @@ const MkCom = () => {
   const [communityName, setCommunityName] = useState(''); // 커뮤니티 이름 상태
   const [communityDescription, setCommunityDescription] = useState(''); // 커뮤니티 설명 상태
   const [requireContents, setRequireContents] = useState(true); // 필수 항목 상태
-
+  const navigate = useNavigate();
   // 파일 선택 시 이미지 미리보기 설정
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -30,9 +31,7 @@ const MkCom = () => {
 
   // 폼 제출 처리
   const handleSubmit = async (event) => {
-    event.preventDefault(); // 기본 제출 동작 방지
-
-    // 필수 입력 항목 검증
+    event.preventDefault();
     const imageFile = document.getElementById('imageUploadInput').files[0];
     if (!communityName || !communityDescription || !imageFile) {
       setRequireContents(false); // 필수 항목이 충족되지 않으면 메시지 표시
@@ -45,27 +44,24 @@ const MkCom = () => {
     formData.append('description', communityDescription); // 커뮤니티 소개 추가
 
     try {
-            // 로컬 스토리지에서 토큰 가져오기
-            const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옴
-
-            // 토큰이 존재하지 않을 경우 처리
+            const token = localStorage.getItem("token"); 
             if (!token) {
               alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
               return;
             }
       const response = await axios.post(`${BASE_URL}/api/community`, formData, {
         headers: {
-          'Authorization': token, // 여기에 실제 토큰을 입력하세요
-          'Content-Type': 'multipart/form-data', // 멀티파트 형식으로 전송
+          'Authorization': token, 
+          'Content-Type': 'multipart/form-data', 
         },
       });
       console.log('서버 응답:', response.data);
-      setRequireContents(true); // 성공 시 필수 항목 메시지 초기화
-      // 추가적인 성공 처리
+      setRequireContents(true); 
     } catch (error) {
       console.error('에러 발생:', error);
       // 에러 처리
     }
+    navigate('/main/community');
   };
 
   return (
