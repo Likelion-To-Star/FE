@@ -21,7 +21,8 @@ import SignUpGo from "./components/main/login/SignUpGo.jsx";
 import Mypage from "./components/main/section/Mypage.jsx";
 import NewPost from "./components/main/friends/NewPost.jsx";
 import FriendsSearch from "./components/main/friends/Friends-search.jsx";
-
+import MypageEdit from "./components/main/section/MypageEdit.jsx";
+import EditPost from "./components/main/friends/EditPost.jsx";
 import "./assets/scss/styles.scss";
 
 function App() {
@@ -60,7 +61,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* 로그인 여부에 따른 라우팅 */}
         <Route path="/" element={isLoggedIn ? <Main /> : <Navigate to="/login" />} />
         <Route path="/signup" element={<SignUp />} />
@@ -83,9 +83,12 @@ function App() {
         </Route>
 
         <Route path="/friends" element={isLoggedIn ? <Friends /> : <Navigate to="/login" />} />
+        <Route path="/friends/editpost/:articleId" element={isLoggedIn ? <EditPost /> : <Navigate to="/login" />} />
+        <Route path="/friendsSearch" element={isLoggedIn ? <FriendsSearch /> : <Navigate to="/login" />} />
         <Route path="/friends/newpost" element={isLoggedIn ? <NewPost /> : <Navigate to="/login" />} />
         <Route path="/mypage" element={isLoggedIn ? <Mypage /> : <Navigate to="/login" />} />
-        
+        <Route path="/mypage/mypageEdit" element={isLoggedIn ? <MypageEdit /> : <Navigate to="/login" />} />
+
         <Route path="stars/letter" element={<Letter />} />
         <Route path="stars/tostar" element={<ToStar />} />
         <Route path="stars/fromstar" element={<FromStar />} />

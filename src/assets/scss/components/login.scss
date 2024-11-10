@@ -70,7 +70,7 @@
 
     // Placeholder 스타일 설정
     &::placeholder {
-      color: #adadad; // Placeholder 색상
+      color: #adadad !important; // Placeholder 색상
     }
   }
 
@@ -87,13 +87,14 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 
     &::placeholder {
-      color: #adadad; // Placeholder 색상
+      color: #adadad !important; // Placeholder 색상
     }
   }
 
   .login-button {
     width: 100%;
     padding: 15px;
+    margin-top: 5px;
     background-color: #e6dcff;
     color: #7058cb;
     font-size: 18px;
