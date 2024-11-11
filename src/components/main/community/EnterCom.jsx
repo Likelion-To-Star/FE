@@ -91,7 +91,7 @@ const EnterCom = () => {
         if (response.data.isSuccess) {
           setAssign(true);
           await getcommunityData();
-          navigate(-1); 
+          navigate('/main/community/chatting');
         } else {
           console.error('Failed to join community:', response.data.message);
         }
@@ -110,7 +110,7 @@ const EnterCom = () => {
         if (response.data.isSuccess) {
           setAssign(false);
           await getcommunityData();
-          navigate(-1); 
+          navigate('/main/community');
         } else {
           console.error('Failed to leave community:', response.data.message);
         }
