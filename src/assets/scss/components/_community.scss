@@ -544,6 +544,19 @@
       .one-chat{
         display: flex;
         margin-bottom: 10px;
+        .nameAND{
+          display: flex;
+          flex-direction: column;
+          h1{
+            font-family: 'YiSunShin Dotum M';
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 25px;
+            letter-spacing: -0.40799999237060547px;
+            color: #3A305E;
+            margin-left: 15px;
+          }
+        }
       }
       img{
         box-shadow: 0px 1px 3px 0px #00000040;

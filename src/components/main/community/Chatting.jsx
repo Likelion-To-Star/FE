@@ -129,12 +129,14 @@ function IncomingMessage({ message }) {
   return (
     <div className='one-chat'>
       <div className='img-wrap'><img src={message.profileImage===null?Profile:message.profileImage} alt="" /></div>
-      <div className='other-container'>
-            <div className='other'>
-              
+      <div className="nameAND">
+        <h1>{message.petName}</h1>
+        <div className='other-container'>
+          <div className='other'>
             <p >{message.content}</p>
-            </div>
-    </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   );
