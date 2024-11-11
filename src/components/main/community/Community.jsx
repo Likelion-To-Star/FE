@@ -112,10 +112,37 @@ const Community = () => {
       console.error('error getcommunityData', error);
     }
   };
-  const handleChattingClick = (communityId) => {
+  const handleChattingClick = async (communityId) => {
     localStorage.setItem("ComId", communityId);
-    navigate('/main/community/chatting');
-    console.log("chatting이동")
+    const jwtToken = localStorage.getItem("token");
+
+    if (!jwtToken) {
+      alert("토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${BASE_URL}/api/community/${communityId}/membership-check`, {
+        headers: {
+          Authorization: jwtToken,
+        },
+      });
+
+      if (response.data.isSuccess) {
+        const isMember = response.data.result;
+        console.log("회원 여부 : ", isMember);
+
+        if (isMember) {
+          // 회원일 경우 채팅방으로 이동
+          navigate('/main/community/chatting');
+        } else {
+          // 회원이 아닐 경우, 회원 가입 후 채팅방으로 이동
+          navigate('/main/community/entercom');
+        }
+      }
+    } catch (error) {
+      console.error("회원 여부 확인 중 오류 발생:", error);
+    }
   };
 
   return (
