@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/scss/components/friends.scss";
-import Header from "../section/Header";
-import Nav from "../section/Nav";
 import moon from "../../../assets/img/moon.svg";
 import memory from "../../../assets/img/friends/memory.svg";
-import friends1 from "../../../assets/img/friends-1.svg";
-import friends2 from "../../../assets/img/friends-2.svg";
-import friends3 from "../../../assets/img/friends-3.svg";
-import friends4 from "../../../assets/img/friends-4.svg";
 import newFriends from "../../../assets/img/new-friends.svg";
 import postIcon1 from "../../../assets/img/friends/post-icon1.svg";
 import postIcon2 from "../../../assets/img/friends/post-icon2.svg";
@@ -17,115 +11,69 @@ import postIcon3 from "../../../assets/img/friends/post-icon3.svg";
 
 const Friends = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const newPost = location.state?.newPost;
-
   const [posts, setPosts] = useState([]);
-  const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {}); // localStorage에서 userInfo 가져오기
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [postToDelete, setPostToDelete] = useState(null);
-
+  const [friends, setFriends] = useState([]);
+  const [friendInfo, setFriendInfo] = useState(null); // 친구 정보를 저장하는 상태
+  const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {});
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
+  // 달이의 친구 목록 불러오기
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchFriends = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${BASE_URL}/api/user/info`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await axios.get(`${BASE_URL}/api/user/friend`, {
+          headers: { Authorization: token },
         });
 
-        // userInfo를 상태와 로컬스토리지에 저장
-        const userId = response.data.result.article?.author?.user_id;
-        if (userId) {
-          localStorage.setItem("userId", userId);
-          setUserInfo(response.data.result);
-          fetchUserPosts(userId);
+        if (response.data && response.data.isSuccess) {
+          setFriends(response.data.result);
         }
       } catch (error) {
-        console.error("사용자 정보 불러오기 오류:", error);
+        console.error("친구 목록 불러오기 오류:", error);
       }
     };
-    fetchUserInfo();
+
+    fetchFriends();
   }, []);
 
-  const fetchUserPosts = async (userId) => {
-    if (!userId) {
-      console.error("user_id is undefined");
-      return;
-    }
+  // 특정 친구의 게시물 및 정보 불러오기
+  const fetchUserPosts = async (friendId, page = 0, size = 4) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/articles/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get(`${BASE_URL}/api/articles/user/${friendId}?page=${page}&size=${size}`, {
+        headers: { Authorization: token },
       });
-      const article = response.data.result.articles;
-      setPosts(article ? [article] : []);
-      localStorage.setItem("posts", JSON.stringify(article));
+
+      if (response.data && response.data.isSuccess) {
+        setPosts(response.data.result);
+        const friend = friends.find((f) => f.id === friendId);
+        setFriendInfo(friend); // 친구 정보 저장
+      }
     } catch (error) {
-      console.error("게시물 불러오기 오류:", error.response || error);
+      console.error("게시물 불러오기 오류:", error);
     }
   };
 
-  useEffect(() => {
+  const handleProfileClick = () => {
+    setFriendInfo(userInfo); // 자신의 프로필 정보 설정
     fetchUserPosts(userInfo.userId);
-  }, [userInfo.userId]);
+  };
 
-  useEffect(() => {
-    if (newPost) {
-      const updatedPosts = [...posts, newPost];
-      setPosts(updatedPosts);
-      localStorage.setItem("posts", JSON.stringify(updatedPosts));
-    }
-  }, [newPost]);
+  const handleFriendProfileClick = (friendId) => {
+    fetchUserPosts(friendId);
+  };
 
   const handleMemory = () => {
     navigate("/friends/newpost");
   };
 
   const handleFriendsSearch = () => {
-    navigate("/friends/friendsSearch");
+    navigate("/friendsSearch");
   };
 
-  const handleProfileClick = (userId) => {
-    fetchUserPosts(userId);
-  };
-
-  const openModal = (articleId) => {
-    setPostToDelete(articleId);
-    setIsModalOpen(true);
-  };
-
-  const handleEditPost = (articleId) => {
-    navigate(`/friends/editpost/${articleId}`);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setPostToDelete(null);
-  };
-
-  const confirmDelete = async () => {
-    if (postToDelete !== null) {
-      try {
-        const token = localStorage.getItem("token");
-        await axios.delete(`${BASE_URL}/api/articles/user/${postToDelete}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const updatedPosts = posts.filter((post) => post.article_id !== postToDelete);
-        setPosts(updatedPosts);
-        localStorage.setItem("posts", JSON.stringify(updatedPosts));
-        closeModal();
-        alert("게시물이 성공적으로 삭제되었습니다.");
-      } catch (error) {
-        console.error("게시물 삭제 중 오류가 발생했습니다:", error.response || error);
-        alert("게시물 삭제 중 오류가 발생했습니다.");
-      }
-    }
-  };
-
-  const handleCommentClick = (articleId) => {
-    navigate(`/articles/${articleId}/comments`);
+  const handleEndFriendship = (friendId) => {
+    console.log(`별나라 친구 ${friendId} 종료`);
   };
 
   return (
@@ -134,26 +82,18 @@ const Friends = () => {
         <div className="main-moon-starFriends">
           <div className="slide-cnt">
             <div className="friends-with-slide">
-              <div className="moon-pro" onClick={() => handleProfileClick(userInfo.userId)}>
+              {/* 회원의 이미지와 이름 표시 */}
+              <div className="moon-pro" onClick={handleProfileClick}>
                 <img src={userInfo.profileImage || moon} alt="Profile" className="moon-img" />
-                <p>{userInfo.petName || "애완동물 이름"}</p>
+                <p>{userInfo.petName || "내 이름"}</p>
               </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId1")}>
-                <img src={friends1} className="friends-img" alt="미아" />
-                <p>미아</p>
-              </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId2")}>
-                <img src={friends2} className="friends-img" alt="밤이" />
-                <p>밤이</p>
-              </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId3")}>
-                <img src={friends3} className="friends-img" alt="로이" />
-                <p>로이</p>
-              </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId4")}>
-                <img src={friends4} className="friends-img" alt="초코" />
-                <p>초코</p>
-              </div>
+              {/* 친구 목록 표시 */}
+              {friends.map((friend) => (
+                <div key={friend.id} className="friend-with-pro" onClick={() => handleFriendProfileClick(friend.id)}>
+                  <img src={friend.profileImage || moon} className="friends-img" alt={friend.petName} />
+                  <p>{friend.petName}</p>
+                </div>
+              ))}
             </div>
             <div className="new-friends-cnt" onClick={handleFriendsSearch}>
               <img src={newFriends} alt="새 친구 찾기" />
@@ -161,36 +101,45 @@ const Friends = () => {
             </div>
           </div>
         </div>
+
+        {/* 선택된 친구의 정보 표시 */}
+        {friendInfo && (
+          <div className="friend-profile">
+            <img src={friendInfo.profileImage || moon} alt={friendInfo.petName} className="pro-img-cnt" />
+            <div className="friend-info">
+              <p className="friend-name">{friendInfo.petName}</p>
+              <p className="friend-details">
+                생일: {friendInfo.birthDay} • 별이 된 날: {friendInfo.starDay}
+              </p>
+            </div>
+            {friendInfo.userId !== userInfo.userId && (
+              <button className="end-friendship-btn" onClick={() => handleEndFriendship(friendInfo.userId)}>
+                별나라 친구 종료하기
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* 게시물 리스트 */}
         <div className="pro-cnt">
-          <div className="pro-img-cnt">
-            <img src={userInfo.profileImage || moon} alt="Profile" />
-            <div className="pro-cnt">
-              <h4>{userInfo.petName || "반려동물 이름"}</h4>
-              <div className="pro-p-cnt">
-                <p id="animal">{userInfo.category || "종류"} •</p>
-                <p id="birth-date">생일 {userInfo.birthDay}</p>
-                <p id="star-date">별이된 날 {userInfo.starDay}</p>
+          {posts.map((post) => (
+            <div key={post.articleId} className="post-cnt">
+              <h4>{post.title}</h4>
+              <p>{post.content}</p>
+              <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
+              <div className="post-icons-cnt">
+                <div className="post-icons">
+                  <img src={postIcon1} alt="Comment" />
+                  <>
+                    <img src={postIcon2} alt="Edit Icon" />
+                    <img src={postIcon3} alt="Delete" />
+                  </>
+                </div>
+                <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-
-        {posts.map((post) => (
-          <div key={post.article_id} className="post-cnt">
-            <h4>{post.title}</h4>
-            <p>{post.content}</p>
-            <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
-            <div className="post-icons-cnt">
-              <div className="post-icons">
-                <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.article_id)} />
-                <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditPost(post.article_id)} />
-                <img src={postIcon3} alt="Delete" onClick={() => openModal(post.article_id)} />
-              </div>
-              <p>{new Date(post.createdAt).toLocaleDateString()}</p>
-            </div>
-          </div>
-        ))}
-
         <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
       </div>
     </div>

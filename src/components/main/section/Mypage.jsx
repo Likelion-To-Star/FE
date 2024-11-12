@@ -14,14 +14,13 @@ const Mypage = () => {
 
   useEffect(() => {
     const savedUserInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
-    const savedUserInfo2 = JSON.parse(localStorage.getItem("userInfo2")) || {};
-    setUserInfo({ ...savedUserInfo, ...savedUserInfo2 });
+    setUserInfo(savedUserInfo);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
-    localStorage.removeItem("userInfo2");
     localStorage.removeItem("token");
+    localStorage.removeItem("loginTime");
     navigate("/login");
   };
 

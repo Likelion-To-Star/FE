@@ -91,7 +91,7 @@
 
     // Placeholder 스타일 설정
     &::placeholder {
-      color: #adadad; // Placeholder 색상
+      color: #adadad !important; // Placeholder 색상
     }
   }
 }
