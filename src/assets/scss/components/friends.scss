@@ -1,6 +1,6 @@
 .friends-wrap {
   width: 100%;
-  height: 87vh;
+  height: 100%;
   margin: 0 auto;
   .main-container {
     background-color: white;
@@ -14,7 +14,7 @@
 
     .main-moon-starFriends {
       display: block;
-      padding-top: 10px; 
+      padding-top: 10px;
       padding-left: 20px;
       font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
@@ -52,12 +52,10 @@
               cursor: pointer;
               border: 2px solid transparent;
               transition: border 0.3s ease;
-              &.selected{
+              &.selected {
                 border: 2px solid #7058cb; // 선택된 친구의 보더
               }
             }
-
-
 
             p {
               font-size: 13px;
@@ -69,7 +67,6 @@
           }
         }
 
-        
         .friends-search-cnt {
           width: 100px;
           display: block;
@@ -80,8 +77,7 @@
             border-radius: 50%;
             box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
           }
-          img:focus{
-            
+          img:focus {
             border: 2px solid #7058cb;
           }
 
@@ -94,14 +90,14 @@
             cursor: pointer;
           }
         }
-        .new-friends-cnt{
+        .new-friends-cnt {
           height: 58px;
           position: relative;
           margin-left: 5px;
-          .plus-icon{
+          .plus-icon {
             position: absolute;
-            top:40px;
-            right:5px;
+            top: 40px;
+            right: 5px;
             background-color: var(--purple400);
             width: 12.69px;
             height: 12.69px;
@@ -110,13 +106,13 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            img{
+            img {
               width: 7px;
               height: 7px;
             }
           }
 
-          .new-friends-btn{
+          .new-friends-btn {
             position: relative;
             width: 58px;
             height: 58px;
@@ -124,18 +120,18 @@
             box-shadow: 0px 1px 3px 0px #00000040;
             border-radius: 50%;
             cursor: pointer;
-            background-color:#FAF7FE;
-            img{
+            background-color: #faf7fe;
+            img {
               position: absolute;
-              top:50%;
-              left:50%;
-              transform: translate(-50%,-50%);
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
               width: 38.11px;
-              height:38.11px;;
+              height: 38.11px;
             }
           }
 
-          p{
+          p {
             font-size: 12px;
             color: #8a8888;
           }
@@ -209,10 +205,14 @@
 
     .post-img-cnt {
       display: flex;
-      width: 147px;
+      width: 100%;
       height: 108px;
       border-radius: 5px;
       margin: 10px 0;
+      overflow-y: auto;
+      img {
+        width: 147px;
+      }
     }
 
     .post-icons-cnt {
@@ -232,8 +232,6 @@
     }
   }
 }
-
-
 
 /* 모달 배경 */
 .modal-overlay {
@@ -285,10 +283,10 @@
 /* 댓글 창 */
 .comment-section {
   font-family: "YiSunShin Dotum B", Arial, sans-serif;
-  position: fixed;
   z-index: 1000;
   bottom: 0;
   width: 100%;
+
   background-color: #faf7fe;
   border-top: 1px solid #ddd;
   padding: 20px;
@@ -339,14 +337,26 @@
 
   .comment-item {
     margin: 20px 0;
-  }
-  .comments-icons-cnt {
     display: flex;
-    justify-content: end;
-    margin: 10px 0;
+    position: relative; /* 아이콘 위치 조정을 위해 relative 추가 */
+  }
+
+  .comment-content {
+    font-size: 12px;
+    strong {
+      color: #7058cb;
+    }
+  }
+
+  .comments-icons-cnt {
+    position: absolute; /* 오른쪽에 고정 위치 */
+    right: 0; /* 가장 오른쪽에 위치 */
+    top: 0;
+    display: flex;
+    align-items: center;
     img {
-      width: 25px;
-      margin-right: 10px;
+      width: 20px;
+      margin-right: 5px;
       cursor: pointer;
     }
   }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../../assets/scss/components/login.scss"; // SCSS 파일 import
+import "../../../assets/scss/components/login.scss"; // SCSS import
 import loginLogo from "../../../assets/img/login-logo.svg";
 import mainLogo from "../../../assets/img/main-logo.svg";
 import star from "../../../assets/img/star.svg";
@@ -11,34 +11,38 @@ const Login = ({ onLogin }) => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [email, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 유효성 검증
     if (!email.trim() || !password.trim()) {
       setErrorMessage("이메일과 비밀번호를 정확히 입력해주세요.");
       return;
     }
     try {
       const response = await axios.post(`${BASE_URL}/api/user/login`, { email, password });
-      const accessToken = response.data.result.accessToken; 
+      const { accessToken, userName, petName, profileImage } = response.data.result;
+
       if (accessToken) {
-        const { accessToken, userName, petName, profileImage } = response.data.result;
-        localStorage.setItem("petName",petName);
-        localStorage.setItem("userName",userName);
-        localStorage.setItem("userEmail",response.data.result.userEmail);
-        setErrorMessage(""); // 에러 메시지 초기화
+        setErrorMessage("");
         localStorage.setItem("token", accessToken);
         localStorage.setItem("loginTime", new Date().getTime());
 
-        // userInfo를 로컬 스토리지에 저장
-        localStorage.setItem("userInfo", JSON.stringify({ email, userName, petName, profileImage }));
+        // email과 userName을 userInfo에 추가하여 저장
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            email, // 로그인할 때 사용한 email
+            userName, // 응답에서 받아온 userName
+            petName,
+            profileImage,
+          })
+        );
 
-        onLogin(accessToken); // 로그인 성공 시 onLogin 호출 및 토큰 전달
-        navigate("/"); // 메인 페이지로 이동
+        onLogin(accessToken);
+        navigate("/");
       } else {
         setErrorMessage("로그인에 실패했습니다. 다시 시도해주세요.");
       }
@@ -48,15 +52,14 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const handleSingUp = () => {
+  const handleSignUp = () => {
     navigate("/signup");
   };
 
   return (
     <div className="login-background">
-      <img src={star} className="star" alt="star" />
       <div className="login-container">
-        
+        <img src={star} className="star" alt="star" />
         <div className="login-logo">
           <p>별나라에 보내는 나의 소중한 마음</p>
           <img src={loginLogo} alt="Login Logo" className="logo-svg" />
@@ -81,7 +84,7 @@ const Login = ({ onLogin }) => {
         </form>
         <div className="login-footer">
           <p>
-            아직 회원이 아니신가요? <span onClick={handleSingUp}>회원가입하기</span>
+            아직 회원이 아니신가요? <span onClick={handleSignUp}>회원가입하기</span>
           </p>
         </div>
       </div>

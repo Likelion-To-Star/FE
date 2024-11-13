@@ -1,200 +1,250 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../../../assets/scss/components/friends-search.scss";
 import Header from "../section/Header";
 import Nav from "../section/Nav";
 import moon from "../../../assets/img/moon.svg";
-import friends1 from "../../../assets/img/friends-1.svg";
-import friends2 from "../../../assets/img/friends-2.svg";
-import friends3 from "../../../assets/img/friends-3.svg";
-import friends4 from "../../../assets/img/friends-4.svg";
 import friendsSearchBtn from "../../../assets/img/friends/friends-search-btn.svg";
-import sampleImg from "../../../assets/img/f-post-sample1.svg";
-import postIcon1 from "../../../assets/img/friends/post-icon1.svg";
 import searchIcon from "../../../assets/img/friends/search.svg";
+import noresult from "../../../assets/img/friends/no-results-icon.svg";
+import mention from "../../../assets/img/friends/post-icon1.svg";
 
-const Friends = () => {
+const FriendsSearch = () => {
   const location = useLocation();
-  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 on/off
-  const [selectedFriend, setSelectedFriend] = useState(null); // 선택된 친구
-  const [showModal, setShowModal] = useState(false); // 모달 on/off
-  const [removedFriends, setRemovedFriends] = useState([]); // 제거된 친구 목록
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [noResults, setNoResults] = useState(false);
+  const [otherPosts, setOtherPosts] = useState([]); // 친구가 아닌 사용자들의 게시물 목록
+  const [friends, setFriends] = useState([]); // 친구 목록
+  const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {}); // 회원 정보
+  const [isCommenting, setIsCommenting] = useState(false); // 댓글 입력란 표시 여부
+  const [newComment, setNewComment] = useState(""); // 새로운 댓글 내용
+  const [temporaryComments, setTemporaryComments] = useState([]); // 댓글 입력 창 내부에서만 보이는 댓글 목록
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  // 친구 목록과 각 친구의 프로필 및 게시물 데이터
-  const friendsData = {
-    달이: { img: moon, name: "달이", birth: "2021.12.29", passed: "2024.02.15", posts: ["달이의 추억", "달이와의 마지막 날"] },
-    미아: { img: friends1, name: "미아", birth: "2020.05.10", passed: "2023.09.05", posts: ["미아와 함께한 추억"] },
-    밤이: { img: friends2, name: "밤이", birth: "2021.12.29", passed: "2024.06.30", posts: ["밤이를 처음 본 날", "밤이의 빈자리"] },
-    로이: { img: friends3, name: "로이", birth: "2022.07.15", passed: "2023.11.20", posts: ["로이와의 마지막 산책"] },
-    초코: { img: friends4, name: "초코", birth: "2021.03.21", passed: "2023.08.12", posts: ["초코와 함께한 소중한 시간"] },
+  // 친구 목록 불러오기
+  const fetchFriends = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${BASE_URL}/api/user/friend`, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isSuccess) {
+          setFriends(data.result); // 친구 목록 저장
+        } else {
+          console.error("친구 목록 조회 실패:", data.message);
+        }
+      } else {
+        console.error("응답 오류:", response.statusText);
+      }
+    } catch (error) {
+      console.error("친구 목록 조회 오류:", error);
+    }
   };
 
-  // 검색 버튼 클릭 시 상태 변경
+  // 친구가 아닌 사용자들의 게시물 조회
+  const fetchOtherPosts = async (page = 1, size = 5) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${BASE_URL}/api/articles/others?page=${page}&size=${size}`, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isSuccess) {
+          setOtherPosts(data.result);
+        } else {
+          console.error("게시물 조회 실패:", data.message);
+          setOtherPosts([]);
+        }
+      } else {
+        console.error("응답 오류:", response.statusText);
+      }
+    } catch (error) {
+      console.error("친구가 아닌 사용자 게시물 조회 오류:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFriends(); // 친구 목록 불러오기
+    fetchOtherPosts(); // 친구가 아닌 사용자들의 게시물 조회
+  }, []);
+
   const handleSearchClick = () => {
-    setIsSearchActive((prev) => !prev);
-    setSelectedFriend("allFriends"); // '다른 친구들' 버튼 클릭 시 전체 친구가 선택되도록 설정
+    setIsSearchActive(true);
+    searchFriends();
   };
 
-  // 친구 선택 시 상태 업데이트
-  const handleFriendClick = (friendName) => {
-    setSelectedFriend(friendName);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
-  // 친구 종료 모달 열기
-  const handleEndFriendshipClick = () => {
-    setShowModal(true);
+  const searchFriends = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!searchTerm) {
+      console.log("검색어가 비어 있습니다.");
+      setNoResults(true);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/user/search?name=${encodeURIComponent(searchTerm)}&page=1&size=5`, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isSuccess && data.result.length > 0) {
+          setSearchResults(data.result);
+          setNoResults(false);
+        } else {
+          setSearchResults([]);
+          setNoResults(true);
+        }
+      } else {
+        console.error("응답 오류:", response.statusText);
+        setNoResults(true);
+      }
+    } catch (error) {
+      console.error("친구 검색 오류:", error);
+      setNoResults(true);
+    }
   };
 
-  // 모달에서 "확인" 클릭 시 친구를 종료하고 슬라이드에서 제거
-  const confirmEndFriendship = () => {
-    setRemovedFriends((prev) => [...prev, selectedFriend]);
-    setShowModal(false);
-    setSelectedFriend(null);
+  const handleCommentClick = () => {
+    setIsCommenting(true); // 댓글 입력란 표시
   };
 
-  // 모달에서 "취소" 클릭 시 모달 닫기
-  const cancelEndFriendship = () => {
-    setShowModal(false);
+  const handleCommentChange = (e) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentSubmit = () => {
+    if (newComment.trim()) {
+      // 임시 댓글 목록에 추가
+      setTemporaryComments((prevComments) => [...prevComments, { author: userInfo.petName, content: newComment, profileImage: userInfo.profileImage || moon }]);
+      setNewComment("");
+      setIsCommenting(false); // 댓글 입력란 숨기기
+    }
   };
 
   return (
-    <div className="friendSrh-wrap">
-      <Header />
-      <Nav />
+    <div className="main-wrap">
       <div className="main-container">
         <div className="main-moon-starFriends">
           <div className="slide-cnt">
             <div className="friends-with-slide">
-              {/* 친구들 리스트 (첫 번째 친구는 자신, 나머지는 친구) */}
-              {Object.keys(friendsData).map(
-                (friend, index) =>
-                  !removedFriends.includes(friend) && (
-                    <div className={`friend-with-pro ${selectedFriend === friend ? "selected" : ""}`} key={friend} onClick={() => handleFriendClick(friend)}>
-                      <img src={friendsData[friend].img} alt={friendsData[friend].name} className="friends-img" />
-                      <p>{friendsData[friend].name}</p>
-                    </div>
-                  )
-              )}
+              {/* 회원의 이미지와 이름 표시 */}
+              <div className="moon-pro">
+                <img src={userInfo.profileImage || moon} alt="Profile" className="moon-img" />
+                <p>{userInfo.petName || "내 이름"}</p>
+              </div>
+              {/* 친구 목록 이미지 슬라이드 */}
+              {friends.map((friend) => (
+                <div className="friend-with-pro" key={friend.id}>
+                  <img src={friend.profileImage || moon} alt={friend.petName} className="friends-img" />
+                  <p>{friend.petName}</p>
+                </div>
+              ))}
             </div>
-
             <div className="friends-search-cnt">
-              <img
-                src={friendsSearchBtn}
-                onClick={handleSearchClick}
-                alt="Search Button"
-                className={`${selectedFriend === "allFriends" ? "selected" : ""}`} // '다른 친구들' 버튼 스타일 적용
-              />
-              <button
-                onClick={handleSearchClick}
-                className={`${selectedFriend === "allFriends" ? "selected" : ""}`} // '다른 친구들' 버튼 스타일 적용
-              >
-                다른 친구들
-              </button>
+              <img src={friendsSearchBtn} onClick={handleSearchClick} alt="Search Button" />
+              <button onClick={handleSearchClick}>다른 친구들</button>
             </div>
           </div>
         </div>
 
         <div className="sub-container">
           <div className="search-btn">
-            <input type="text" placeholder="별나라의 친구들을 찾아보세요." />
+            <input type="text" placeholder="별나라의 친구들을 찾아보세요." value={searchTerm} onChange={handleSearchChange} />
             <img src={searchIcon} alt="Search Icon" onClick={handleSearchClick} />
           </div>
-
-          {selectedFriend && selectedFriend !== "allFriends" ? (
-            // 선택된 친구의 프로필과 게시물 표시
-            <div className="friend-profile-container">
-              <div className="friend-profile-header">
-                <img src={friendsData[selectedFriend].img} alt={`${selectedFriend} 프로필`} />
-                <div className="friend-info">
-                  <p className="friend-name">{friendsData[selectedFriend].name}</p>
-                  <p className="friend-details">
-                    생일: {friendsData[selectedFriend].birth} · 별이 된 날: {friendsData[selectedFriend].passed}
-                  </p>
+          {isSearchActive ? (
+            <div className="friends-list">
+              {noResults ? (
+                <div className="no-member">
+                  <img src={noresult} alt="No Members" className="no-member-img" />
+                  <p>검색하신 별나라 친구를 찾을 수 없어요.</p>
+                  <p>다른 친구를 검색해주세요.</p>
                 </div>
-                {/* 첫 번째 친구가 아닌 경우에만 "별나라 친구 종료하기" 버튼 표시 */}
-                {selectedFriend !== "달이" && (
-                  <button onClick={handleEndFriendshipClick} className="end-friendship-btn">
-                    별나라 친구 종료하기
-                  </button>
-                )}
-              </div>
-              <div className="friend-posts">
-                {friendsData[selectedFriend].posts.map((post, index) => (
-                  <div className="post-cnt" key={index}>
-                    <h4>{post}</h4>
-                    <p>게시물 내용 예시</p>
-                    <div className="post-img-cnt">
-                      <img src={sampleImg} alt="예시 이미지" />
-                    </div>
-                    <div className="post-icons-cnt">
-                      <div className="post-icons">
-                        <img src={postIcon1} alt="Comment" />
-                      </div>
-                      <p>2024.08.17</p>
+              ) : (
+                searchResults.map((friend) => (
+                  <div className="friend-profile" key={friend.id}>
+                    <img src={friend.profileImage} className="friends-img" alt={`${friend.petName} 프로필`} />
+                    <div className="friend-info">
+                      <p className="friend-name">{friend.petName}</p>
+                      <p className="friend-details">
+                        {friend.category} · 생일: {friend.birthday} · 별이 된 날: {friend.starDay}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          ) : isSearchActive ? (
-            // 검색된 친구들 프로필 리스트
-            <div className="friends-list">
-              <div className="friend-profile">
-                <img src={friends1} className="friends-img" alt="토토 프로필" />
-                <div className="friend-info">
-                  <p className="friend-name">토토</p>
-                  <p className="friend-details">토끼 · 생일 2018.03.28 · 별이 된 날 2024.06.30</p>
-                </div>
-              </div>
-              <div className="friend-profile">
-                <img src={friends2} className="friends-img" alt="토토 프로필" />
-                <div className="friend-info">
-                  <p className="friend-name">토토</p>
-                  <p className="friend-details">토끼</p>
-                </div>
-              </div>
+                ))
+              )}
             </div>
           ) : (
-            // 기본 게시물 표시
-            <div className="post-cnt">
-              <div className="post-friend-pro">
-                <img src={friends1} alt="예시 친구 프로필" />
-                <p>동동이</p>
-              </div>
-              <h4>다른 친구들 게시물 제목</h4>
-              <p>다른 친구들 게시물 내용</p>
-              <div className="post-img-cnt">
-                <img src={sampleImg} alt="예시 이미지" />
-              </div>
-              <div className="post-icons-cnt">
-                <div className="post-icons">
-                  <img src={postIcon1} alt="Comment" />
+            <div className="other-posts">
+              {otherPosts.map((post) => (
+                <div className="post-cnt" key={post.articleId}>
+                  <div className="post-friend-pro">
+                    <img src={post.author.profileImage || moon} alt={`${post.author.petName} 프로필`} />
+                    <p>{post.author.petName}</p>
+                  </div>
+                  <h4>{post.title}</h4>
+                  <p>{post.content}</p>
+                  <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
+
+                  <div className="post-icons-cnt">
+                    <div className="post-icons">
+                      <img src={mention} alt="댓글 쓰기" onClick={handleCommentClick} />
+                    </div>
+                    <p>{new Date(post.updatedAt).toISOString().slice(0, 10).replace(/-/g, ".")}</p>
+                  </div>
                 </div>
-                <p>날짜</p>
-              </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* 모달창 */}
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <p>정말로 별나라 친구를 그만하시겠습니까?</p>
-              <div className="end-btn">
-                <button onClick={confirmEndFriendship} className="end-yes">
-                  확인
-                </button>
-                <button onClick={cancelEndFriendship} className="end-no">
-                  취소
-                </button>
-              </div>
-            </div>
+        {/* 댓글 입력란과 임시 댓글 표시 */}
+        {isCommenting && (
+          <div className="comment-input-section">
+            <input type="text" value={newComment} onChange={handleCommentChange} placeholder="댓글을 입력하세요..." className="comment-input" />
+            <button onClick={handleCommentSubmit} className="comment-submit-btn">
+              전송
+            </button>
           </div>
         )}
+
+        {/* 임시 댓글 표시 영역 */}
+        <div className="temporary-comments">
+          {temporaryComments.map((comment, index) => (
+            <div key={index} className="comment">
+              <img src={comment.profileImage} alt={comment.author} className="comment-author-img" />
+              <div className="comment-content">
+                <p className="comment-author">{comment.author}</p>
+                <p>{comment.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default Friends;
+export default FriendsSearch;

@@ -12,7 +12,7 @@ const Header = () => {
   const currentLogo = location.pathname === "/mypage" ? MypageLogo2 : MypageLogo;
 
   const handleMypage = () => {
-    navigate("/mypage");
+    navigate("/main/mypage");
   };
 
   const handleBack = () => {

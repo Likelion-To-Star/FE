@@ -12,7 +12,7 @@ const SignUpNext = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
   const location = useLocation();
-  const { name, email, password } = location.state || {};
+  const { name, email, password } = location.state || {}; // SignUp 페이지에서 전달된 데이터 가져오기
   const [parentName, setParentName] = useState("");
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedAnimal, setSelectedAnimal] = useState("");
@@ -47,23 +47,19 @@ const SignUpNext = () => {
     if (Object.keys(newErrors).length === 0) {
       try {
         const formData = new FormData();
-        formData.append("user_name", name);
-        formData.append("email", email);
-        formData.append("password", password);
-        formData.append("pet_name", parentName);
-        formData.append("owner_name", parentName);
-        formData.append("pet_gender", selectedGender);
-        formData.append("category", selectedAnimal);
-        formData.append("birthday", birthDate ? birthDate.toISOString().split("T")[0] : "");
-        formData.append("star_day", starDate ? starDate.toISOString().split("T")[0] : "");
+        formData.append("userName", name); // SignUp 페이지에서 전달된 이름
+        formData.append("email", email); // SignUp 페이지에서 전달된 이메일
+        formData.append("password", password); // SignUp 페이지에서 전달된 비밀번호
+        formData.append("petName", parentName); // 보호자 이름
+        formData.append("ownerName", parentName); // 주인 이름
+        formData.append("pet_gender", selectedGender); // 성별
+        formData.append("category", selectedAnimal); // 종류
+        formData.append("birthDay", birthDate ? birthDate.toISOString().split("T")[0] : ""); // 생일을 YYYY-MM-DD 형식으로
+        formData.append("starDay", starDate ? starDate.toISOString().split("T")[0] : ""); // 별이 된 날을 YYYY-MM-DD 형식으로
         if (fileInputRef.current.files[0]) {
           formData.append("image", fileInputRef.current.files[0]);
         }
 
-        // FormData 확인
-        for (let pair of formData.entries()) {
-          console.log(pair[0] + ", " + pair[1]);
-        }
         const response = await axios.post(`${BASE_URL}/api/user/join`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -84,8 +80,12 @@ const SignUpNext = () => {
           setErrors({ submit: response.data.message });
         }
       } catch (error) {
-        setErrors({ submit: "회원가입 중 오류가 발생했습니다." });
-        console.error("Error during signup:", error);
+        const errorData = error.response?.data;
+        setErrors({
+          submit: errorData?.message || "회원가입 중 오류가 발생했습니다.",
+          ...errorData?.result, // 유효성 검사 실패 메시지들
+        });
+        console.error("회원가입 중 오류:", error);
       }
     } else {
       setErrors(newErrors);
@@ -105,7 +105,6 @@ const SignUpNext = () => {
               <p>소중한 추억을 간직하기 위해</p>
               <p>사랑하는 아이에 대해 알려주세요.</p>
             </div>
-
             {/* 아이 사진 */}
             <div className="form-container">
               <div className="form-header">
@@ -128,7 +127,7 @@ const SignUpNext = () => {
                 <p>* 필수 입력 항목입니다.</p>
               </div>
               <input type="text" className="sign-input" placeholder="아이 이름" value={parentName} onChange={(e) => setParentName(e.target.value)} />
-              {errors.parentName && <div className="error-message">{errors.parentName}</div>}
+              {errors.petName && <div className="error-message">{errors.petName}</div>}
             </div>
 
             {/* 성별 */}
@@ -173,7 +172,7 @@ const SignUpNext = () => {
                   <option value="사슴벌레">사슴벌레</option>
                   <option value="토끼">토끼</option>
                   <option value="햄스터">햄스터</option>
-                  <option value="기타">기타</option>
+                  <option value="기타 아이들">기타 아이들</option>
                 </select>
               </div>
               {errors.animal && <div className="error-message">{errors.animal}</div>}

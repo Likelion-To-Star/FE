@@ -31,8 +31,6 @@ const Mypage = () => {
 
   return (
     <div className="main-wrap">
-      <Header />
-      <Nav />
       <div className="mypage-container">
         <div className="mypage-pro">
           <img src={userInfo.profileImage || "default-profile.png"} alt="Profile" />

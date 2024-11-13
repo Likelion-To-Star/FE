@@ -2,11 +2,13 @@
 
 .mypage-wrap {
   width: 100%;
+  height: 87vh;
   margin: 0 auto;
 }
 .mypage-container {
   width: 100%;
-  height: 87vh; // 페이지 전체 높이
+  height: 100vh; // 페이지 전체 높이
+  display: block;
   display: block;
   justify-content: center;
   align-items: center;
