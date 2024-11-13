@@ -27,8 +27,5 @@ input {
 }
 
 input::placeholder {
-    color: var(--placeholder) !important;
-    /* 원하는 색상으로 변경 */
-    opacity: 1;
-    /* 기본값은 0.5로, 필요에 따라 변경 가능 */
-}
+    color: var(--black500); // Placeholder 색상
+  }

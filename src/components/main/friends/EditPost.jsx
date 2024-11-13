@@ -21,7 +21,7 @@ const EditPost = () => {
     const fetchPost = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${BASE_URL}/api/articles/${articleId}`, {});
+        const response = await axios.get(`${BASE_URL}/api/articles/others${articleId}`, {});
         const { title, content, images } = response.data.result;
         setTitle(title);
         setContent(content);
@@ -77,8 +77,6 @@ const EditPost = () => {
 
   return (
     <div className="main-wrap">
-      <Header />
-      <Nav />
       <div className="main-container" style={{ backgroundColor: "#FAF7FE" }}>
         <div className="new-cnt">
           <div className="new-img-plus">

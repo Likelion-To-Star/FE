@@ -5,6 +5,7 @@ import Header from "../section/Header";
 import Nav from "../section/Nav";
 import newpostImg from "../../../assets/img/friends/newpost-img.svg";
 import "../../../assets/scss/components/newpost.scss";
+import plusIcon from '../../../assets/img/plus-icon.svg';
 
 const NewPost = () => {
   const [title, setTitle] = useState("");
@@ -86,8 +87,12 @@ const NewPost = () => {
               </label>
               <input id="file-upload" type="file" multiple accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
               <div className="preview-images">
-                {images.map((img, idx) => (
-                  <img key={idx} src={URL.createObjectURL(img)} alt="Preview" style={{ width: "77px", marginRight: "10px" }} />
+                {images.map((img, idx) => (<div className="oneImg">
+                  <img key={idx} src={URL.createObjectURL(img)} alt="Preview" className="addedImg" />
+                  <div className="plus-icon">
+                  <img src={plusIcon} alt="plus" />
+                  </div>
+                  </div>
                 ))}
               </div>
             </div>

@@ -22,55 +22,97 @@ const Friends = () => {
 
   const [posts, setPosts] = useState([]);
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {}); // localStorage에서 userInfo 가져오기
-  const userId = localStorage.getItem("userInfo");
-  
+  const [articleId,setArticleId]=useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
-
+  const [friends, setFriends] = useState([]);
+ 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+//사용자 searchid(==id 친구전체 조회의)조회
+const fetchFriends = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${BASE_URL}/api/user/friend`, {
+      headers: { Authorization: `${token}` },
+    });
+    //console.log(response.data.result);
+    setFriends(response.data.result);
+    if (response.data.isSuccess !== true) {
+      alert("로그인 다시 해주세요");
+    }
+  } catch (error) {
+    console.error("사용자 조회 오류:", error.response || error);
+  }
+};
+
+
+//사용자 추억조회하기(나)
+const fetchOMyPosts = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${BASE_URL}/api/articles/user`, {
+      headers: { Authorization: `${token}` },
+      params: {
+        page: 0,
+        size: 5,
+      },
+    });
+    if (response.data.result) {
+      setPosts(response.data.result);
+      console.log(posts);
+    } else {
+      setPosts([]); // 데이터가 없으면 빈 배열 설정
+    }
+
+    if (response.data.isSuccess !== true) {
+      alert("로그인 다시 해주세요");
+    }
+  } catch (error) {
+    console.error("내 게시물 조회 오류:", error.response || error);
+  }
+};
+
+//다른 사람 추억조회하기
+const fetchUserPosts = async (searchid) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${BASE_URL}/api/articles/user/${searchid}`, {
+      headers: { Authorization: `${token}` },
+      params: {
+        page: 0,
+        size: 5,
+      },
+    });
+    if (response.data.result) {
+      setPosts(response.data.result);
+      console.log(posts);
+    } else {
+      setPosts([]); // 데이터가 없으면 빈 배열 설정
+    }
+
+    if (response.data.isSuccess !== true) {
+      alert("로그인 다시 해주세요");
+    }
+  } catch (error) {
+    console.error("게시물 불러오기 오류:", error.response || error);
+  }
+};
 
   useEffect(() => {
- //로컬 스토리지에서 사용자 정보 가져오기
-  if(!userId){
-  alert("로그인 다시해");
-  }
-    fetchUserPosts(userInfo.userId); //사용자가 만든 추억 조회하기
+    fetchFriends();
+    console.log(friends);
+    fetchOMyPosts();
   }, []);
 
-  //사용자 추억조회하기
-  const fetchUserPosts = async (userId) => {
-    if (!userId) {
-      console.error("user_id is undefined");
-      return;
-    }
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/articles/user/${userId}`, {
-        headers: { Authorization: `${token}` },
-        params: {
-          page: 0,
-          size: 5,
-        },
-      });
-      const article = response.data.result.articles;
-      setPosts(article ? [article] : []);
-      localStorage.setItem("posts", JSON.stringify(article));
-    } catch (error) {
-      if(response.data.istSuccess !==true)
-      {
-        alert("로그인 다시 해");
-      }
-      console.error("게시물 불러오기 오류:", error.response || error);
-    }
-  };
+  
 
-  useEffect(() => {
-    if (newPost) {
-      const updatedPosts = [...posts, newPost];
-      setPosts(updatedPosts);
-      localStorage.setItem("posts", JSON.stringify(updatedPosts));
-    }
-  }, [newPost]);
+  // useEffect(() => {
+  //   if (newPost) {
+  //     const updatedPosts = [...posts, newPost];
+  //     setPosts(updatedPosts);
+  //     localStorage.setItem("posts", JSON.stringify(updatedPosts));
+  //   }
+  // }, [newPost]);
 
   const handleMemory = () => {
     navigate("/main/friends/newpost");
@@ -80,8 +122,12 @@ const Friends = () => {
     navigate("/main/friends/friendsSearch");
   };
 
-  const handleProfileClick = (userId) => {
-    fetchUserPosts(userId);
+const handleMyprofileClick=() =>{
+  fetchOMyPosts();
+}
+
+  const handleProfileClick = (searchid) => {
+    fetchUserPosts(searchid); //사용자가 만든 추억 조회하기
   };
 
   const openModal = (articleId) => {
@@ -103,7 +149,7 @@ const Friends = () => {
       try {
         const token = localStorage.getItem("token");
         await axios.delete(`${BASE_URL}/api/articles/user/${postToDelete}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `${token}` },
         });
         const updatedPosts = posts.filter((post) => post.article_id !== postToDelete);
         setPosts(updatedPosts);
@@ -126,28 +172,31 @@ const Friends = () => {
       <div className="main-container">
         <div className="main-moon-starFriends">
           <div className="slide-cnt">
-            <div className="friends-with-slide">
-              <div className="moon-pro" onClick={() => handleProfileClick(userInfo.userId)}>
-                <img src={userInfo.profileImage || Profile} alt="Profile" className="moon-img selected img " />
-                <p>{userInfo.petName || "애완동물 이름"}</p>
+              <div className="friends-with-slide">
+          {/* 자기 자신 프로필 */}
+          <div className="moon-pro" onClick={() => handleMyprofileClick(userInfo.userId)}>
+            <img src={userInfo.profileImage || Profile} alt="Profile" className="moon-img selected img " />
+            <p>{userInfo.petName || "애완동물 이름"}</p>
+          </div>
+          {friends ? (
+            friends.map((friend) => (
+              <div key={friend.id} className="friend-with-pro" onClick={() => handleProfileClick(friend.id)}>
+                <img
+                  src={friend.profileImage || 'default-image-url'}
+                  className="friends-img"
+                  alt={friend.petName}
+                />
+                <p>{friend.petName}</p>
               </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId1")}>
-                <img src={friends1} className="friends-img" alt="미아" />
-                <p>미아</p>
-              </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId2")}>
-                <img src={friends2} className="friends-img" alt="밤이" />
-                <p>밤이</p>
-              </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId3")}>
-                <img src={friends3} className="friends-img" alt="로이" />
-                <p>로이</p>
-              </div>
-              <div className="friend-with-pro" onClick={() => handleProfileClick("friendId4")}>
-                <img src={friends4} className="friends-img" alt="초코" />
-                <p>초코</p>
-              </div>
+            ))
+          ) : (
+            <div className="no-friends">
+              <p>현재 친구가 없습니다.</p>
             </div>
+          )}
+
+
+        </div>
             <div className="new-friends-cnt" onClick={handleFriendsSearch}>
               <div className="plus-icon">
               <img src={plusIcon} alt="plus" />
@@ -173,21 +222,31 @@ const Friends = () => {
           </div>
         </div>
 
-        {posts.map((post) => (
-          <div key={post.article_id} className="post-cnt">
-            <h4>{post.title}</h4>
-            <p>{post.content}</p>
-            <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
-            <div className="post-icons-cnt">
-              <div className="post-icons">
-                <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.article_id)} />
-                <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditPost(post.article_id)} />
-                <img src={postIcon3} alt="Delete" onClick={() => openModal(post.article_id)} />
+        {posts && posts.length > 0 ? (
+          posts.map((post) => (
+            <div key={post.articleId} className="post-cnt">
+              <h4>{post.title}</h4>
+              <p>{post.content}</p>
+              <div className="post-img-cnt">
+                {post.images && post.images.map((image) => (
+                  <img key={image.imageId} src={image.url} alt="Post" />
+                ))}
               </div>
-              <p>{new Date(post.createdAt).toLocaleDateString()}</p>
+              <div className="post-icons-cnt">
+                <div className="post-icons">
+                  <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
+                  <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditPost(post.articleId)} />
+                  <img src={postIcon3} alt="Delete" onClick={() => openModal(post.articleId)} />
+                </div>
+                <p>{new Date(post.createdAt).toLocaleDateString()}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>게시물이 없습니다.</p>
+        )}
+
+
 
         <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
       </div>
