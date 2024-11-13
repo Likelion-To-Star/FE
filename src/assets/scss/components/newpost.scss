@@ -48,21 +48,31 @@
               cursor: pointer;
             }
           }
-          .preview-images{
+          .preview-images {
             display: flex;
-            .oneImg{
+            overflow-x: auto; /* 가로 스크롤 가능 */
+            scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
+            -ms-overflow-style: none; /* IE에서 스크롤바 숨기기 */
+            
+            &::-webkit-scrollbar {
+              display: none; /* Chrome, Safari에서 스크롤바 숨기기 */
+            }
+          
+            .oneImg {
               position: relative;
-              .addedImg{
+              flex-shrink: 0; /* 이미지 크기 유지 */
+              margin-right: 10px;
+          
+              .addedImg {
                 width: 77px;
-                height:77px;
-                margin-right: 10px;
-                border-radius:50%;
-                
+                height: 77px;
+                border-radius: 50%;
               }
-              .plus-icon{
+          
+              .plus-icon {
                 position: absolute;
-                top:50px;
-                right:5px;
+                top: 50px;
+                right: 5px;
                 background-color: var(--purple400);
                 width: 16.5px;
                 height: 16.5px;
@@ -71,13 +81,15 @@
                 justify-content: center;
                 align-items: center;
                 z-index: 1000;
-                img{
+          
+                img {
                   width: 9px;
                   height: 9px;
                 }
-               }
+              }
             }
           }
+          
         }
       }
       .new-text-cnt {
@@ -112,6 +124,7 @@
           border: 0.5px solid #7058cb;
           background-color: #fff;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);   
+          color:#3A305E;
         }
         .new-text-cnt input::placeholder {
           color: var(--black500); // Placeholder 색상
@@ -119,6 +132,10 @@
       }
     }
     .memory-btn {
+      position: absolute;
+      bottom:20px;
+      left:50%;
+      transform: translateX(-50%);
       width: 90%;
       padding: 10px;
       background-color: #fff;
@@ -137,6 +154,23 @@
         color: #fff;
       }
       display: block; // 수평 가운데 정렬을 위해 block 요소로 설정
+    }
+    .memory-alert{
+      position: absolute;
+      bottom: 55px;
+      left:50%;
+      transform: translateX(-50%);
+      font-family: "YiSunShin Dotum M";
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 13.13px;
+      color: #3A305E;
+      width:200px;
+      img{
+        width: 11.67px;
+        height: 11.67px;
+        margin-right: 2px;
+      }
     }
   }
 }

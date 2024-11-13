@@ -1,27 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../section/Header";
 import Nav from "../section/Nav";
 import newpostImg from "../../../assets/img/friends/newpost-img.svg";
 import "../../../assets/scss/components/newpost.scss";
+import plusIcon from '../../../assets/img/plus-icon.svg';
+import MemAlert from "../../../assets/img/friends/memory-alert.svg";
+import AlertWhen from "../../Util/AlertWhen";
 
 const EditPost = () => {
-  const { articleId } = useParams(); // articleId를 경로에서 받아옴
+  const { articleId } = useParams();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
+  const fileInputRef = useRef(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
+  const [alertmem, setAlertMem] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);  // 선택된 이미지 인덱스를 저장
 
   useEffect(() => {
-    // 기존 게시물 데이터 불러오기
+    // Fetch existing post data
     const fetchPost = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${BASE_URL}/api/articles/others${articleId}`, {});
+        const response = await axios.get(`${BASE_URL}/api/articles/${articleId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const { title, content, images } = response.data.result;
         setTitle(title);
         setContent(content);
@@ -36,20 +43,28 @@ const EditPost = () => {
 
   const handleImageChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
-    if (selectedFiles.length + images.length + existingImages.length > 5) {
-      alert("최대 5개의 이미지까지 업로드할 수 있습니다.");
-      return;
+    if (selectedImageIndex !== null) {
+      // 선택된 이미지가 있을 경우 해당 이미지를 갱신
+      setImages((prevImages) => {
+        const updatedImages = [...prevImages];
+        updatedImages[selectedImageIndex] = selectedFiles[0];  // 새 파일로 교체
+        return updatedImages;
+      });
+      setSelectedImageIndex(null);  // 수정이 끝났으므로 인덱스 초기화
+    } else {
+      // 새로운 이미지를 추가
+      setImages((prevImages) => [...prevImages, ...selectedFiles]);
     }
-    setImages((prevImages) => [...prevImages, ...selectedFiles]);
+  };
+  // 이미지를 클릭하면 파일 선택 창을 열도록 하는 함수
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);  // 수정할 이미지의 인덱스를 저장
+    fileInputRef.current.click();  // 파일 선택 창 열기
   };
 
   const handleSubmit = async () => {
-    if (!title.trim()) {
-      alert("제목을 입력해 주세요.");
-      return;
-    }
-    if (!content.trim()) {
-      alert("내용을 입력해 주세요.");
+    if (!title.trim() || !content.trim()) {
+      setAlertMem(true);
       return;
     }
 
@@ -63,12 +78,11 @@ const EditPost = () => {
       await axios.put(`${BASE_URL}/api/articles/${articleId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          headers: { Authorization: `Bearer ${token}` },
+          Authorization: `Bearer ${token}`,
         },
       });
-
       alert("게시물이 성공적으로 수정되었습니다.");
-      navigate("/friends"); // 수정 완료 후 게시물 목록 페이지로 이동
+      navigate("/friends"); // Navigate to the posts list page after success
     } catch (error) {
       console.error("게시물 수정 중 오류가 발생했습니다:", error);
       alert("게시물 수정 중 오류가 발생했습니다.");
@@ -76,8 +90,8 @@ const EditPost = () => {
   };
 
   return (
-    <div className="main-wrap">
-      <div className="main-container" style={{ backgroundColor: "#FAF7FE" }}>
+    <div className="newpost-wrap">
+      <div className="newpost-container" style={{ backgroundColor: "#FAF7FE" }}>
         <div className="new-cnt">
           <div className="new-img-plus">
             <div className="new-img-title">
@@ -88,34 +102,63 @@ const EditPost = () => {
               <label htmlFor="file-upload" className="custom-file-upload">
                 <img src={newpostImg} alt="Upload" />
               </label>
-              <input id="file-upload" type="file" multiple accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
+              <input
+                id="file-upload"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+                ref={fileInputRef}
+              />
               <div className="preview-images">
                 {existingImages.map((img, idx) => (
-                  <img key={idx} src={img.url} alt="Existing Preview" style={{ width: "77px", marginRight: "10px" }} />
+                  <div className="oneImg" key={idx}>
+                    <img src={img.url} alt="Existing Preview" className="addedImg" />
+                  </div>
                 ))}
                 {images.map((img, idx) => (
-                  <img key={idx} src={URL.createObjectURL(img)} alt="New Preview" style={{ width: "77px", marginRight: "10px" }} />
+                  <div className="oneImg" key={idx} onClick={() => handleImageClick(idx)}>
+                    <img src={URL.createObjectURL(img)} alt="New Preview" className="addedImg" />
+                    <div className="plus-icon">
+                      <img src={plusIcon} alt="plus" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* 제목 / 내용 */}
           <div className="new-text-cnt">
             <div className="new-text">
-              <h4>제목</h4>
+              <h4>추억명</h4>
               <p>* 필수 입력 항목입니다</p>
             </div>
-            <input placeholder="제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input
+              placeholder="추억의 이름을 작성해주세요."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className="new-text-cnt">
             <div className="new-text">
-              <h4>내용</h4>
-              <p>* 필수 입력 항목입니다. 최대 300자 입력 가능합니다.</p>
+              <h4>아이와의 추억</h4>
+              <p>* 필수 입력 항목입니다. 추억은 300자 이내로 작성해주세요.</p>
             </div>
-            <input placeholder="내용을 입력하세요" value={content} onChange={(e) => setContent(e.target.value)} />
+            <input
+              placeholder="아이와의 추억을 작성해주세요."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
           </div>
+          {alertmem && (
+            <div className="alert-mem">
+              <img src={MemAlert} alt="alert" />
+              필수 입력 항목을 모두 작성해주세요.
+            </div>
+          )}
         </div>
+
         <button className="memory-btn" onClick={handleSubmit}>
           수정 완료
         </button>

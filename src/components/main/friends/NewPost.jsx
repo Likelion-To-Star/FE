@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../section/Header";
@@ -6,39 +6,61 @@ import Nav from "../section/Nav";
 import newpostImg from "../../../assets/img/friends/newpost-img.svg";
 import "../../../assets/scss/components/newpost.scss";
 import plusIcon from '../../../assets/img/plus-icon.svg';
+import AlertWhen from "../../Util/AlertWhen";
+import MemAlert from "../../../assets/img/friends/memory-alert.svg"
+
 
 const NewPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);  // 선택된 이미지 인덱스를 저장
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const fileInputRef = useRef(null);
+  const [alertmem, setAlertMem] = useState(false);
 
   // 이미지 선택 핸들러
   const handleImageChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
-    if (selectedFiles.length + images.length > 5) {
-      alert("최대 5개의 이미지까지 업로드할 수 있습니다.");
-      return;
+    if (selectedImageIndex !== null) {
+      // 선택된 이미지가 있을 경우 해당 이미지를 갱신
+      setImages((prevImages) => {
+        const updatedImages = [...prevImages];
+        updatedImages[selectedImageIndex] = selectedFiles[0];  // 새 파일로 교체
+        return updatedImages;
+      });
+      setSelectedImageIndex(null);  // 수정이 끝났으므로 인덱스 초기화
+    } else {
+      // 새로운 이미지를 추가
+      setImages((prevImages) => [...prevImages, ...selectedFiles]);
     }
-    setImages((prevImages) => [...prevImages, ...selectedFiles]);
+  };
+
+  // 이미지를 클릭하면 파일 선택 창을 열도록 하는 함수
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);  // 수정할 이미지의 인덱스를 저장
+    fileInputRef.current.click();  // 파일 선택 창 열기
   };
 
   // 폼 제출 핸들러
   const handleSubmit = async () => {
     if (!title.trim()) {
-      alert("제목을 입력해 주세요.");
+      setAlertMem(true);
       return;
     }
     if (!content.trim()) {
-      alert("내용을 입력해 주세요.");
+      
+      setAlertMem(true);
       return;
     }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    images.forEach((image) => formData.append("images", image));
+
+    const imagesToUpload = images.slice(0, 5);  // 배열에서 5개까지만 선택
+    imagesToUpload.forEach((image) => formData.append("images", image));
 
     try {
       const token = localStorage.getItem("token");
@@ -51,12 +73,12 @@ const NewPost = () => {
       const response = await axios.post(`${BASE_URL}/api/articles`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token, // Bearer 키워드 추가
+          Authorization: token, 
         },
       });
 
       if (response.data.isSuccess) {
-        const newPost = response.data.result; // 성공적인 응답에서 새로운 게시물 정보 가져오기
+        const newPost = response.data.result;
         navigate("/main/friends", { state: { newPost } });
       } else {
         alert(response.data.message);
@@ -71,7 +93,7 @@ const NewPost = () => {
       }
     }
   };
-
+  
   return (
     <div className="newpost-wrap">
       <div className="newpost-container" style={{ backgroundColor: "#FAF7FE" }}>
@@ -85,15 +107,31 @@ const NewPost = () => {
               <label htmlFor="file-upload" className="custom-file-upload">
                 <img src={newpostImg} alt="Upload" />
               </label>
-              <input id="file-upload" type="file" multiple accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
+              <input 
+                id="file-upload" 
+                type="file" 
+                multiple 
+                accept="image/*" 
+                onChange={handleImageChange} 
+                style={{ display: "none" }}
+                ref={fileInputRef}  
+              />
               <div className="preview-images">
-                {images.map((img, idx) => (<div className="oneImg">
-                  <img key={idx} src={URL.createObjectURL(img)} alt="Preview" className="addedImg" />
+              {images.slice(0, 5).map((img, idx) => (
+                <div className="oneImg" key={idx} onClick={() => handleImageClick(idx)}>
+                  <img 
+                    src={URL.createObjectURL(img)} 
+                    alt="Preview" 
+                    className="addedImg" 
+                  />
                   <div className="plus-icon">
-                  <img src={plusIcon} alt="plus" />
+                    <img src={plusIcon} alt="plus" />
                   </div>
-                  </div>
-                ))}
+                </div>
+              ))}
+                {/* 5개 이상 이미지를 추가하려고 할 때 안내 메시지 */}
+                {images.length > 5 && <AlertWhen message="이미지는 최대 5개까지만 업로드할 수 있습니다." />}
+
               </div>
             </div>
           </div>
@@ -115,7 +153,9 @@ const NewPost = () => {
         </div>
         <button className="memory-btn" onClick={handleSubmit}>
           추억 등록하기
+          {alertmem?<p className="memory-alert"> <img src={MemAlert} alt="alert" />필수 입력 항목을 모두 작성해주세요.</p>:<></>}
         </button>
+       
       </div>
     </div>
   );

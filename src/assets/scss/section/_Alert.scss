@@ -1,0 +1,23 @@
+.alert-message{
+    position: absolute;
+    top: 132px;
+    left:50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    width: 363px;
+    height: 46px;
+    background-color: #E9E1FF;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    strong{
+        font-family: "YiSunShin Dotum M";
+        font-size: 13.5px;
+        font-weight: 400;
+        line-height: 13.63px;
+        text-align: center;
+        color:#3A305E;
+
+    }
+}
