@@ -24,7 +24,9 @@ const Login = ({ onLogin }) => {
     try {
       const response = await axios.post(`${BASE_URL}/api/user/login`, { email, password });
       const { accessToken, userName, petName, profileImage } = response.data.result;
-
+      localStorage.setItem("petName",petName);
+      localStorage.setItem("userName",userName);
+      localStorage.setItem("userEmail",response.data.result.email);
       if (accessToken) {
         setErrorMessage("");
         localStorage.setItem("token", accessToken);

@@ -4,6 +4,7 @@ import axios from 'axios'
 import Bkimg from '../../../assets/img/bk-img.png';
 import Profile from '../../../assets/img/profile.png';
 import Exit from '../../../assets/img/exit.svg';
+import AlertWhen from "../../Util/AlertWhen";
 
 const ChangeCom = () => {
     const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -11,6 +12,8 @@ const ChangeCom = () => {
     const communityId = localStorage.getItem("ComId");
     const [popup,setPopup] = useState(false);
     const navigate = useNavigate();
+    const [error,setError] =useState(false);
+
     useEffect(()=>{
         //특정 페이지 가져오기
           const getcommunityData = async () => {
@@ -35,6 +38,7 @@ const ChangeCom = () => {
               }
               catch(error){
                   console.error("error getcommunityData", error);
+                  setError(true);
               }
           };
 
@@ -51,7 +55,7 @@ const ChangeCom = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('토큰이 존재하지 않습니다. 로그인 후 다시 시도해주세요.');
+        setError(true);
         return;
       }
 
@@ -68,7 +72,7 @@ const ChangeCom = () => {
       }
     } catch (error) {
       console.error('Error in handleDelete:', error);
-      alert('커뮤니티 삭제 중 오류가 발생했습니다.');
+      setError(true);
     } finally {
       setPopup(false);
     }
@@ -88,6 +92,7 @@ const ChangeCom = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}>
+        {error && <AlertWhen message="별나라에 닿지 못했어요. 다시 한번 시도해 주세요." />}
         <div className='cen-align'>
             <div className='profile'>
               <div className='img-wrap'>

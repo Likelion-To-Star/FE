@@ -125,6 +125,8 @@ const EditPost = () => {
                     </div>
                   </div>
                 ))}
+                {/* 5개 이상 이미지를 추가하려고 할 때 안내 메시지 */}
+                {images.length > 5 && <AlertWhen message="이미지는 최대 5개까지만 업로드할 수 있습니다." />}
               </div>
             </div>
           </div>

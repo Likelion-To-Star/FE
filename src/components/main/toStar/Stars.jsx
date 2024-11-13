@@ -4,6 +4,7 @@ import axios from 'axios';
 import MkImg from '../../../assets/img/mkCom.svg';
 import Stamp from '../../../assets/img/stamp.svg';
 import StampWhite from '../../../assets/img/stamp-white.svg';
+import AlertWhen from "../../Util/AlertWhen";
 
 const Stars = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -13,6 +14,7 @@ const Stars = () => {
   const [page, setPage] = useState(0); // 페이지 상태 추가
   const [hasMore, setHasMore] = useState(true); // 데이터 추가 여부 확인
 
+  const [error,setError] =useState(false);
   const observer = useRef();
 
   const handleButtonClick = () => {
@@ -71,6 +73,7 @@ const Stars = () => {
       } catch (error) {
         console.error('Error:', error);
         setHasMore(false);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -81,6 +84,7 @@ const Stars = () => {
 
   return (
     <div className='stars-wrap'>
+         {error && <AlertWhen message="별나라에서 편지를 불러오지 못했어요. 다시 한번 시도해 주세요." />}
       {letters.map((letter, index) => {
         const fromto = letter.sender === 'USER' ? 'to' : 'from';
         return (

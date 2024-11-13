@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ComImg from '../../../assets/img/com-img1.png';
 import axios from 'axios';
+import AlertWhen from "../../Util/AlertWhen";
 
 const Allcom = () => {
     const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -10,6 +11,7 @@ const Allcom = () => {
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
   const observerRef = useRef(null);
   const navigate = useNavigate();
+  const [error,setError] =useState(false);
   
   const fetchCommunities = async (currentPage) => {
     try {
@@ -47,6 +49,8 @@ const Allcom = () => {
       }
     } catch (error) {
       console.error('Error fetching communities:', error);
+      setError(true);
+      
     }
   };
 
@@ -103,6 +107,7 @@ const Allcom = () => {
       }
     } catch (error) {
       console.error('error getcommunityData', error);
+      setError(true);
     }
   };
 
@@ -136,11 +141,15 @@ const Allcom = () => {
       }
     } catch (error) {
       console.error("회원 여부 확인 중 오류 발생:", error);
+      setError(true);
     }
   };
 
   return (
     <div>
+      {
+        error && <AlertWhen message="별나라에서 추억을 불러오는 중이에요. 다시 한번 시도해 주세요." />
+      }
       {communities.map((community) => (
         <button key={community.communityId} className='contents'>
           <div className='img-wrap' onClick={() => handleCommunityClick(community.communityId)}>

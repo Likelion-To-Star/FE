@@ -5,7 +5,7 @@ import SockJS from 'sockjs-client';
 import axios from 'axios';
 import Send from '../../../assets/img/send.svg';
 import Profile from '../../../assets/img/profile.png';
-
+import AlertWhen from "../../Util/AlertWhen";
 
 const Chatting = () => {
   const navigate = useNavigate();
@@ -15,7 +15,10 @@ const Chatting = () => {
   const stompClient = useRef(null);
   const isConnecting = useRef(false);
   const subscriptionId = useRef(null);
-  
+  const [loading,setLoading] = useState(true);
+  const [error,setError] =useState(false);
+  const [sending,setSending] = useState(false);
+
   const userName = localStorage.getItem("userName");
   const userEmail =  localStorage.getItem("userEmail");
   const baseURL = process.env.REACT_APP_API_BASE_URL;
@@ -57,11 +60,13 @@ const Chatting = () => {
       if (response.data.isSuccess) {
         console.log("기존 메시지 가져오기 성공:", response.data.result);
         setChatMessages(response.data.result);
+        
       } else {
         console.error("기존 메시지 가져오기 실패:", response.data.message);
       }
     } catch (error) {
       console.error("기존 메시지 가져오는 중 오류 발생:", error);
+      setError(true);
     }
   };
 
@@ -84,6 +89,8 @@ const Chatting = () => {
         stompClient.current = client;
         isConnecting.current = false; // 연결 성공 후 상태 해제
         console.log("WebSocket 연결 성공 및 구독 시작");
+        setLoading(false);
+        
 
         // 구독 및 ID 저장
         subscriptionId.current = client.subscribe(`/topic/chatroom/${chatRoomId}`, (message) => {
@@ -94,6 +101,8 @@ const Chatting = () => {
       },
       (error) => {
         console.error("소켓 연결 실패:", error);
+        setError(true); 
+
         setConnectionStatus('연결 실패');
         isConnecting.current = false; // 연결 실패 후 상태 해제
       }
@@ -101,6 +110,7 @@ const Chatting = () => {
   };
   // 메시지 전송 함수
   const sendMessage = () => {
+    setSending(true);
     console.log("chatMessages",chatMessages);
     if (stompClient.current && stompClient.current.connected && messageContent.trim() !== '') {
       const chatMessage = {
@@ -108,10 +118,12 @@ const Chatting = () => {
         content: messageContent,
       };
       stompClient.current.send(`/app/chat.sendMessage`, { 'Authorization': jwtToken }, JSON.stringify(chatMessage));
+      setSending(false);
       setMessageContent('');
       console.log("메시지 전송:", chatMessage);
     } else {
       console.log("메시지 전송 실패 - stompClient가 연결되지 않았거나 메시지가 비어 있음");
+      setError(true);
     }
   };
 
@@ -150,9 +162,20 @@ function OutgoingMessage({ message }) {
     </div>
   );
 }
+
+
   return (
     <div className='chat-wrap'>
-      <div className="connection-status">{connectionStatus}</div>
+       {loading ? (
+      <div className="alert-chat">
+        소중한 기억을 나눌 수 있도록 반짝이는 기억들을 준비하고 있어요.
+      </div>
+    ) : (
+      <div className={`alert-chat fade-out`}>
+        연결되었습니다. 이제 소중한 기억들을 함께 나누어 봐요!
+      </div>
+    )}
+      {error && <AlertWhen message="별나라에서 추억을 불러오는 중이에요. 다시 한번 시도해 주세요." />}
       <div className='chat-flat'>
       {chatMessages.map((msg, index) => {
           if (msg.messageType === "ANNOUNCE") {
@@ -171,7 +194,8 @@ function OutgoingMessage({ message }) {
             type="text"
             value={messageContent}
             onChange={(e) => setMessageContent(e.target.value)}
-            placeholder="메시지를 입력하세요"
+            placeholder={sending ? "달이의 소중한 기억을 전하고 있어요. 조금만 기다려주세요..." : "메시지를 입력하세요"} // sending에 따라 다른 placeholder
+            disabled={sending}
           />
           <button onClick={sendMessage}>
             <img src={Send} alt="send" />

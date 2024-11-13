@@ -3,6 +3,7 @@ import axios from 'axios';
 import Bkimg from '../../../assets/img/bk-img.png';
 import Profile from '../../../assets/img/profile.png';
 import { useNavigate } from 'react-router-dom';
+import AlertWhen from "../../Util/AlertWhen";
 
 const EnterCom = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -10,6 +11,7 @@ const EnterCom = () => {
   const [assign, setAssign] = useState(false);
   const communityId = localStorage.getItem('ComId');
   const navigate = useNavigate();
+  const [error,setError] =useState(false);
 
   // 커뮤니티 데이터 가져오기
   const getcommunityData = async () => {
@@ -31,6 +33,7 @@ const EnterCom = () => {
       }
     } catch (error) {
       console.error('error getcommunityData', error);
+      setError(true);
     }
   };
 
@@ -54,6 +57,7 @@ const EnterCom = () => {
       }
     } catch (error) {
       console.error('error getIsMember', error);
+      setError(true);
     }
   };
 
@@ -117,6 +121,7 @@ const EnterCom = () => {
       }
     } catch (error) {
       console.error('Error in handleAssignClick:', error);
+      setError(true);
     }
   };
     return (
@@ -125,6 +130,7 @@ const EnterCom = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}>
+        {error && <AlertWhen message="별나라에서 추억을 불러오는 중이에요. 다시 한번 시도해 주세요." />}
         <div className='cen-align'>
             <div className='profile'>
             <div className='img-wrap'>

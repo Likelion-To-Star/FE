@@ -4,6 +4,7 @@ import Header from '../section/Header';
 import LetterDesign from '../../../assets/img/letter.svg';
 import NoticeWhite from '../../../assets/img/notice-white.svg';
 import { useNavigate } from 'react-router-dom';
+import AlertWhen from "../../Util/AlertWhen";
 
 const Letter = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -17,6 +18,8 @@ const Letter = () => {
   const navigate = useNavigate();
   const petName = localStorage.getItem('petName');
   const userName = localStorage.getItem('userName');
+  const [error,setError] =useState(false);
+  const [hasMore, setHasMore] = useState(true); // 데이터 추가 여부 확인
 
   useEffect(() => {
     let timer01, timer02, timer03;
@@ -77,7 +80,7 @@ const Letter = () => {
       }
     } catch (error) {
       console.error("Error sending letter:", error);
-      alert("편지 전송에 실패했습니다. 다시 시도해주세요.");
+      setError(true);
     }
   };
   const checkFromLetter = ()=>{
@@ -89,6 +92,7 @@ const Letter = () => {
       {!isLoading && (
     <div className='letter-wrap'>
       <Header />
+      {error && <AlertWhen message="편지를 전송하지 못했어요. 다시 한번 시도해 주세요." />}
       <div className='write'>
         <textarea 
           placeholder={`${petName}에게 전하고 싶은 마음을 작성해주세요.`}

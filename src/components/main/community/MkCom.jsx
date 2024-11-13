@@ -4,6 +4,7 @@ import axios from 'axios';
 import PreviewImg from '../../../assets/img/foot.svg';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 import NoticeIcon from '../../../assets/img/notice-icon.svg';
+import AlertWhen from "../../Util/AlertWhen";
 
 const MkCom = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -12,6 +13,8 @@ const MkCom = () => {
   const [communityDescription, setCommunityDescription] = useState(''); // 커뮤니티 설명 상태
   const [requireContents, setRequireContents] = useState(true); // 필수 항목 상태
   const navigate = useNavigate();
+  const [error,setError] =useState(false);
+  
   // 파일 선택 시 이미지 미리보기 설정
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -59,13 +62,14 @@ const MkCom = () => {
       setRequireContents(true); 
     } catch (error) {
       console.error('에러 발생:', error);
-      // 에러 처리
+      setError(true);
     }
     navigate('/main/community');
   };
 
   return (
     <div className='MkCom-wrap'>
+      {error && <AlertWhen message="별나라에 추억을 보내지 못했어요. 다시 한번 시도해 주세요." />}
       <form onSubmit={handleSubmit}>
         <div className='say'>
           <h2>사진을 등록해주세요.</h2>

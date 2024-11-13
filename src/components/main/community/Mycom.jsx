@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ComImg from '../../../assets/img/com-img1.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AlertWhen from "../../Util/AlertWhen";
 
 const Mycom = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -10,6 +11,7 @@ const Mycom = () => {
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef(null);
   const navigate = useNavigate();
+  const [error,setError] =useState(false);
   
   // 커뮤니티 데이터 가져오기
   const fetchMyCommunities = async (currentPage) => {
@@ -48,6 +50,7 @@ const Mycom = () => {
       }
     } catch (error) {
       console.error('Error fetching communities:', error);
+      setError(true);
     }
   };
 
@@ -104,6 +107,7 @@ const Mycom = () => {
       }
     } catch (error) {
       console.error('error getcommunityData', error);
+      setError(true);
     }
   };
 
@@ -137,11 +141,13 @@ const Mycom = () => {
       }
     } catch (error) {
       console.error("회원 여부 확인 중 오류 발생:", error);
+      setError(true);
     }
   };
 
   return (
     <div>
+      {error && <AlertWhen message="별나라에 닿지 못했어요. 다시 한번 시도해 주세요." />}
       {mycommunities.map((community) => (
         <button key={community.communityId} className='contents'>
           <div className='img-wrap' onClick={() => handleCommunityClick(community.communityId)}>

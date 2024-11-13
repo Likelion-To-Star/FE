@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from '.././section/Header';
 import LetterDesign from '../../../assets/img/Tostar-bk.svg';
+import AlertWhen from "../../Util/AlertWhen";
 
 const ToStar = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [letterContent, setLetterContent] = useState('');
   const letterId = localStorage.getItem("desLetterId");
+  const [error,setError] =useState(false);
 
   useEffect(() => {
     const getdetailLetter =  async ()=>{
@@ -30,12 +32,14 @@ const ToStar = () => {
         }
       } catch (error) {
         console.error('Error:', error);
+        setError(true);
       }
     }
     getdetailLetter();
   }, []);
     return (
         <div className='tostar-wrap'>
+          {error && <AlertWhen message="별나라에서 편지를 불러오지 못했어요. 다시 한번 시도해 주세요." />}
           <Header />
           <div className='write'>
             <div className='text'>

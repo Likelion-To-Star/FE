@@ -3,11 +3,13 @@ import Header from '.././section/Header';
 import axios from 'axios';
 import LetterDesign from '../../../assets/img/from-letter.svg';
 import yellofoot from '../../../assets/img/yello-logo.svg';
+import AlertWhen from "../../Util/AlertWhen";
 
 const FromStar = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [letterContent, setLetterContent] = useState('');
   const letterId = localStorage.getItem("desLetterId");
+  const [error,setError] =useState(false);
 
   useEffect(() => {
     const getdetailLetter =  async ()=>{
@@ -31,6 +33,7 @@ const FromStar = () => {
         }
       } catch (error) {
         console.error('Error:', error);
+        setError(true);
       }
     }
     getdetailLetter();
@@ -39,6 +42,7 @@ const FromStar = () => {
   return (
     <div className='fromstar-wrap'>
       <Header />
+      {error && <AlertWhen message="별나라에서 추억을 불러오는 중이에요. 다시 한번 시도해 주세요." />}
       <div className='write'>
         <div className='text'>
           {letterContent || '편지가 비어있습니다.'}
