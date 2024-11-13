@@ -9,30 +9,37 @@ const Nav = () => {
     navigate('/main/' + buttonName); // 클릭 시 경로로 이동
   };
 
+  // 현재 경로와 버튼 이름이 일치할 경우 스타일 설정
+  const getButtonStyle = (path) => ({
+    color: location.pathname.startsWith(path) ? 'var(--purple)' : 'var(--black200)',
+    borderBottom: location.pathname.startsWith(path) ? '1px solid var(--purple500)' : 'none',
+  });
+
   return (
     <div className='nav-wrap'>
-      <button 
+      <button
         onClick={() => handleButtonClick('friends')}
-        style={{ color: location.pathname.startsWith( '/main/friends' )? 'var(--purple)' : 'var(--black200)' }}
+        style={getButtonStyle('/main/friends')}
       >
         친구들과
       </button>
-      <button 
+      <button
         onClick={() => handleButtonClick('community')}
-        style={{ color: location.pathname.startsWith('/main/community') ? 'var(--purple)' : 'var(--black200)' }}
+        style={getButtonStyle('/main/community')}
       >
         커뮤니티
       </button>
-      <button 
+      <button
         onClick={() => handleButtonClick('stars')}
-        style={{ color: location.pathname.startsWith( '/main/stars') ? 'var(--purple)' : 'var(--black200)' }}
+        style={getButtonStyle('/main/stars')}
       >
         별이에게
       </button>
     </div>
   );
-}
+};
 
 export default Nav;
+
 
 

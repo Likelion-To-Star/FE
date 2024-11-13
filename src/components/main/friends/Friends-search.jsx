@@ -58,7 +58,7 @@ const Friends = () => {
   };
 
   return (
-    <div className="main-wrap">
+    <div className="friendSrh-wrap">
       <Header />
       <Nav />
       <div className="main-container">
