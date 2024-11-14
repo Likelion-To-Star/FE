@@ -24,8 +24,8 @@ const Friends = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
-  const [myId ,setMyId] = useState(null);
-  const [notOwner, setNotOwner] =useState(false);
+  const [myId, setMyId] = useState(null);
+  const [notOwner, setNotOwner] = useState(false);
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [commentOpen, setCommentOpen] = useState(false);
 
@@ -109,8 +109,6 @@ const Friends = () => {
       console.error("댓글 조회 오류:", error);
     }
   };
-
-
 
   // 댓글 추가하기
   const handleAddComment = async () => {
@@ -230,23 +228,23 @@ const Friends = () => {
     setPostToDelete(null);
   };
 
-  const handleEditClick= (articleId, authorId)=>{
-    if(authorId ===myId)
-    {navigate(`/main/friends/editpost/${articleId}`);}
-    else
-    {setNotOwner(true);
+  const handleEditClick = (articleId, authorId) => {
+    if (authorId === myId) {
+      navigate(`/main/friends/editpost/${articleId}`);
+    } else {
+      setNotOwner(true);
       setTimeout(() => {
         setNotOwner(false);
       }, 3000);
-    };
-  }
+    }
+  };
 
-    // 댓글 아이콘 클릭 시 댓글 창 열기
-    const handleCommentClick = (postId) => {
-      setSelectedPostId(postId); //선택한 아이디 
-      setCommentOpen(true);
-      fetchComments(postId);
-    };
+  // 댓글 아이콘 클릭 시 댓글 창 열기
+  const handleCommentClick = (postId) => {
+    setSelectedPostId(postId); //선택한 아이디
+    setCommentOpen(true);
+    fetchComments(postId);
+  };
 
   // // 댓글 삭제 모달 열기
   // const openDeleteModal = (commentId) => {
@@ -319,13 +317,11 @@ const Friends = () => {
               <div className="post-icons-cnt">
                 <div className="post-icons">
                   <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
-                  <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId,post.author.userId)} />
+                  <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId, post.author.userId)} />
                   <img src={postIcon3} alt="Delete" onClick={() => openModal(post.articleId)} />
                 </div>
                 <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
-
-              
             </div>
           ))
         ) : (
@@ -335,42 +331,49 @@ const Friends = () => {
         <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
       </div>
       {/* 댓글 섹션 */}
-              {commentOpen && (
-                <div className="comment-section">
-                  <div className="comment-header">
-                    <h4>마음 나누기</h4>
-                    <button onClick={() => {setSelectedPostId(null);setCommentOpen(false);}}>x</button>
-                  </div>
-                  <div className="comments-list">
-                    {comments.map((comment) => (
-                      <div key={comment.commentId} className="comment-item">
-                        <img
-                          src={comment.profileImage || Profile}
-                          alt={comment.petName || "프로필 이미지"}
-                          className="comment-profile"
-                          style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px" }}
-                        />
-                        <div className="comment-content">
-                          <p>
-                            <strong>{comment.petName}</strong>
-                          </p>
-                          <p>{comment.content}</p>
-                        </div>
-                        {comment.isMine && (
-                          <div className="comments-icons-cnt">
-                            <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
-                            <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="comment-input">
-                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요" />
-                    <button onClick={handleAddComment}>댓글 달기</button>
-                  </div>
+      {commentOpen && (
+        <div className="comment-section">
+          <div className="comment-header">
+            <h4>마음 나누기</h4>
+            <button
+              onClick={() => {
+                setSelectedPostId(null);
+                setCommentOpen(false);
+              }}
+            >
+              x
+            </button>
+          </div>
+          <div className="comments-list">
+            {comments.map((comment) => (
+              <div key={comment.commentId} className="comment-item">
+                <img
+                  src={comment.profileImage || Profile}
+                  alt={comment.petName || "프로필 이미지"}
+                  className="comment-profile"
+                  style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px" }}
+                />
+                <div className="comment-content">
+                  <p>
+                    <strong>{comment.petName}</strong>
+                  </p>
+                  <p>{comment.content}</p>
                 </div>
-              )}
+                {comment.isMine && (
+                  <div className="comments-icons-cnt">
+                    <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
+                    <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="comment-input">
+            <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요" />
+            <button onClick={handleAddComment}>댓글 달기</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
