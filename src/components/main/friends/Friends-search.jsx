@@ -144,7 +144,7 @@ const FriendsSearch = () => {
   };
 
   return (
-    <div className="main-wrap">
+    <div className="friendSrh-wrap">
       <div className="main-container">
         <div className="main-moon-starFriends">
           <div className="slide-cnt">
