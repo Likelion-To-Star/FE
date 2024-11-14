@@ -10,6 +10,8 @@ import postIcon2 from "../../../assets/img/friends/post-icon2.svg";
 import postIcon3 from "../../../assets/img/friends/post-icon3.svg";
 import memory from "../../../assets/img/friends/memory.svg";
 import AlertWhen from "../../Util/AlertWhen";
+import EXIT from "../../../assets/img/friends/exit.svg"
+import SendInput from "../../../assets/img/friends/input-send.svg"
 
 const Friends = () => {
   const navigate = useNavigate();
@@ -28,7 +30,8 @@ const Friends = () => {
   const [notOwner, setNotOwner] =useState(false);
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [commentOpen, setCommentOpen] = useState(false);
-
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  
   // 친구 목록 조회
   const fetchFriends = async () => {
     try {
@@ -214,10 +217,14 @@ const Friends = () => {
 
   const handleMyprofileClick = () => {
     fetchOMyPosts();
+    setSelectedProfile('myProfile');
   };
 
   const handleProfileClick = (searchid) => {
+    setSelectedProfile(searchid);
+    console.log("선택 프로필",selectedProfile);
     fetchUserPosts(searchid);
+
   };
 
   const openModal = (articleId) => {
@@ -269,13 +276,13 @@ const Friends = () => {
             <div className="friends-with-slide">
               {/* 자기 자신 프로필 */}
               <div className="moon-pro" onClick={handleMyprofileClick}>
-                <img src={userInfo.profileImage || Profile} alt="Profile" className="moon-img selected img " />
+                <img src={userInfo.profileImage || Profile} alt="Profile"className={`moon-img ${selectedProfile === 'myProfile' ? 'selected' : ''}`} />
                 <p>{userInfo.petName || "애완동물 이름"}</p>
               </div>
               {friends ? (
                 friends.map((friend) => (
-                  <div key={friend.id} className="friend-with-pro" onClick={() => handleProfileClick(friend.id)}>
-                    <img src={friend.profileImage || Profile} className="friends-img" alt={friend.petName} />
+                  <div key={friend.id} className={`friend-with-pro`} onClick={() => handleProfileClick(friend.id)}>
+                    <img src={friend.profileImage || Profile} className={`friends-img  ${selectedProfile === friend.id ? 'selected' : ''}`} alt={friend.petName} />
                     <p>{friend.petName}</p>
                   </div>
                 ))
@@ -339,7 +346,7 @@ const Friends = () => {
                 <div className="comment-section">
                   <div className="comment-header">
                     <h4>마음 나누기</h4>
-                    <button onClick={() => {setSelectedPostId(null);setCommentOpen(false);}}>x</button>
+                    <img src={EXIT} onClick={() => {setSelectedPostId(null);setCommentOpen(false);}}/>
                   </div>
                   <div className="comments-list">
                     {comments.map((comment) => (
@@ -348,7 +355,6 @@ const Friends = () => {
                           src={comment.profileImage || Profile}
                           alt={comment.petName || "프로필 이미지"}
                           className="comment-profile"
-                          style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px" }}
                         />
                         <div className="comment-content">
                           <p>
@@ -366,11 +372,11 @@ const Friends = () => {
                     ))}
                   </div>
                   <div className="comment-input">
-                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요" />
-                    <button onClick={handleAddComment}>댓글 달기</button>
+                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!" />
+                    <img src={SendInput } onClick={handleAddComment}/>
                   </div>
                 </div>
-              )}
+            )}
     </div>
   );
 };

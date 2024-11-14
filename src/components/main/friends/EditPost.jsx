@@ -16,36 +16,46 @@ const EditPost = () => {
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [images, setImages] = useState([]);
-  const [existingImages, setExistingImages] = useState([]);
+  const [allImages, setAllImages] = useState([]);
   const [alertmem, setAlertMem] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);  // 선택된 이미지 인덱스를 저장
+ 
+  async function urlToFile(url, filename) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+  }
 
   useEffect(() => {
-    // Fetch existing post data
     const fetchPost = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(`${BASE_URL}/api/articles/${articleId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `${token}` },
         });
         const { title, content, images } = response.data.result;
+        
         setTitle(title);
         setContent(content);
-        setExistingImages(images || []);
+  
+        // URL을 파일 객체로 변환하여 allImages 배열에 추가
+        const imageFiles = await Promise.all(images.map((image) => urlToFile(image.url)));
+        setAllImages(imageFiles);
       } catch (error) {
         console.error("게시물 불러오기 오류:", error);
         alert("게시물 데이터를 불러오는 중 오류가 발생했습니다.");
       }
     };
     fetchPost();
-  }, [articleId, BASE_URL]);
-
+  }, []);
+  
+  
+//이미지 수정
   const handleImageChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
     if (selectedImageIndex !== null) {
       // 선택된 이미지가 있을 경우 해당 이미지를 갱신
-      setImages((prevImages) => {
+      setAllImages((prevImages) => {
         const updatedImages = [...prevImages];
         updatedImages[selectedImageIndex] = selectedFiles[0];  // 새 파일로 교체
         return updatedImages;
@@ -53,7 +63,7 @@ const EditPost = () => {
       setSelectedImageIndex(null);  // 수정이 끝났으므로 인덱스 초기화
     } else {
       // 새로운 이미지를 추가
-      setImages((prevImages) => [...prevImages, ...selectedFiles]);
+      setAllImages((prevImages) => [...prevImages, ...selectedFiles]);
     }
   };
   // 이미지를 클릭하면 파일 선택 창을 열도록 하는 함수
@@ -62,6 +72,7 @@ const EditPost = () => {
     fileInputRef.current.click();  // 파일 선택 창 열기
   };
 
+  //이미지 제출
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
       setAlertMem(true);
@@ -71,18 +82,18 @@ const EditPost = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    images.forEach((image) => formData.append("images", image));
+    allImages.forEach((image) => formData.append("images", image));
 
     try {
       const token = localStorage.getItem("token");
       await axios.put(`${BASE_URL}/api/articles/${articleId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       });
       alert("게시물이 성공적으로 수정되었습니다.");
-      navigate("/friends"); // Navigate to the posts list page after success
+      navigate("/main/friends"); // Navigate to the posts list page after success
     } catch (error) {
       console.error("게시물 수정 중 오류가 발생했습니다:", error);
       alert("게시물 수정 중 오류가 발생했습니다.");
@@ -112,22 +123,20 @@ const EditPost = () => {
                 ref={fileInputRef}
               />
               <div className="preview-images">
-                {existingImages.map((img, idx) => (
-                  <div className="oneImg" key={idx}>
-                    <img src={img.url} alt="Existing Preview" className="addedImg" />
-                  </div>
-                ))}
-                {images.map((img, idx) => (
+                {allImages.map((img, idx) => (
                   <div className="oneImg" key={idx} onClick={() => handleImageClick(idx)}>
-                    <img src={URL.createObjectURL(img)} alt="New Preview" className="addedImg" />
+                    <img
+                      src={URL.createObjectURL(img)}
+                      alt="New Preview"
+                      className="addedImg"
+                    />
                     <div className="plus-icon">
                       <img src={plusIcon} alt="plus" />
                     </div>
                   </div>
                 ))}
-                {/* 5개 이상 이미지를 추가하려고 할 때 안내 메시지 */}
-                {images.length > 5 && <AlertWhen message="이미지는 최대 5개까지만 업로드할 수 있습니다." />}
               </div>
+
             </div>
           </div>
 
