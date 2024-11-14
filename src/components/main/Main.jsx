@@ -5,10 +5,6 @@ import Nav from "./section/Nav";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
 import mainImg from "../../assets/img/main-img.png";
-import friends1 from "../../assets/img/friends-1.svg";
-import friends2 from "../../assets/img/friends-2.svg";
-import friends3 from "../../assets/img/friends-3.svg";
-import friends4 from "../../assets/img/friends-4.svg";
 import "../../assets/scss/components/_community.scss";
 
 const Main = () => {
@@ -16,7 +12,8 @@ const Main = () => {
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {});
-  const [communityPreviews, setCommunityPreviews] = useState([]); // 커뮤니티 미리보기 상태 추가
+  const [communityPreviews, setCommunityPreviews] = useState([]);
+  const [friends, setFriends] = useState([]); // 친구 상태 추가
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -43,15 +40,30 @@ const Main = () => {
           headers: { Authorization: token },
         });
         if (response.data && response.data.isSuccess) {
-          setCommunityPreviews(response.data.result.slice(0, 3)); // 3개의 미리보기 데이터만 가져옴
+          setCommunityPreviews(response.data.result.slice(0, 3));
         }
       } catch (error) {
         console.error("커뮤니티 미리보기 가져오기 오류:", error);
       }
     };
 
+    const fetchFriends = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${BASE_URL}/api/user/friend`, {
+          headers: { Authorization: token },
+        });
+        if (response.data && response.data.isSuccess) {
+          setFriends(response.data.result); // 친구 데이터 저장
+        }
+      } catch (error) {
+        console.error("친구 정보 가져오기 오류:", error);
+      }
+    };
+
     fetchUserInfo();
-    fetchCommunityPreviews(); // 커뮤니티 미리보기 데이터 가져오기
+    fetchCommunityPreviews();
+    fetchFriends(); // 친구 정보 가져오기
   }, [BASE_URL]);
 
   const handleToCommunity = () => {
@@ -62,10 +74,6 @@ const Main = () => {
     navigate("/main/stars/");
   };
 
-  // const handleToEnterCom = () => {
-  //   navigate("/main/community/entercom");
-  // };
-
   return (
     <div className="main-wrap">
       <Header />
@@ -73,7 +81,7 @@ const Main = () => {
       <Outlet />
       {location.pathname === "/" && (
         <div className="main-container">
-          <img className="main-img" src={mainImg} alt="Main Visual" />
+          <img className="main-img" src={mainImg} alt="Main Visual" style={{ width: "100%" }} />
           <div className="main-toStar">
             <p>TO. {userInfo.petName}에게</p>
             <button onClick={handleToStar}>마음 보내기</button>
@@ -81,22 +89,12 @@ const Main = () => {
           <div className="main-starFriends">
             <p>{userInfo.petName}의 별나라 친구들</p>
             <div className="friends-slide">
-              <div className="friend-pro">
-                <img src={friends1} alt="미아" />
-                <p>미아</p>
-              </div>
-              <div className="friend-pro">
-                <img src={friends2} alt="밤이" />
-                <p>밤이</p>
-              </div>
-              <div className="friend-pro">
-                <img src={friends3} alt="로이" />
-                <p>로이</p>
-              </div>
-              <div className="friend-pro">
-                <img src={friends4} alt="초코" />
-                <p>초코</p>
-              </div>
+              {friends.map((friend) => (
+                <div className="friend-pro" key={friend.id}>
+                  <img src={friend.profileImage || "default-friend-img.png"} alt={friend.petName} />
+                  <p>{friend.petName}</p>
+                </div>
+              ))}
             </div>
           </div>
           <div className="main-coms-header">

@@ -14,7 +14,7 @@
 
     .main-moon-starFriends {
       display: block;
-      padding: 20px 10px 0 30px;
+      padding: 15px 0 0 20px;
       font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
       p {
@@ -49,8 +49,8 @@
               margin-bottom: 5px;
               border-radius: 50%;
               cursor: pointer;
-              border: 2px solid transparent; // 기본 상태에서는 투명 보더
               transition: border 0.3s ease;
+              box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2509803922);
             }
 
             &.selected img {
@@ -70,7 +70,9 @@
         .friends-search-cnt {
           width: 100px;
           display: block;
-
+          height: 58px;
+          position: relative;
+          margin: 0 20px;
           img {
             width: 58px;
             margin-left: 20px;
@@ -193,13 +195,13 @@
 // 선택된 친구 클릭 시, 친구의 정보와 게시물 목록
 .friend-profile-container {
   display: block;
-  padding: 20px 30px;
+  padding: 0 15px;
 
   .friend-profile-header {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    justify-content: space-around;
+    // justify-content: space-around;
 
     img {
       width: 64px;
@@ -260,11 +262,19 @@
       }
 
       .post-img-cnt {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 5px 0;
         img {
-          width: 100%;
+          width: 147px;
           height: auto;
           border-radius: 8px;
           margin-bottom: 10px;
+        }
+        /* 스크롤바 숨기기 (선택 사항) */
+        &::-webkit-scrollbar {
+          display: none;
         }
       }
 
@@ -365,4 +375,15 @@
   background-color: #f5f5f5;
   padding: 10px;
   border-radius: 5px;
+}
+
+// 친구 추가 삭제 버튼
+.friend-unfriend-btn {
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border: 2px solid #7058cb;
+  padding: 5px;
+  color: #7058cb;
+  font-size: 10px;
 }

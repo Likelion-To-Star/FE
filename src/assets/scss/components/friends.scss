@@ -95,7 +95,7 @@
         .new-friends-cnt {
           height: 58px;
           position: relative;
-          margin-left: 5px;
+          margin: 0 20px;
           .plus-icon {
             position: absolute;
             top: 40px;
@@ -217,13 +217,13 @@
       margin: 10px 0;
       overflow-y: auto;
       img {
-        flex: 0 0 147px; 
+        flex: 0 0 147px;
         width: 147px;
         height: 108px;
         object-fit: cover;
         margin-left: 10px;
         border-radius: 5px;
-        &:nth-child(1){
+        &:nth-child(1) {
           margin-left: 0px;
         }
       }
