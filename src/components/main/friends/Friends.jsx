@@ -9,6 +9,7 @@ import postIcon1 from "../../../assets/img/friends/post-icon1.svg";
 import postIcon2 from "../../../assets/img/friends/post-icon2.svg";
 import postIcon3 from "../../../assets/img/friends/post-icon3.svg";
 import memory from "../../../assets/img/friends/memory.svg";
+import AlertWhen from "../../Util/AlertWhen";
 
 const Friends = () => {
   const navigate = useNavigate();
@@ -23,8 +24,10 @@ const Friends = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
-
+  const [myId ,setMyId] = useState(null);
+  const [notOwner, setNotOwner] =useState(false);
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const [commentOpen, setCommentOpen] = useState(false);
 
   // 친구 목록 조회
   const fetchFriends = async () => {
@@ -55,6 +58,7 @@ const Friends = () => {
       });
       if (response.data.result) {
         setPosts(response.data.result);
+        setMyId(response.data.result[0].author.userId);
       } else {
         setPosts([]);
       }
@@ -106,11 +110,7 @@ const Friends = () => {
     }
   };
 
-  // 댓글 아이콘 클릭 시 댓글 창 열기
-  const handleCommentClick = (postId) => {
-    setSelectedPostId(postId);
-    fetchComments(postId);
-  };
+
 
   // 댓글 추가하기
   const handleAddComment = async () => {
@@ -230,6 +230,24 @@ const Friends = () => {
     setPostToDelete(null);
   };
 
+  const handleEditClick= (articleId, authorId)=>{
+    if(authorId ===myId)
+    {navigate(`/main/friends/editpost/${articleId}`);}
+    else
+    {setNotOwner(true);
+      setTimeout(() => {
+        setNotOwner(false);
+      }, 3000);
+    };
+  }
+
+    // 댓글 아이콘 클릭 시 댓글 창 열기
+    const handleCommentClick = (postId) => {
+      setSelectedPostId(postId); //선택한 아이디 
+      setCommentOpen(true);
+      fetchComments(postId);
+    };
+
   // // 댓글 삭제 모달 열기
   // const openDeleteModal = (commentId) => {
   //   setCommentToDelete(commentId);
@@ -244,8 +262,9 @@ const Friends = () => {
 
   return (
     <div className="friends-wrap">
+      {notOwner && <AlertWhen message="게시물의 주인이 아니에요." />}
       <div className="main-container">
-        <div className="main-moon-starFriends">
+        <div className="main-moon-Friends">
           <div className="slide-cnt">
             <div className="friends-with-slide">
               {/* 자기 자신 프로필 */}
@@ -256,7 +275,7 @@ const Friends = () => {
               {friends ? (
                 friends.map((friend) => (
                   <div key={friend.id} className="friend-with-pro" onClick={() => handleProfileClick(friend.id)}>
-                    <img src={friend.profileImage || "default-image-url"} className="friends-img" alt={friend.petName} />
+                    <img src={friend.profileImage || Profile} className="friends-img" alt={friend.petName} />
                     <p>{friend.petName}</p>
                   </div>
                 ))
@@ -280,7 +299,7 @@ const Friends = () => {
         <div className="pro-cnt">
           <div className="pro-img-cnt">
             <img src={userInfo.profileImage || Profile} alt="Profile" />
-            <div className="pro-cnt">
+            <div className="pro-words">
               <h4>{userInfo.petName || "반려동물 이름"}</h4>
               <div className="pro-p-cnt">
                 <p id="animal">{userInfo.category || "종류"} •</p>
@@ -300,18 +319,27 @@ const Friends = () => {
               <div className="post-icons-cnt">
                 <div className="post-icons">
                   <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
-                  <img src={postIcon2} alt="Edit Icon" onClick={() => navigate(`/main/friends/editpost/${post.articleId}`)} />
+                  <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId,post.author.userId)} />
                   <img src={postIcon3} alt="Delete" onClick={() => openModal(post.articleId)} />
                 </div>
                 <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
 
-              {/* 댓글 섹션 */}
-              {selectedPostId === post.articleId && (
+              
+            </div>
+          ))
+        ) : (
+          <p>게시물이 없습니다.</p>
+        )}
+
+        <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
+      </div>
+      {/* 댓글 섹션 */}
+              {commentOpen && (
                 <div className="comment-section">
                   <div className="comment-header">
                     <h4>마음 나누기</h4>
-                    <button onClick={() => setSelectedPostId(null)}>x</button>
+                    <button onClick={() => {setSelectedPostId(null);setCommentOpen(false);}}>x</button>
                   </div>
                   <div className="comments-list">
                     {comments.map((comment) => (
@@ -343,14 +371,6 @@ const Friends = () => {
                   </div>
                 </div>
               )}
-            </div>
-          ))
-        ) : (
-          <p>게시물이 없습니다.</p>
-        )}
-
-        <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
-      </div>
     </div>
   );
 };

@@ -12,9 +12,9 @@
     background-color: #fff;
     font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
-    .main-moon-starFriends {
+    .main-moon-Friends {
       display: block;
-      padding-top: 10px;
+      padding-top: 15px;
       padding-left: 20px;
       font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
@@ -43,15 +43,15 @@
             display: block;
             margin-right: 15px;
             text-align: center;
-
+            height: 90px;
             img {
-              width: 62px;
-              height: 62px;
+              width: 58px;
+              height: 58px;
               margin-bottom: 5px;
               border-radius: 50%;
               cursor: pointer;
-              border: 2px solid transparent;
               transition: border 0.3s ease;
+              box-shadow: 0px 1px 3px 0px #00000040;
               &.selected {
                 border: 2px solid #7058cb; // 선택된 친구의 보더
               }
@@ -152,24 +152,26 @@
   .pro-cnt {
     display: flex;
     padding: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 
     .pro-img-cnt {
       display: flex;
-
+      margin-left: 8px;
       img {
         width: 64px;
         height: 64px;
         border-radius: 50%;
       }
 
-      .pro-cnt {
+      .pro-words {
         display: block;
         box-shadow: none;
+        margin-left: 10px;
+        margin-top: 10px;
 
         h4 {
           color: #7058cb;
           font-weight: bold;
+          margin-bottom: 5px;
         }
 
         .pro-p-cnt {
@@ -180,12 +182,14 @@
           p {
             margin-right: 5px;
             font-size: 13px;
+            margin-left: 2px;
           }
         }
       }
     }
   }
 
+  //게시글 사진
   .post-cnt {
     display: block;
     padding: 30px 40px;
@@ -211,7 +215,15 @@
       margin: 10px 0;
       overflow-y: auto;
       img {
+        flex: 0 0 147px; 
         width: 147px;
+        height: 108px;
+        object-fit: cover;
+        margin-left: 10px;
+        border-radius: 5px;
+        &:nth-child(1){
+          margin-left: 0px;
+        }
       }
     }
 
@@ -293,6 +305,8 @@
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
+  position: fixed;
+  bottom:0;
 
   .comment-header {
     display: flex;
