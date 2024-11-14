@@ -1,11 +1,10 @@
 @charset "UTF-8";
 
-// 
+//
 @import "setting/fonts";
 @import "setting/vars";
 @import "setting/resets";
 @import "setting/common";
-
 
 //section
 @import "section/header.scss";
@@ -16,3 +15,4 @@
 @import "components/main.scss";
 @import "components/community.scss";
 @import "components/stars.scss";
+@import "components/friends-search.scss";
