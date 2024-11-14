@@ -30,7 +30,8 @@ const Friends = () => {
   const [notOwner, setNotOwner] = useState(false);
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [commentOpen, setCommentOpen] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState(null);
+  const starfriend = localStorage.getItem("starfriend");
+  const [selectedProfile, setSelectedProfile] = useState('myProfile');
   
   // 친구 목록 조회
   const fetchFriends = async () => {
@@ -45,6 +46,7 @@ const Friends = () => {
       }
     } catch (error) {
       console.error("사용자 조회 오류:", error.response || error);
+      
     }
   };
 
@@ -201,9 +203,23 @@ const Friends = () => {
   };
 
   useEffect(() => {
-    fetchFriends();
-    fetchOMyPosts();
+    const initPosts = async () => {
+      await fetchFriends();
+  
+      if (starfriend) {
+        // starfriend가 있을 경우 해당 유저의 게시물 조회
+        await fetchUserPosts(starfriend);
+        setSelectedProfile(starfriend);
+      } else {
+        // starfriend가 없을 경우 자신의 게시물 조회
+        await fetchOMyPosts();
+        setSelectedProfile('myProfile');
+      }
+    };
+  
+    initPosts();
   }, []);
+  
 
   const handleMemory = () => {
     navigate("/main/friends/newpost");
@@ -216,14 +232,16 @@ const Friends = () => {
   const handleMyprofileClick = () => {
     fetchOMyPosts();
     setSelectedProfile('myProfile');
+    localStorage.removeItem("starfriend"); // starFriend 초기화
   };
+  
 
   const handleProfileClick = (searchid) => {
-    setSelectedProfile(searchid);
-    console.log("선택 프로필",selectedProfile);
     fetchUserPosts(searchid);
-
+    setSelectedProfile(searchid);
+    localStorage.setItem("starfriend", searchid); // 클릭한 친구를 starFriend로 저장
   };
+  
 
   const openModal = (articleId) => {
     setPostToDelete(articleId);
@@ -280,7 +298,7 @@ const Friends = () => {
               {friends ? (
                 friends.map((friend) => (
                   <div key={friend.id} className={`friend-with-pro`} onClick={() => handleProfileClick(friend.id)}>
-                    <img src={friend.profileImage || Profile} className={`friends-img  ${selectedProfile === friend.id ? 'selected' : ''}`} alt={friend.petName} />
+                    <img src={friend.profileImage || Profile} className={`friends-img  ${selectedProfile == friend.id ? 'selected' : ''}`} alt={friend.petName} />
                     <p>{friend.petName}</p>
                   </div>
                 ))
