@@ -8,7 +8,7 @@ const Agree1 = () => {
   const navigate = useNavigate();
 
   const handleSignUp = () => {
-    navigate("/signup");
+    navigate(-1); // 이전 페이지로 이동
   };
 
   return (

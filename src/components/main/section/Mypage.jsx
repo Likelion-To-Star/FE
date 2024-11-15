@@ -29,6 +29,10 @@ const Mypage = () => {
     navigate("/mypage/mypageEdit", { state: userInfo });
   };
 
+  const handleAgree = () => {
+    navigate("/signup-agree1");
+  };
+
   return (
     <div className="main-wrap">
       <div className="mypage-container">
@@ -46,7 +50,7 @@ const Mypage = () => {
             <p>우리 아이 정보 수정</p>
             <img src={more} alt="More" />
           </div>
-          <div className="mypage-about">
+          <div className="mypage-about" onClick={handleAgree}>
             <img src={about2} alt="Terms of Service" />
             <p>서비스 이용 약관</p>
             <img src={more} alt="More" style={{ marginLeft: "40px" }} />

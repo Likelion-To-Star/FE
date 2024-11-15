@@ -10,8 +10,9 @@ import postIcon2 from "../../../assets/img/friends/post-icon2.svg";
 import postIcon3 from "../../../assets/img/friends/post-icon3.svg";
 import memory from "../../../assets/img/friends/memory.svg";
 import AlertWhen from "../../Util/AlertWhen";
-import EXIT from "../../../assets/img/friends/exit.svg"
-import SendInput from "../../../assets/img/friends/input-send.svg"
+import EXIT from "../../../assets/img/friends/exit.svg";
+import SendInput from "../../../assets/img/friends/input-send.svg";
+import noresult from "../../../assets/img/friends/no-results-icon.svg";
 
 const Friends = () => {
   const navigate = useNavigate();
@@ -50,7 +51,6 @@ const Friends = () => {
       }
     } catch (error) {
       console.error("사용자 조회 오류:", error.response || error);
-      
     }
   };
   // 내 게시물 조회
@@ -320,13 +320,17 @@ const handleProfileClick = (searchId) => {
             <div className="friends-with-slide">
               {/* 자기 자신 프로필 */}
               <div className="moon-pro" onClick={handleMyprofileClick}>
-                <img src={userInfo.profileImage || Profile} alt="Profile"className={`moon-img ${selectedProfile === 'myProfile' ? 'selected' : ''}`} />
+                <img src={userInfo.profileImage || Profile} alt="Profile" className={`moon-img ${selectedProfile === "myProfile" ? "selected" : ""}`} />
                 <p>{userInfo.petName || "애완동물 이름"}</p>
               </div>
               {friends ? (
                 friends.map((friend) => (
                   <div key={friend.id} className={`friend-with-pro`} onClick={() => handleProfileClick(friend.id)}>
-                    <img src={friend.profileImage || Profile} className={`friends-img  ${selectedProfile === friend.id ? 'selected' : ''}`} alt={friend.petName} />
+                    <img
+                      src={friend.profileImage || Profile}
+                      className={`friends-img  ${selectedProfile == friend.id ? "selected" : ""}`}
+                      alt={friend.petName}
+                    />
                     <p>{friend.petName}</p>
                   </div>
                 ))
@@ -360,10 +364,9 @@ const handleProfileClick = (searchId) => {
             </div>
           </div>
         </div>
-        <div>
-        {           
+        
+        {posts && posts.length > 0 ? (
           posts.map((post) => (
-
             <div key={post.articleId} className="post-cnt">
               <h4>{post.title}</h4>
               <p>{post.content}</p>
@@ -377,50 +380,61 @@ const handleProfileClick = (searchId) => {
                 <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
             </div>
-
-          ))       
-        }
+          ))
+        ) : (
+          <div className="no-member">
+            <img src={noresult} alt="No Members" className="no-member-img" />
+            <p>검색하신 별나라 친구를 찾을 수 없어요.</p>
+            <p>다른 친구를 검색해주세요.</p>
+          </div>
+        )}
         <div ref={observerRef} style={{ height: "20px" }}></div>
-        </div>
 
         <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
       </div>
       {/* 댓글 섹션 */}
-              {commentOpen && (
-                <div className="comment-section">
-                  <div className="comment-header">
-                    <h4>마음 나누기</h4>
-                    <img src={EXIT} onClick={() => {setSelectedPostId(null);setCommentOpen(false);}}/>
-                  </div>
-                  <div className="comments-list">
-                    {comments.map((comment) => (
-                      <div key={comment.commentId} className="comment-item">
-                        <img
-                          src={comment.profileImage || Profile}
-                          alt={comment.petName || "프로필 이미지"}
-                          className="comment-profile"
-                        />
-                        <div className="comment-content">
-                          <p>
-                            <strong>{comment.petName}</strong>
-                          </p>
-                          <p>{comment.content}</p>
-                        </div>
-                        {comment.isMine && (
-                          <div className="comments-icons-cnt">
-                            <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
-                            <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="comment-input">
-                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!" />
-                    <img src={SendInput } onClick={handleAddComment}/>
-                  </div>
+      {commentOpen && (
+        <div className="comment-section">
+          <div className="comment-header">
+            <h4>마음 나누기</h4>
+            <img
+              src={EXIT}
+              onClick={() => {
+                setSelectedPostId(null);
+                setCommentOpen(false);
+              }}
+            />
+          </div>
+          <div className="comments-list">
+            {comments.map((comment) => (
+              <div key={comment.commentId} className="comment-item">
+                <img src={comment.profileImage || Profile} alt={comment.petName || "프로필 이미지"} className="comment-profile" />
+                <div className="comment-content">
+                  <p>
+                    <strong>{comment.petName}</strong>
+                  </p>
+                  <p>{comment.content}</p>
                 </div>
-            )}
+                {comment.isMine && (
+                  <div className="comments-icons-cnt">
+                    <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
+                    <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="comment-input">
+            <input
+              type="text"
+              value={currentComment}
+              onChange={(e) => setCurrentComment(e.target.value)}
+              placeholder="다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!"
+            />
+            <img src={SendInput} onClick={handleAddComment} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
