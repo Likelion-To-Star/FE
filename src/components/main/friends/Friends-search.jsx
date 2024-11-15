@@ -18,7 +18,7 @@ import Profile from "../../../assets/img/profile-colored.png";
 const FriendsSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [noResults, setNoResults] = useState(false);
@@ -31,7 +31,7 @@ const FriendsSearch = () => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [currentComment, setCurrentComment] = useState("");
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  const [selectedProfile, setSelectedProfile] = useState("myProfile"); // 초기 상태: 자기 자신
+  const [selectedProfile, setSelectedProfile] = useState("");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [myId, setMyId] = useState(null);
@@ -57,6 +57,16 @@ const FriendsSearch = () => {
     };
 
     fetchMyInfo();
+  }, []);
+
+  // 페이지가 로드될 때 다른 친구들의 게시물을 불러오도록
+  useEffect(() => {
+    const initializePage = async () => {
+      await fetchFriends(); // 친구 목록 불러오기
+      await fetchOtherPosts(); // 친구가 아닌 사용자 게시물 불러오기
+    };
+
+    initializePage();
   }, []);
 
   // 친구 목록 조회
@@ -96,7 +106,7 @@ const FriendsSearch = () => {
   };
 
   // 친구가 아닌 사용자 게시물 조회
-  const fetchOtherPosts = async (page = 1, size = 5) => {
+  const fetchOtherPosts = async (page = 0, size = 10) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(`${BASE_URL}/api/articles/others`, {
@@ -106,14 +116,23 @@ const FriendsSearch = () => {
       if (response.data.isSuccess && response.data.result.length > 0) {
         const postsData = response.data.result;
         setPosts(postsData);
-        setSelectedFriend(postsData[0].author); // 첫 번째 게시물 작성자의 정보로 설정
+        setSelectedFriend(postsData[0]?.author || null); // 첫 번째 게시물 작성자의 정보로 설정
       } else {
         setPosts([]);
         setSelectedFriend(null);
+        setNoResults(true);
       }
     } catch (error) {
       console.error("친구가 아닌 사용자 게시물 조회 오류:", error.response || error);
     }
+  };
+
+  const handleOtherFriendsClick = async () => {
+    setIsSearchActive(true); // 검색창 활성화
+    setSearchTerm(""); // 검색창 초기화
+    setSearchResults([]); // 검색 결과 초기화
+    setNoResults(false); // "결과 없음" 상태 해제
+    await fetchOtherPosts(); // 친구를 맺지 않은 사용자 게시물 불러오기
   };
 
   // 친구 게시물 조회
@@ -141,30 +160,33 @@ const FriendsSearch = () => {
   const searchFriends = async () => {
     const token = localStorage.getItem("token");
 
-    if (!searchTerm) {
+    if (!searchTerm.trim()) {
       console.log("검색어가 비어 있습니다.");
       setNoResults(true);
+      setSearchResults([]);
       return;
     }
 
     try {
       const response = await axios.get(`${BASE_URL}/api/user/search`, {
         headers: { Authorization: token },
-        params: { name: searchTerm, page: 0, size: 5 },
+        params: { name: searchTerm },
       });
 
       if (response.data.isSuccess && response.data.result.length > 0) {
-        setSearchResults(response.data.result);
+        setSearchResults(response.data.result); // 검색 결과 저장
+        setPosts([]); // 기존 게시물 초기화
         setNoResults(false);
       } else {
-        setSearchResults([]);
-        setNoResults(true);
-        setPosts([]);
+        setSearchResults([]); // 검색 결과 초기화
+        setPosts([]); // 게시물 초기화
+        setNoResults(true); // "결과 없음" 상태 설정
       }
     } catch (error) {
       console.error("친구 검색 오류:", error);
-      setNoResults(true);
+      setSearchResults([]);
       setPosts([]);
+      setNoResults(true);
     }
   };
 
@@ -320,8 +342,7 @@ const FriendsSearch = () => {
   };
 
   useEffect(() => {
-    fetchFriends();
-    fetchMyPosts();
+    handleOtherFriendsClick();
   }, []);
 
   // 프로필 클릭 시 게시물 초기화 및 재조회
@@ -386,7 +407,7 @@ const FriendsSearch = () => {
               <div
                 className={`moon-pro ${selectedProfile === "myProfile" ? "selected" : ""}`}
                 onClick={() => {
-                  setSelectedProfile("myProfile"); // 선택 상태 업데이트
+                  setSelectedProfile("myProfile");
                   fetchMyPosts();
                 }}
               >
@@ -409,22 +430,8 @@ const FriendsSearch = () => {
               ))}
             </div>
             <div className="friends-search-cnt">
-              <img
-                src={friendsSearchBtn}
-                onClick={() => {
-                  setIsSearchActive(true);
-                  fetchOtherPosts();
-                }}
-                alt="Search Button"
-              />
-              <button
-                onClick={() => {
-                  setIsSearchActive(true);
-                  fetchOtherPosts();
-                }}
-              >
-                다른 친구들
-              </button>
+              <img src={friendsSearchBtn} onClick={handleOtherFriendsClick} alt="Search Button" />
+              <button onClick={handleOtherFriendsClick}>다른 친구들</button>
             </div>
           </div>
         </div>
@@ -436,6 +443,7 @@ const FriendsSearch = () => {
               <img src={searchIcon} alt="Search Icon" onClick={searchFriends} />
             </div>
           )}
+
           {isSearchActive && (
             <div className="friends-list">
               {noResults ? (
@@ -461,43 +469,35 @@ const FriendsSearch = () => {
           )}
         </div>
 
-        <div className="friend-profile-container">
-          {selectedFriend && !noResults && (
-            <>
+        {!noResults &&
+          posts.map((post) => (
+            <div key={post.articleId} className="friend-profile-container">
               <div className="friend-profile-header">
-                <img src={selectedFriend.profileImage || moon} alt={`${selectedFriend.petName} 프로필`} className="pro-img-cnt" />
+                <img src={post.author.profileImage || moon} alt={`${post.author.petName} 프로필`} className="pro-img-cnt" />
                 <div className="friend-info">
-                  <p className="friend-name">{selectedFriend.petName}</p>
+                  <p className="friend-name">{post.author.petName}</p>
                   <p className="friend-details">
-                    {selectedFriend.category} · 생일: {selectedFriend.birthday} · 별이 된 날: {selectedFriend.starDay}
+                    {post.author.category} · 생일: {post.author.birthday || "알 수 없음"} · 별이 된 날: {post.author.starDay || "알 수 없음"}
                   </p>
                 </div>
 
-                {/* 친구 추가/종료 버튼 조건부 렌더링 */}
                 {selectedProfile !== "myProfile" &&
-                  (friends.some((friend) => friend.id === selectedFriend.id) ? (
-                    <button onClick={() => removeFriend(selectedFriend.id)} className="friend-unfriend-btn">
+                  (friends.some((friend) => friend.id === post.author.userId) ? (
+                    <button onClick={() => removeFriend(post.author.userId)} className="friend-unfriend-btn">
                       별나라 친구 종료하기
                     </button>
                   ) : (
-                    <button onClick={() => addFriend(selectedFriend.id)} className="friend-unfriend-btn">
+                    <button onClick={() => addFriend(post.author.userId)} className="friend-unfriend-btn">
                       별나라 친구 시작하기
                     </button>
                   ))}
               </div>
-            </>
-          )}
-        </div>
 
-        {!noResults && (
-          <div className="friend-profile-container">
-            {posts.map((post) => (
-              <div className="friend-posts" key={post.articleId}>
+              <div className="friend-posts">
                 <div className="post-cnt">
                   <h4>{post.title}</h4>
                   <p>{post.content}</p>
 
-                  {/* 이미지가 있는 경우에만 렌더링 */}
                   {post.images && post.images.length > 0 && (
                     <div className="post-img-cnt">
                       {post.images.map((image) => (
@@ -508,14 +508,11 @@ const FriendsSearch = () => {
 
                   <div className="post-icons-cnt">
                     <div className="post-icons">
-                      {/* 댓글 버튼 */}
                       <img src={mention} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
 
                       {post.owner && (
                         <>
-                          {/* 수정 버튼 */}
                           <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId, post.author.userId)} />
-                          {/* 삭제 버튼 */}
                           <img src={postIcon3} alt="Delete Icon" onClick={() => openModal(post.articleId)} />
                         </>
                       )}
@@ -523,63 +520,61 @@ const FriendsSearch = () => {
                     <p>{new Date(post.updatedAt).toISOString().slice(0, 10).replace(/-/g, ".")}</p>
                   </div>
                 </div>
-
-                {commentOpen && selectedPostId === post.articleId && (
-                  <div className="comment-section">
-                    <div className="comment-header">
-                      <h4>마음 나누기</h4>
-                      <img
-                        src={EXIT}
-                        onClick={() => {
-                          setSelectedPostId(null);
-                          setCommentOpen(false);
-                        }}
-                      />
-                    </div>
-                    <div className="comments-list">
-                      {comments.map((comment) => (
-                        <div key={comment.commentId} className="comment-item">
-                          <img src={comment.profileImage || moon} alt={comment.petName || "프로필 이미지"} className="comment-profile" />
-                          <div className="comment-content">
-                            <p>
-                              <strong>{comment.petName}</strong>
-                            </p>
-                            <p>{comment.content}</p>
-                          </div>
-                          {comment.isMine && (
-                            <div className="comments-icons-cnt">
-                              <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
-                              <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="comment-input">
-                      <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요" />
-                      <img src={SendInput} onClick={handleAddComment} />
-                    </div>
-                  </div>
-                )}
               </div>
-            ))}
-            {isModalOpen && (
-              <>
-                {/* 모달 배경 */}
-                <div className="modal-overlay" onClick={closeModal}></div>
-                {/* 모달 내용 */}
-                <div className="modal">
-                  <p>이 게시물을 삭제하시겠습니까?</p>
-                  <button className="modal-yes" onClick={confirmDelete}>
-                    삭제
-                  </button>
-                  <button className="modal-no" onClick={closeModal}>
-                    취소
-                  </button>
+
+              {commentOpen && selectedPostId === post.articleId && (
+                <div className="comment-section">
+                  <div className="comment-header">
+                    <h4>마음 나누기</h4>
+                    <img
+                      src={EXIT}
+                      onClick={() => {
+                        setSelectedPostId(null);
+                        setCommentOpen(false);
+                      }}
+                    />
+                  </div>
+                  <div className="comments-list">
+                    {comments.map((comment) => (
+                      <div key={comment.commentId} className="comment-item">
+                        <img src={comment.profileImage || moon} alt={comment.petName || "프로필 이미지"} className="comment-profile" />
+                        <div className="comment-content">
+                          <p>
+                            <strong>{comment.petName}</strong>
+                          </p>
+                          <p>{comment.content}</p>
+                        </div>
+                        {comment.isMine && (
+                          <div className="comments-icons-cnt">
+                            <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
+                            <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="comment-input">
+                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요" />
+                    <img src={SendInput} onClick={handleAddComment} />
+                  </div>
                 </div>
-              </>
-            )}
-          </div>
+              )}
+            </div>
+          ))}
+
+        {isModalOpen && (
+          <>
+            <div className="modal-overlay" onClick={closeModal}></div>
+            <div className="modal">
+              <p>이 게시물을 삭제하시겠습니까?</p>
+              <button className="modal-yes" onClick={confirmDelete}>
+                삭제
+              </button>
+              <button className="modal-no" onClick={closeModal}>
+                취소
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
