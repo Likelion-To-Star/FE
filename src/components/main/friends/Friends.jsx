@@ -281,15 +281,15 @@ const Friends = () => {
     fetchUserPosts(searchId, 0);
   };
 
-  const openModal = (articleId) => {
-    setPostToDelete(articleId);
-    setIsModalOpen(true);
-  };
+  // const openModal = (articleId) => {
+  //   setPostToDelete(articleId);
+  //   setIsModalOpen(true);
+  // };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setPostToDelete(null);
-  };
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  //   setPostToDelete(null);
+  // };
 
   const handleEditClick = (articleId, authorId) => {
     if (authorId === myId) {
