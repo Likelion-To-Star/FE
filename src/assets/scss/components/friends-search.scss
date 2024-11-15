@@ -1,11 +1,10 @@
 .friendSrh-wrap {
   width: 100%;
-  height: 87vh;
+  height: 100%;
   margin: 0 auto;
-
   .main-container {
     width: 100%;
-    height: 100%; // 페이지 전체 높이
+    height: 100vh; // 페이지 전체 높이
     display: block;
     justify-content: center;
     align-items: center;
@@ -199,7 +198,7 @@ img {
 .friend-profile-container {
   display: block;
   padding: 0 15px;
-
+  background-color: white;
   .friend-profile-header {
     display: flex;
     align-items: center;
@@ -243,6 +242,7 @@ img {
   }
 
   .friend-posts {
+
     .post-cnt {
       margin-bottom: 20px;
       padding: 15px;
@@ -258,19 +258,20 @@ img {
       }
 
       p {
-        font-size: 14px;
         color: #8a8888;
         margin-bottom: 10px;
         margin-left: 10px;
         overflow-wrap: break-word; /* 긴 단어를 부모 요소 안에서 줄바꿈 */
+        font-family: "YiSunShin Dotum M";
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 13.13px;
       }
 
       .post-img-cnt {
         display: flex;
         overflow-x: auto;
-        gap: 10px;
-        height: auto; /* 고정 높이 제거 */
-        min-height: 0; /* 기본 높이 제거 */
+        height: 108px; 
         img {
           width: 147px;
           height: auto;

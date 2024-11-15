@@ -85,10 +85,10 @@ function App() {
         <Route path="friendsSearch" element={isLoggedIn ? <FriendsSearch /> : <Navigate to="/login" />} />
         <Route path="friends/newpost" element={isLoggedIn ? <NewPost /> : <Navigate to="/login" />} />
         <Route path="mypage" element={isLoggedIn ? <Mypage /> : <Navigate to="/login" />} />
-        <Route path="mypage/mypageEdit" element={isLoggedIn ? <MypageEdit /> : <Navigate to="/login" />} />
-
+        
         </Route>
 
+        <Route path="mypage/mypageEdit" element={isLoggedIn ? <MypageEdit /> : <Navigate to="/login" />} />
 
         <Route path="stars/letter" element={<Letter />} />
         <Route path="stars/tostar" element={<ToStar />} />

@@ -1,5 +1,4 @@
-@use "../setting/fonts";
-
+.signup-wrap-wrap{
 .signup-background {
   width: 100%;
   height: 100vh; // 페이지 전체 높이
@@ -481,4 +480,5 @@ select {
   input{
     max-width: 300px;
   }
+}
 }

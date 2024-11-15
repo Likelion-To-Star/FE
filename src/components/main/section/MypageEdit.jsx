@@ -8,6 +8,7 @@ import backbtn from "../../../assets/img/signup-back-btn.svg";
 import mybabyimg from "../../../assets/img/mybabyimg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import errorIcon from "../../../assets/img/error-icon.svg"; 
 
 const MypageEdit = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -22,7 +23,7 @@ const MypageEdit = () => {
   const [errors, setErrors] = useState({});
   const token = localStorage.getItem("token");
   const storedToken = localStorage.getItem("token");
-
+  const [childName, setChildName] = useState("");
   useEffect(() => {
     const fetchLoginInfo = async () => {
       if (!token) {
@@ -115,7 +116,7 @@ const toLocalISOString = (date) => {
     if (Object.keys(newErrors).length === 0) {
       try {
         const formData = new FormData();
-        formData.append("petName", parentName);
+        formData.append("petName", childName);
         formData.append("ownerName", parentName);
         formData.append("petGender", selectedGender);
         formData.append("category", selectedAnimal);
@@ -155,64 +156,103 @@ const toLocalISOString = (date) => {
   };
 
   return (
+    <div className="signup-wrap-wrap">
     <div className="signup-background">
+    <div className="bor"></div>
       <div className="signup-container">
         <div className="signup-header">
           <img src={backbtn} onClick={() => navigate("/mypage")} alt="Back" />
-          <h4>정보 수정</h4>
+          <h4>우리 아이</h4>
         </div>
-        <div className="signup-body">
+        <div className="signupNext-body">
           <form className="sign-form" onSubmit={handleSave}>
             <div className="sign-header">
               <p>소중한 추억을 간직하기 위해</p>
               <p>사랑하는 아이에 대해 알려주세요.</p>
             </div>
 
-            {/* 아이 사진 */}
-            <div className="form-container">
+           {/* 아이 사진 */}
+           <div className="signNext-container">
               <div className="form-header">
                 <h3>우리 아이 사진</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <div className="profile-img-cnt">
-                <img src={profileImage} alt="Profile Avatar" className="profile-img" />
-                <div className="edit-icon" onClick={handleIconClick}>
-                  <FontAwesomeIcon icon={faCamera} size="lg" />
-                </div>
+              <div className="profile-img-cnt" onClick={handleIconClick}>
+                <img
+                  src={profileImage}
+                  alt="Profile Avatar"
+                  className="profile-img"
+                  style={{
+                    borderRadius: profileImage === mybabyimg ? "0" : "50%", // 기본 이미지일 때만 둥근 모서리 적용
+                  }}
+                />
               </div>
             </div>
             <input type="file" ref={fileInputRef} accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
 
             {/* 아이 이름 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>우리 아이 이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <input type="text" className="sign-input" placeholder="아이 이름" value={parentName} onChange={(e) => setParentName(e.target.value)} />
-              {errors.parentName && <div className="error-message">{errors.parentName}</div>}
+              <input
+                type="text"
+                className="sign-input"
+                placeholder="아이의 이름을 작성해주세요."
+                value={childName}
+                onChange={(e) => setChildName(e.target.value)}
+              />
+              {errors.petName && (
+                <div className="error-container">
+                  <img src={errorIcon} alt="Warning" className="error-icon" />
+                  <p className="error-message">{errors.petName}</p>
+                </div>
+              )}
+            </div>
+
+            {/*아이 보호자 이름 */}
+            <div className="signNext-container">
+              <div className="form-header">
+                <h3>아이에게 보호자님의 이름</h3>
+                <p>* 필수 입력 항목입니다.</p>
+              </div>
+              <input
+                type="text"
+                className="sign-input"
+                placeholder="아이에게 보호자님의 이름을 작성해주세요."
+                value={parentName}
+                onChange={(e) => setParentName(e.target.value)}
+              />
+              {errors.ownerName && (
+                <div className="error-container">
+                  <img src={errorIcon} alt="Warning" className="error-icon" />
+                  <p className="error-message">{errors.ownerName}</p>
+                </div>
+              )}
             </div>
 
             {/* 성별 */}
-            <div className="form-container">
-              <div className="form-header">
+            <div className="signNext-container">
+              <div className="form-header" style={{ display: "block" }}>
                 <h3>성별</h3>
                 <div className="fm-btn-container">
-                  <div className="fm-btn ">
-                    <button type="button" className={selectedGender === "Male" ? "active" : ""} onClick={() => setSelectedGender("Male")}>
+                  <div className="fm-btn">
+                    <button type="button" className={selectedGender === "남자" ? "active" : ""} onClick={() => setSelectedGender("남자")}>
                       남자
                     </button>
-                    <button type="button" className={selectedGender === "Female" ? "active" : ""} onClick={() => setSelectedGender("Female")}>
+                  </div>
+                  <div className="fm-btn">
+                    <button type="button" className={selectedGender === "여자" ? "active" : ""} onClick={() => setSelectedGender("여자")}>
                       여자
                     </button>
                   </div>
                 </div>
               </div>
-              {errors.gender && <div className="error-message">{errors.gender}</div>}
             </div>
 
             {/* 종류 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-group">
                 <div className="form-header">
                   <h3>종류</h3>
@@ -236,32 +276,37 @@ const toLocalISOString = (date) => {
                   <option value="기타 아이들">기타 아이들</option>
                 </select>
               </div>
-              {errors.animal && <div className="error-message">{errors.animal}</div>}
+              {errors.animal && (
+                <div className="error-container">
+                  <img src={errorIcon} alt="Warning" className="error-icon" />
+                  <p className="error-message">{errors.animal}</p>
+                </div>
+              )}
             </div>
 
-            {/* 생일 */}
-            <div className="form-container">
+            {/* 생일 선택 */}
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>생일</h3>
               </div>
               <DatePicker
                 selected={birthDate}
                 onChange={(date) => setBirthDate(date)}
-                dateFormat="yyyy-MM-dd"
+                dateFormat="yyyy/MM/dd"
                 placeholderText="날짜를 선택하세요"
                 className="date-picker"
               />
             </div>
 
-            {/* 별이 된 날 */}
-            <div className="form-container">
+            {/* 별이 된 날 선택 */}
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>별이 된 날</h3>
               </div>
               <DatePicker
                 selected={starDate}
                 onChange={(date) => setStarDate(date)}
-                dateFormat="yyyy-MM-dd"
+                dateFormat="yyyy/MM/dd"
                 placeholderText="날짜를 선택하세요"
                 className="date-picker"
               />
@@ -273,6 +318,7 @@ const toLocalISOString = (date) => {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 };

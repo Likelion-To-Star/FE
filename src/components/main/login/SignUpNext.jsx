@@ -101,6 +101,7 @@ const SignUpNext = () => {
   };
 
   return (
+    <div className="signup-wrap-wrap">
     <div className="signup-background">
       <div className="bor"></div>
       <div className="signup-container">
@@ -262,6 +263,7 @@ const SignUpNext = () => {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 };

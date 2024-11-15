@@ -7,171 +7,174 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  }
-
-.login-container {
-  width: 393px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-.star {
-  width: 150px;
-  position: absolute;
-  top:20px;
-  right:0;
-}
-.login-logo {
-
-  p {
-    font-family: "YiSunShin Dotum M";
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 13.13px;
-    text-align: center;
-    color: white;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-
-  .paw-icon {
-    font-size: 48px;
-    color: white;
-  }
-}
-
-.main-logo {
-  width: 85px;
-  height: auto;
-  margin-top: 20px;
-  margin-bottom: 25px;
-}
-
-.login-form {
-  width: 100%;
-  .input-wrapper{
-    width: 271px;
-    margin: 0 auto;
+  .login-container {
+    width: 393px;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     position: relative;
-    box-shadow: 0px 2px 4px 0px #00000040;
-
-    .login-input {
-      width: 271px;
-      height: 44px;
-      padding: 10px;
-      border: none;
-      font-size: 16px;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      background-color: #fff;
-      margin: 0px;
-      color: #000000; // 작성자 텍스트 색상
-      cursor: pointer;
-      // Placeholder 스타일 설정
-      &::placeholder {
-        color: #adadad !important; // Placeholder 색상
-        font-family:"YiSunShin Dotum M";
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 14.14px;
-
-      }
-    }
-    .pwd-input {
-      width: 271px;
-      height: 44px;
-      padding: 10px;
-      border: none;
-      font-size: 16px;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      border-top: 0.5px solid #7058cb;
-      background-color: #fff;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-  
-      &::placeholder {
-        color: #adadad !important; // Placeholder 색상
-        font-family:"YiSunShin Dotum M";
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 14.14px;
-      }
-    }
-
   }
-
-  .button-wrapper{
-    display: flex;
-    justify-content: center;
+  .star {
+    width: 150px;
+    position: absolute;
+    top:20px;
+    right:0;
+  }
+  .login-logo {
+  
+    p {
+      font-family: "YiSunShin Dotum M";
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 13.13px;
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+  
+    .paw-icon {
+      font-size: 48px;
+      color: white;
+    }
+    img{
+      width: 190px;
+    }
+  }
+  
+  .main-logo {
+    width: 85px;
+    height: auto;
     margin-top: 20px;
-  .login-button {
-    width: 271px;
-    margin-top: 5px;
-    background-color: #e6dcff;
-    color: #7058cb;
-    font-size: 18px;
-    font-weight: bolder;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    box-shadow: 0px 2px 4px 0px #00000040;
-    height: 38px;
-    &:hover {
-      background-color: #6e5bb5;
-      color: #e6dcff;
-    }
-    .error-container {
+    margin-bottom: 25px;
+  }
+  
+  .login-form {
+    width: 100%;
+    .input-wrapper{
+      width: 271px;
+      margin: 0 auto;
       display: flex;
-      align-items: center;
-      position: absolute;
-      top:-25px;
-      left: 0;
-      .error-icon {
-        width: 16px;
-        margin-right: 5px;
-        margin-top: 4px;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0px 2px 4px 0px #00000040;
+  
+      .login-input {
+        width: 271px;
+        height: 44px;
+        padding: 10px;
+        border: none;
+        font-size: 16px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        background-color: #fff;
+        margin: 0px;
+        color: #000000; // 작성자 텍스트 색상
+        cursor: pointer;
+        // Placeholder 스타일 설정
+        &::placeholder {
+          color: #adadad !important; // Placeholder 색상
+          font-family:"YiSunShin Dotum M";
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 14.14px;
+  
+        }
       }
-      .error-message {
-        font-size: 12x;
-        margin-top: 5px;
-        font-weight: bold;
-        color: #eccdfc;
+      .pwd-input {
+        width: 271px;
+        height: 44px;
+        padding: 10px;
+        border: none;
+        font-size: 16px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border-top: 0.5px solid #7058cb;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    
+        &::placeholder {
+          color: #adadad !important; // Placeholder 색상
+          font-family:"YiSunShin Dotum M";
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 14.14px;
+        }
+      }
+  
+    }
+  
+    .button-wrapper{
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    .login-button {
+      width: 271px;
+      margin-top: 5px;
+      background-color: #e6dcff;
+      color: #7058cb;
+      font-size: 18px;
+      font-weight: bolder;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      box-shadow: 0px 2px 4px 0px #00000040;
+      height: 38px;
+      &:hover {
+        background-color: #6e5bb5;
+        color: #e6dcff;
+      }
+      .error-container {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top:-25px;
+        left: 0;
+        .error-icon {
+          width: 16px;
+          margin-right: 5px;
+          margin-top: 4px;
+        }
+        .error-message {
+          font-size: 12x;
+          margin-top: 5px;
+          font-weight: bold;
+          color: #eccdfc;
+        }
       }
     }
+    
   }
-  
-}
-}
-.login-footer {
-  display: flex;
-  color: white;
-  text-align: center;
-  margin-top: 10px;
-  font-family: "YiSunShin Dotum M";
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 12.12px;
-  text-align: center;
-  
-  span {
+  }
+  .login-footer {
+    display: flex;
     color: white;
-    text-decoration: underline;
-    text-underline-position: under;
-    cursor: pointer;
-    font-weight: bold;
-
-    &:hover {
-      color: #eacef9;
+    text-align: center;
+    margin-top: 10px;
+    font-family: "YiSunShin Dotum M";
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 12.12px;
+    text-align: center;
+    
+    span {
+      color: white;
+      text-decoration: underline;
+      text-underline-position: under;
+      cursor: pointer;
+      font-weight: bold;
+  
+      &:hover {
+        color: #eacef9;
+      }
     }
   }
-}
-
+  
+  
+  
+  }
 

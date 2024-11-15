@@ -33,7 +33,7 @@ const Mypage = () => {
   };
 
   const handleEdit = () => {
-    navigate("/main/mypage/mypageEdit", { state: userInfo });
+    navigate("/mypage/mypageEdit", { state: userInfo });
   };
 
   const handleAgree = () => {

@@ -74,6 +74,7 @@ const SignUp = () => {
   const isNextButtonEnabled = name && email && password && confirmPassword === password && isAgreed1 && isAgreed2;
 
   return (
+    <div className="signup-wrap-wrap">
     <div className="signup-background">
       <div className="bor"></div>
       <div className="signup-container">
@@ -208,6 +209,7 @@ const SignUp = () => {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 };

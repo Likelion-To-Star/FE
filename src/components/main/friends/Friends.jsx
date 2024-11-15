@@ -338,63 +338,7 @@ const Friends = () => {
     fetchComments(postId);
   };
 
-  //
-  // 친구 추가
-  const addFriend = async (friendId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${BASE_URL}/api/user/friend`,
-        { friendId },
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data.isSuccess) {
-        alert(response.data.message);
-        fetchFriends();
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error("친구 추가 오류:", error);
-      alert("친구 추가 중 오류가 발생했습니다.");
-    }
-  };
-    // 친구 삭제
-    const removeFriend = async (friendId) => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.delete(`${BASE_URL}/api/user/friend`, {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-          data: { friendId },
-        });
-  
-        if (response.data.isSuccess) {
-          alert(response.data.message);
-          setFriends((prevFriends) => prevFriends.filter((friend) => friend.id !== friendId));
-          setSelectedProfile(null);
-        } else {
-          alert(response.data.message);
-        }
-      } catch (error) {
-        console.error("친구 끊기 오류:", error);
-        alert("친구 끊기 중 오류가 발생했습니다.");
-      }
-    };
-  
-    useEffect(() => {
-      fetchFriends();
-      fetchMyPosts();
-    }, []);
 
-    //selectedProfile이 바뀌면
 
   return (
     <div className="friends-wrap">
