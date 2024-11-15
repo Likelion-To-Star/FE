@@ -161,7 +161,7 @@ const toLocalISOString = (date) => {
     <div className="bor"></div>
       <div className="signup-container">
         <div className="signup-header">
-          <img src={backbtn} onClick={() => navigate("/mypage")} alt="Back" />
+          <img src={backbtn} onClick={() => navigate("/main/mypage")} alt="Back" />
           <h4>우리 아이</h4>
         </div>
         <div className="signupNext-body">

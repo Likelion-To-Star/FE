@@ -55,7 +55,8 @@ function App() {
   const handleLogin = () => {
     const loginTime = new Date().getTime();
     localStorage.setItem("loginTime", loginTime);
-    setIsLoggedIn(true);
+    if(localStorage.getItem("token"))
+      setIsLoggedIn(true);
   };
 
   return (
@@ -71,15 +72,15 @@ function App() {
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
 
         {/* 메인 경로 */}
-        <Route path="/main/*" element={<Main />}>
+        <Route path="/main/*" element={isLoggedIn ? <Main />: <Navigate to="/login" />}>
           <Route path="community" element={isLoggedIn ? <Community /> : <Navigate to="/login" />} />
-          <Route path="community/mkcom" element={<MkCom />} />
-          <Route path="community/editcom" element={<EditCom />} />
-          <Route path="community/entercom" element={<EnterCom />} />
-          <Route path="community/changecom" element={<ChangeCom />} />
-          <Route path="community/chatting" element={<Chatting />} />
-          <Route path="friends" element={<Friends />} />
-          <Route path="stars" element={<Stars />} />
+          <Route path="community/mkcom" element={isLoggedIn ?<MkCom />: <Navigate to="/login" />} />
+          <Route path="community/editcom" element={isLoggedIn ?<EditCom />: <Navigate to="/login" />} />
+          <Route path="community/entercom" element={isLoggedIn ?<EnterCom />: <Navigate to="/login" />} />
+          <Route path="community/changecom" element={isLoggedIn ?<ChangeCom />: <Navigate to="/login" />} />
+          <Route path="community/chatting" element={isLoggedIn ?<Chatting />: <Navigate to="/login" />} />
+          <Route path="friends" element={isLoggedIn ?<Friends />: <Navigate to="/login" />} />
+          <Route path="stars" element={isLoggedIn ?<Stars />: <Navigate to="/login" />} />
           <Route path="friends" element={isLoggedIn ? <Friends /> : <Navigate to="/login" />} />
         <Route path="friends/editpost/:articleId" element={isLoggedIn ? <EditPost /> : <Navigate to="/login" />} />
         <Route path="friendsSearch" element={isLoggedIn ? <FriendsSearch /> : <Navigate to="/login" />} />
@@ -90,9 +91,9 @@ function App() {
 
         <Route path="mypage/mypageEdit" element={isLoggedIn ? <MypageEdit /> : <Navigate to="/login" />} />
 
-        <Route path="stars/letter" element={<Letter />} />
-        <Route path="stars/tostar" element={<ToStar />} />
-        <Route path="stars/fromstar" element={<FromStar />} />
+        <Route path="stars/letter" element={isLoggedIn ? <Letter />: <Navigate to="/login" />} />
+        <Route path="stars/tostar" element={isLoggedIn ? <ToStar />: <Navigate to="/login" />} />
+        <Route path="stars/fromstar" element={isLoggedIn ? <FromStar />: <Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );
