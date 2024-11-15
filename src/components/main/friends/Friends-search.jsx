@@ -335,14 +335,8 @@ const FriendsSearch = () => {
 
   // 게시물 수정
   const handleEditClick = (articleId, authorId) => {
-    if (authorId === myId) {
-      navigate(`/main/friends/editpost/${articleId}`);
-    } else {
-      setNotOwner(true);
-      setTimeout(() => {
-        setNotOwner(false);
-      }, 3000);
-    }
+    console.log("게시물ID", articleId);
+    navigate(`/main/friends/editpost/${articleId}`);
   };
 
   const openModal = (articleId) => {

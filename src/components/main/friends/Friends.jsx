@@ -36,6 +36,7 @@ const Friends = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  //친구 추가에 쓰임
 
   useEffect(() => {
     const fetchMyInfo = async () => {
@@ -259,14 +260,20 @@ const Friends = () => {
     const initPosts = async () => {
       await fetchFriends();
 
-      if (starfriend) {
+      if (starfriend!=="myProfile"&&starfriend!==null) {
         // starfriend가 있을 경우 해당 유저의 게시물 조회
         await fetchUserPosts(starfriend, 0);
         setSelectedProfile(starfriend);
+        console.log(starfriend);
+        
       } else {
         // starfriend가 없을 경우 자신의 게시물 조회
-        await fetchMyPosts(0);
+        setPosts([]);
+        setPage(0);
+        setHasMore(true);
         setSelectedProfile("myProfile");
+        await fetchMyPosts(0);
+        
       }
 
       // 초기 로딩 완료 후 옵저버 활성화
@@ -290,6 +297,7 @@ const Friends = () => {
     setHasMore(true);
     setSelectedProfile("myProfile");
     fetchMyPosts(0);
+    localStorage.setItem("starfriend", "myProfile");
   };
 
   const handleProfileClick = (searchId) => {
@@ -330,17 +338,63 @@ const Friends = () => {
     fetchComments(postId);
   };
 
-  // // 댓글 삭제 모달 열기
-  // const openDeleteModal = (commentId) => {
-  //   setCommentToDelete(commentId);
-  //   setIsDeleteModalOpen(true);
-  // };
+  //
+  // 친구 추가
+  const addFriend = async (friendId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${BASE_URL}/api/user/friend`,
+        { friendId },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.isSuccess) {
+        alert(response.data.message);
+        fetchFriends();
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("친구 추가 오류:", error);
+      alert("친구 추가 중 오류가 발생했습니다.");
+    }
+  };
+    // 친구 삭제
+    const removeFriend = async (friendId) => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(`${BASE_URL}/api/user/friend`, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+          data: { friendId },
+        });
+  
+        if (response.data.isSuccess) {
+          alert(response.data.message);
+          setFriends((prevFriends) => prevFriends.filter((friend) => friend.id !== friendId));
+          setSelectedProfile(null);
+        } else {
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error("친구 끊기 오류:", error);
+        alert("친구 끊기 중 오류가 발생했습니다.");
+      }
+    };
+  
+    useEffect(() => {
+      fetchFriends();
+      fetchMyPosts();
+    }, []);
 
-  // // 댓글 삭제 모달 닫기
-  // const closeDeleteModal = () => {
-  //   setIsDeleteModalOpen(false);
-  //   setCommentToDelete(null);
-  // };
+    //selectedProfile이 바뀌면
 
   return (
     <div className="friends-wrap">
