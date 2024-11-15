@@ -14,6 +14,7 @@ const SignUpNext = () => {
   const location = useLocation();
   const { name, email, password } = location.state || {}; // SignUp 페이지에서 전달된 데이터 가져오기
   const [parentName, setParentName] = useState("");
+  const [childName,setChildName] = useState("");
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedAnimal, setSelectedAnimal] = useState("");
   const [birthDate, setBirthDate] = useState(null);
@@ -50,9 +51,9 @@ const SignUpNext = () => {
         formData.append("userName", name); // SignUp 페이지에서 전달된 이름
         formData.append("email", email); // SignUp 페이지에서 전달된 이메일
         formData.append("password", password); // SignUp 페이지에서 전달된 비밀번호
-        formData.append("petName", parentName); // 보호자 이름
+        formData.append("petName", childName); // 보호자 이름
         formData.append("ownerName", parentName); // 주인 이름
-        formData.append("pet_gender", selectedGender); // 성별
+        formData.append("petGender", selectedGender); // 성별
         formData.append("category", selectedAnimal); // 종류
         formData.append("birthDay", birthDate ? birthDate.toISOString().split("T")[0] : ""); // 생일을 YYYY-MM-DD 형식으로
         formData.append("starDay", starDate ? starDate.toISOString().split("T")[0] : ""); // 별이 된 날을 YYYY-MM-DD 형식으로
@@ -71,7 +72,7 @@ const SignUpNext = () => {
             JSON.stringify({
               email,
               userName: name,
-              petName: parentName,
+              petName: childName,
               profileImage,
             })
           );
@@ -126,7 +127,17 @@ const SignUpNext = () => {
                 <h3>우리 아이 이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <input type="text" className="sign-input" placeholder="아이 이름" value={parentName} onChange={(e) => setParentName(e.target.value)} />
+              <input type="text" className="sign-input" placeholder="아이의 이름을 작성해주세요." value={childName} onChange={(e) => setChildName(e.target.value)} />
+              {errors.petName && <div className="error-message">{errors.petName}</div>}
+            </div>
+
+            {/*아이 보호자 이름 */}
+            <div className="form-container">
+              <div className="form-header">
+                <h3>아이에게 보호자님의 이름</h3>
+                <p>* 필수 입력 항목입니다.</p>
+              </div>
+              <input type="text" className="sign-input" placeholder="아이에게 보호자님의 이름을 작성해주세요." value={parentName} onChange={(e) => setParentName(e.target.value)} />
               {errors.petName && <div className="error-message">{errors.petName}</div>}
             </div>
 
@@ -150,6 +161,7 @@ const SignUpNext = () => {
               {errors.gender && <div className="error-message">{errors.gender}</div>}
             </div>
 
+            
             {/* 종류 */}
             <div className="form-container">
               <div className="form-group">
