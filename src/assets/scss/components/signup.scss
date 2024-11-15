@@ -7,37 +7,75 @@
   justify-content: center;
   align-items: center;
   background: linear-gradient(to bottom, #3a305e 0%, #625799 18.6%, #6e5bb5 33.2%, #7865c2 49.8%, #917ee8 66.4%, #b49ef6 83%, #ddc2f8 99.6%, #eacef9 100%);
+  .bor{
+    position: absolute;
+    top:60px;
+    border-bottom: 1px solid #8a888861;
+    width: 100vw;
+    height: 1px;
+  }
+}
+// 에러 메시지 컨테이너 스타일
+.error-container {
+  display: flex;
+  align-items: center;
+
+  .error-icon {
+    width: 16px;
+    margin-right: 5px;
+    margin-top: 4px;
+  }
+
+  .error-message {
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: bold;
+    color: #eccdfc;
+    word-break: break-all;
+  }
 }
 
 .signup-container {
-  width: 393px;
-  height: 852px;
-  padding: 20px;
+  width: 343px;
+  height: 100%;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
-  justify-content: unset;
+  justify-content: center;
   align-items: center;
+
 
   .signup-header {
     width: 100%;
     display: flex;
     margin-bottom: 20px;
-
+    justify-content: center;
+    position: absolute;
+    top: 20px;
+    left:50%;
+    transform: translateX(-50%);
     img {
       width: 27px;
-      margin-right: 33%;
+      position: absolute;
+      left: 15px;
+      top: -5px;
     }
     h4 {
       font-size: 20px;
       font-weight: 400;
       color: #fff;
-      font-family: "seolleimcool-SemiBold";
+      font-family: "YiSunShin Dotum M";
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 22px;
+      letter-spacing: -0.40799999237060547px;
+      text-align: center;
+
     }
   }
 
   .signup-body {
     width: 100%;
-    border-top: 1px solid #8a888861;
     overflow: scroll;
     -ms-overflow-style: none;
 
@@ -46,13 +84,18 @@
     }
   }
 
+
   .sign-form {
     width: 100%;
 
     .sign-header {
       color: #fff;
       font-size: 20px;
-      font-family: "GmarketSansLight";
+      font-family: "YiSunShin Dotum L";
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 22px;
+      letter-spacing: -0.40799999237060547px;
       margin: 20px 0;
     }
   }
@@ -60,27 +103,34 @@
   .form-container {
     color: #fff;
 
-    .form-header {
-      display: block;
+   .form-header {
+      display: flex;
       font-family: "Pretendard-SemiBold";
       margin-bottom: 5px;
-      margin-top: 5px;
+      margin-top: 8px;
 
       h3 {
+        font-family: "YiSunShin Dotum M";
         font-size: 19px;
+        font-weight: 400;
+        line-height: 19.19px;
       }
       p {
         font-size: 9px;
         color: #bababa;
-        align-self: center;
+        align-self: flex-end;
         margin-left: 10px;
       }
     }
+    input{
+      max-width: 300px;
+    }
   }
+
 
   .sign-input {
     width: 100%;
-    height: 50px;
+    height: 44px;
     padding: 10px;
     border: none;
     font-size: 16px;
@@ -88,12 +138,23 @@
     background-color: #fff;
     color: #000000; // 작성자 텍스트 색상
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-
+    
     // Placeholder 스타일 설정
     &::placeholder {
       color: #adadad; // Placeholder 색상
+      font-family: "YiSunShin Dotum M";
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 14.14px;
+      text-align: left;
+
     }
   }
+}
+.input-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 // 체크박스 큰 항목 (약관 전체 동의)
@@ -120,6 +181,7 @@
     font-size: 12px;
     font-family: "Pretendard-SemiBold";
     margin-left: 8px;
+
   }
 
   p {
@@ -239,7 +301,7 @@
 }
 
 .fm-btn {
-  width: 100%;
+  width: 143px;
   height: 44px;
   padding: 15px;
   background-color: #fff;
@@ -294,12 +356,11 @@
 .profile-img-cnt {
   display: flex;
   justify-content: center;
-}
+  }
 
 .profile-img {
   width: 96px;
   height: 96px;
-  border-radius: 50%;
 }
 
 // 종류 선택 css
@@ -372,4 +433,52 @@ select {
   font-family: "GmarketSansLight";
   padding-right: 130px;
   color: #292929;
+  &::placeholder {
+    color: #adadad; // Placeholder 색상
+    font-family: "YiSunShin Dotum M";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 14.14px;
+    text-align: left;
+
+  }
+}
+
+.signupNext-body {
+  width: 100%;
+  height: 100vh;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  margin-top: 60px;
+  padding-top: 10px;
+  padding-bottom: 70px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.signNext-container {
+  color: #fff;
+  margin-bottom: 20px;
+ .form-header {
+    display: flex;
+    font-family: "Pretendard-SemiBold";
+
+    margin-top: 5px;
+    margin-bottom: 8px;
+    h3 {
+      font-family: "YiSunShin Dotum M";
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 19.19px;
+    }
+    p {
+      font-size: 9px;
+      color: #bababa;
+      align-self: flex-end;
+      margin-left: 10px;
+    }
+  }
+  input{
+    max-width: 300px;
+  }
 }

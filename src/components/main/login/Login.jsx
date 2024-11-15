@@ -74,15 +74,19 @@ const Login = ({ onLogin }) => {
           <div className="input-wrapper">
             <input type="password" className="pwd-input" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          {errorMessage && (
+
+          <div className="button-wrapper">
+
+          <button type="submit" className="login-button">
+            로그인
+            {errorMessage && (
             <div className="error-container" style={{ marginBottom: "5px" }}>
               <img src={errorIcon} alt="Warning" className="error-icon" />
               <p className="error-message">{errorMessage}</p>
             </div>
           )}
-          <button type="submit" className="login-button">
-            로그인
           </button>
+          </div>
         </form>
         <div className="login-footer">
           <p>

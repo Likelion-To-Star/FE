@@ -7,6 +7,7 @@ import backbtn from "../../../assets/img/signup-back-btn.svg";
 import mybabyimg from "../../../assets/img/mybabyimg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import errorIcon from "../../../assets/img/error-icon.svg"; // 에러 아이콘 import
 
 const SignUpNext = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -41,6 +42,12 @@ const SignUpNext = () => {
     setErrors({});
     const newErrors = {};
 
+    //utc이 iso로 바뀌어야
+    const toLocalISOString = (date) => {
+      const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      return offsetDate.toISOString().split("T")[0];
+    };
+
     if (!parentName) newErrors.parentName = "보호자 이름을 입력해주세요.";
     if (!selectedGender) newErrors.gender = "성별을 선택해주세요.";
     if (!selectedAnimal) newErrors.animal = "종류를 선택해주세요.";
@@ -55,8 +62,8 @@ const SignUpNext = () => {
         formData.append("ownerName", parentName); // 주인 이름
         formData.append("petGender", selectedGender); // 성별
         formData.append("category", selectedAnimal); // 종류
-        formData.append("birthDay", birthDate ? birthDate.toISOString().split("T")[0] : ""); // 생일을 YYYY-MM-DD 형식으로
-        formData.append("starDay", starDate ? starDate.toISOString().split("T")[0] : ""); // 별이 된 날을 YYYY-MM-DD 형식으로
+        formData.append("birthDay", birthDate ? toLocalISOString(birthDate) : "");
+        formData.append("starDay", starDate ? toLocalISOString(starDate) : "");
         if (fileInputRef.current.files[0]) {
           formData.append("image", fileInputRef.current.files[0]);
         }
@@ -95,34 +102,39 @@ const SignUpNext = () => {
 
   return (
     <div className="signup-background">
+      <div className="bor"></div>
       <div className="signup-container">
         <div className="signup-header">
           <img src={backbtn} onClick={() => navigate("/signup")} alt="Back" />
           <h4>회원가입</h4>
         </div>
-        <div className="signup-body">
+        <div className="signupNext-body">
           <form className="sign-form" onSubmit={handleSignup}>
             <div className="sign-header">
               <p>소중한 추억을 간직하기 위해</p>
               <p>사랑하는 아이에 대해 알려주세요.</p>
             </div>
             {/* 아이 사진 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>우리 아이 사진</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <div className="profile-img-cnt">
-                <img src={profileImage} alt="Profile Avatar" className="profile-img" />
-                <div className="edit-icon" onClick={handleIconClick}>
-                  <FontAwesomeIcon icon={faCamera} size="lg" />
-                </div>
+              <div className="profile-img-cnt" onClick={handleIconClick}>
+                <img
+                  src={profileImage}
+                  alt="Profile Avatar"
+                  className="profile-img"
+                  style={{
+                    borderRadius: profileImage === mybabyimg ? "0" : "50%", // 기본 이미지일 때만 둥근 모서리 적용
+                  }}
+                />
               </div>
             </div>
             <input type="file" ref={fileInputRef} accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
 
             {/* 아이 이름 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>우리 아이 이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
@@ -134,11 +146,16 @@ const SignUpNext = () => {
                 value={childName}
                 onChange={(e) => setChildName(e.target.value)}
               />
-              {errors.petName && <div className="error-message">{errors.petName}</div>}
+              {errors.petName && (
+                <div className="error-container">
+                  <img src={errorIcon} alt="Warning" className="error-icon" />
+                  <p className="error-message">{errors.petName}</p>
+                </div>
+              )}
             </div>
 
             {/*아이 보호자 이름 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>아이에게 보호자님의 이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
@@ -150,11 +167,16 @@ const SignUpNext = () => {
                 value={parentName}
                 onChange={(e) => setParentName(e.target.value)}
               />
-              {errors.petName && <div className="error-message">{errors.petName}</div>}
+              {errors.ownerName && (
+                <div className="error-container">
+                  <img src={errorIcon} alt="Warning" className="error-icon" />
+                  <p className="error-message">{errors.ownerName}</p>
+                </div>
+              )}
             </div>
 
             {/* 성별 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header" style={{ display: "block" }}>
                 <h3>성별</h3>
                 <div className="fm-btn-container">
@@ -170,11 +192,10 @@ const SignUpNext = () => {
                   </div>
                 </div>
               </div>
-              {errors.gender && <div className="error-message">{errors.gender}</div>}
             </div>
 
             {/* 종류 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-group">
                 <div className="form-header">
                   <h3>종류</h3>
@@ -198,11 +219,16 @@ const SignUpNext = () => {
                   <option value="기타 아이들">기타 아이들</option>
                 </select>
               </div>
-              {errors.animal && <div className="error-message">{errors.animal}</div>}
+              {errors.animal && (
+                <div className="error-container">
+                  <img src={errorIcon} alt="Warning" className="error-icon" />
+                  <p className="error-message">{errors.animal}</p>
+                </div>
+              )}
             </div>
 
             {/* 생일 선택 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>생일</h3>
               </div>
@@ -216,7 +242,7 @@ const SignUpNext = () => {
             </div>
 
             {/* 별이 된 날 선택 */}
-            <div className="form-container">
+            <div className="signNext-container">
               <div className="form-header">
                 <h3>별이 된 날</h3>
               </div>

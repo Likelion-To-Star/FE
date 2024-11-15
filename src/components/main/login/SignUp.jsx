@@ -71,10 +71,11 @@ const SignUp = () => {
     }
   };
 
-  const isNextButtonEnabled = name && email && password && confirmPassword === password && isAgreed1 && isAgreed2 && isAgreed3 && isAgreed4 && isAgreed5;
+  const isNextButtonEnabled = name && email && password && confirmPassword === password && isAgreed1 && isAgreed2;
 
   return (
     <div className="signup-background">
+      <div className="bor"></div>
       <div className="signup-container">
         <div className="signup-header">
           <img src={backbtn} onClick={handleLogin} alt="Back" />
@@ -91,6 +92,7 @@ const SignUp = () => {
                 <h3>이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
+              <div className=" input-form">
               <input type="text" className="sign-input" placeholder="김사자" value={name} onChange={(e) => setName(e.target.value)} />
               {errors.name ? (
                 <div className="error-container">
@@ -100,6 +102,7 @@ const SignUp = () => {
               ) : (
                 <div style={{ marginBottom: "23px" }}></div>
               )}
+              </div>
             </div>
 
             <div className="form-container">
@@ -107,7 +110,8 @@ const SignUp = () => {
                 <h3>이메일</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <input type="text" className="sign-input" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <div className=" input-form">
+              <input type="text" className="sign-input" placeholder="likelion@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               {errors.email ? (
                 <div className="error-container">
                   <img src={errorIcon} alt="Warning" className="error-icon" />
@@ -116,6 +120,7 @@ const SignUp = () => {
               ) : (
                 <div style={{ marginBottom: "25px" }}></div>
               )}
+              </div>
             </div>
 
             <div className="form-container">
@@ -123,7 +128,8 @@ const SignUp = () => {
                 <h3>비밀번호</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <input type="password" className="sign-input" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <div className=" input-form">
+              <input type="password" className="sign-input" placeholder="영문/숫자/특수문자 혼합, 8~12자" value={password} onChange={(e) => setPassword(e.target.value)} />
               {errors.password ? (
                 <div className="error-container">
                   <img src={errorIcon} alt="Warning" className="error-icon" />
@@ -132,6 +138,7 @@ const SignUp = () => {
               ) : (
                 <div style={{ marginBottom: "23px" }}></div>
               )}
+              </div>
             </div>
 
             <div className="form-container">
@@ -139,10 +146,11 @@ const SignUp = () => {
                 <h3>비밀번호 확인</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
+              <div className=" input-form">
               <input
                 type="password"
                 className="sign-input"
-                placeholder="비밀번호 확인"
+                placeholder="비밀번호를 한 번 더 입력해주세요."
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -154,10 +162,11 @@ const SignUp = () => {
               ) : (
                 <div style={{ marginBottom: "23px" }}></div>
               )}
+              </div>
             </div>
 
             {/* 체크박스 추가 */}
-            <div className="form-container checkbox-big">
+            <div className="form-container checkbox-big" style={{borderBottom: "1px solid white", marginBottom:"10px"}}>
               <input type="checkbox" id="terms" checked={isAgreedAll} onChange={handleCheckboxChange} />
               <label style={{ marginLeft: "8px", fontSize: "17px", fontFamily: "Pretendard-SemiBold" }}>약관 전체 동의</label>
             </div>
@@ -170,7 +179,7 @@ const SignUp = () => {
             <div className="form-container checkbox-small">
               <input type="checkbox" id="terms-small-2" checked={isAgreed2} onChange={handleCheckboxChange} />
               <label style={{ marginLeft: "8px", fontSize: "12px", fontFamily: "Pretendard-SemiBold" }}>[필수] 개인정보 수집/이용 동의</label>
-              <p style={{ marginLeft: "155px" }} onClick={() => navigate("/signup-agree1")}>
+              <p onClick={() => navigate("/signup-agree1")}>
                 보기
               </p>
             </div>
@@ -178,7 +187,7 @@ const SignUp = () => {
             <div className="form-container checkbox-small">
               <input type="checkbox" id="terms-small-3" checked={isAgreed3} onChange={handleCheckboxChange} />
               <label style={{ marginLeft: "8px", fontSize: "12px", fontFamily: "Pretendard-SemiBold" }}>[필수] 서비스 이용 약관</label>
-              <p style={{ marginLeft: "190px" }} onClick={() => navigate("/signup-agree2")}>
+              <p onClick={() => navigate("/signup-agree2")}>
                 보기
               </p>
             </div>

@@ -158,7 +158,7 @@ function IncomingMessage({ message }) {
 function OutgoingMessage({ message }) {
   return (
     <div className='me-container'>
-            <div className='me'><p><strong>나:</strong> {message.content}</p></div>
+            <div className='me'><p><strong></strong> {message.content}</p></div>
     </div>
   );
 }
