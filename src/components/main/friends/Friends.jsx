@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/scss/components/friends.scss";
@@ -32,6 +32,10 @@ const Friends = () => {
   const [commentOpen, setCommentOpen] = useState(false);
   const starfriend = localStorage.getItem("starfriend");
   const [selectedProfile, setSelectedProfile] = useState('myProfile');
+  const observerRef = useRef(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   // 친구 목록 조회
   const fetchFriends = async () => {
@@ -49,27 +53,23 @@ const Friends = () => {
       
     }
   };
-
   // 내 게시물 조회
-  const fetchOMyPosts = async () => {
+  const fetchMyPosts = async (currentPage) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(`${BASE_URL}/api/articles/user`, {
         headers: { Authorization: token },
         params: {
-          page: 0,
+          page: currentPage,
           size: 5,
         },
       });
-      if (response.data.result) {
-        setPosts(response.data.result);
-        setMyId(response.data.result[0].author.userId);
+      const data = response.data.result;
+      if (data.length === 0) {
+        setHasMore(false);
       } else {
-        setPosts([]);
-      }
-
-      if (response.data.isSuccess !== true) {
-        alert("로그인 다시 해주세요");
+        setPosts((prevPosts) => [...prevPosts, ...data]);
+        setPage((prevPage) => prevPage + 1);
       }
     } catch (error) {
       console.error("내 게시물 조회 오류:", error.response || error);
@@ -77,30 +77,52 @@ const Friends = () => {
   };
 
   // 다른 사람 추억 조회
-  const fetchUserPosts = async (searchid) => {
+  const fetchUserPosts = async (searchId, currentPage) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/articles/user/${searchid}`, {
+      const response = await axios.get(`${BASE_URL}/api/articles/user/${searchId}`, {
         headers: { Authorization: token },
         params: {
-          page: 0,
+          page: currentPage,
           size: 5,
         },
       });
-      if (response.data.result) {
-        setPosts(response.data.result);
-        console.log(posts);
+      const data = response.data.result;
+      if (data.length === 0) {
+        setHasMore(false);
       } else {
-        setPosts([]);
-      }
-
-      if (response.data.isSuccess !== true) {
-        alert("로그인 다시 해주세요");
+        setPosts((prevPosts) => [...prevPosts, ...data]);
+        setPage((prevPage) => prevPage + 1);
       }
     } catch (error) {
-      console.error("게시물 불러오기 오류:", error.response || error);
+      console.error("게시물 조회 오류:", error.response || error);
     }
   };
+
+  const handleObserver = (entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && hasMore) {
+      const nextPage = page + 1;
+      if (selectedProfile === 'myProfile') {
+        fetchMyPosts(nextPage);
+      } else {
+        fetchUserPosts(selectedProfile, nextPage);
+      }
+    }
+  };
+  
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, { threshold: 1.0 });
+    if (observerRef.current) observer.observe(observerRef.current);
+  
+    // 옵저버가 최신 상태를 반영할 수 있도록 설정
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    };
+  }, [page, hasMore, selectedProfile, isInitialLoad]);
+  
+
 
   // 댓글 조회
   const fetchComments = async (articleId) => {
@@ -202,24 +224,27 @@ const Friends = () => {
     }
   };
 
-  useEffect(() => {
-    const initPosts = async () => {
-      await fetchFriends();
-  
-      if (starfriend) {
-        // starfriend가 있을 경우 해당 유저의 게시물 조회
-        await fetchUserPosts(starfriend);
-        setSelectedProfile(starfriend);
-      } else {
-        // starfriend가 없을 경우 자신의 게시물 조회
-        await fetchOMyPosts();
-        setSelectedProfile('myProfile');
-      }
-    };
-  
-    initPosts();
-  }, []);
-  
+// 초기 게시물 로딩
+useEffect(() => {
+  const initPosts = async () => {
+    await fetchFriends();
+
+    if (starfriend) {
+      // starfriend가 있을 경우 해당 유저의 게시물 조회
+      await fetchUserPosts(starfriend, 0);
+      setSelectedProfile(starfriend);
+    } else {
+      // starfriend가 없을 경우 자신의 게시물 조회
+      await fetchMyPosts(0);
+      setSelectedProfile('myProfile');
+    }
+
+    // 초기 로딩 완료 후 옵저버 활성화
+    setIsInitialLoad(false);
+  };
+
+  initPosts();
+}, []);
 
   const handleMemory = () => {
     navigate("/main/friends/newpost");
@@ -228,20 +253,23 @@ const Friends = () => {
   const handleFriendsSearch = () => {
     navigate("/main/friendsSearch");
   };
+ // 프로필 클릭 시 게시물 초기화 및 재조회
+ const  handleMyprofileClick= () => {
+  setPosts([]);
+  setPage(0);
+  setHasMore(true);
+  setSelectedProfile('myProfile');
+  fetchMyPosts(0);
+};
 
-  const handleMyprofileClick = () => {
-    fetchOMyPosts();
-    setSelectedProfile('myProfile');
-    localStorage.removeItem("starfriend"); // starFriend 초기화
-  };
-  
+const handleProfileClick = (searchId) => {
+  setPosts([]);
+  setPage(0);
+  setHasMore(true);
+  setSelectedProfile(searchId);
+  fetchUserPosts(searchId, 0);
+};
 
-  const handleProfileClick = (searchid) => {
-    fetchUserPosts(searchid);
-    setSelectedProfile(searchid);
-    localStorage.setItem("starfriend", searchid); // 클릭한 친구를 starFriend로 저장
-  };
-  
 
   const openModal = (articleId) => {
     setPostToDelete(articleId);
@@ -298,7 +326,7 @@ const Friends = () => {
               {friends ? (
                 friends.map((friend) => (
                   <div key={friend.id} className={`friend-with-pro`} onClick={() => handleProfileClick(friend.id)}>
-                    <img src={friend.profileImage || Profile} className={`friends-img  ${selectedProfile == friend.id ? 'selected' : ''}`} alt={friend.petName} />
+                    <img src={friend.profileImage || Profile} className={`friends-img  ${selectedProfile === friend.id ? 'selected' : ''}`} alt={friend.petName} />
                     <p>{friend.petName}</p>
                   </div>
                 ))
@@ -332,9 +360,10 @@ const Friends = () => {
             </div>
           </div>
         </div>
-
-        {posts && posts.length > 0 ? (
+        <div>
+        {           
           posts.map((post) => (
+
             <div key={post.articleId} className="post-cnt">
               <h4>{post.title}</h4>
               <p>{post.content}</p>
@@ -348,10 +377,11 @@ const Friends = () => {
                 <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
             </div>
-          ))
-        ) : (
-          <p>게시물이 없습니다.</p>
-        )}
+
+          ))       
+        }
+        <div ref={observerRef} style={{ height: "20px" }}></div>
+        </div>
 
         <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
       </div>
