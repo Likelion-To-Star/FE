@@ -103,6 +103,11 @@ const MypageEdit = () => {
     e.preventDefault();
     setErrors({});
     const newErrors = {};
+    //utc이 iso로 바뀌어야
+const toLocalISOString = (date) => {
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return offsetDate.toISOString().split("T")[0];
+};
 
     if (!parentName) newErrors.parentName = "보호자 이름을 입력해주세요.";
     if (!selectedGender) newErrors.gender = "성별을 선택해주세요.";
@@ -114,8 +119,8 @@ const MypageEdit = () => {
         formData.append("ownerName", parentName);
         formData.append("petGender", selectedGender);
         formData.append("category", selectedAnimal);
-        formData.append("birthDay", birthDate ? birthDate.toISOString().split("T")[0] : "");
-        formData.append("starDay", starDate ? starDate.toISOString().split("T")[0] : "");
+        formData.append("birthDay", birthDate ? toLocalISOString(birthDate) : "");
+        formData.append("starDay", starDate ? toLocalISOString(starDate) : "");
         if (fileInputRef.current.files[0]) {
           formData.append("image", fileInputRef.current.files[0]);
         }
@@ -136,7 +141,7 @@ const MypageEdit = () => {
               profileImage,
             })
           );
-          navigate("-1");
+          navigate("/");
         } else {
           setErrors({ submit: response.data.message });
         }
@@ -214,20 +219,20 @@ const MypageEdit = () => {
                 </div>
                 <select id="animal-select" value={selectedAnimal} onChange={(e) => setSelectedAnimal(e.target.value)}>
                   <option value="">-- 선택하세요 --</option>
-                  <option value="Dog">강아지</option>
-                  <option value="Cat">고양이</option>
-                  <option value="Frog">개구리</option>
-                  <option value="Turtle">거북이</option>
-                  <option value="Squirrel">다람쥐</option>
-                  <option value="Lizard">도마뱀</option>
-                  <option value="Fish">물고기</option>
-                  <option value="Snake">뱀</option>
-                  <option value="Bird">새</option>
-                  <option value="Hermit Crab">소라게</option>
-                  <option value="Stag Beetle">사슴벌레</option>
-                  <option value="Rabbit">토끼</option>
-                  <option value="Hamster">햄스터</option>
-                  <option value="Other">기타 아이들</option>
+                  <option value="강아지">강아지</option>
+                  <option value="고양이">고양이</option>
+                  <option value="개구리">개구리</option>
+                  <option value="거북이">거북이</option>
+                  <option value="다람쥐">다람쥐</option>
+                  <option value="도마뱀">도마뱀</option>
+                  <option value="물고기">물고기</option>
+                  <option value="뱀">뱀</option>
+                  <option value="새">새</option>
+                  <option value="소라게">소라게</option>
+                  <option value="사슴벌레">사슴벌레</option>
+                  <option value="토끼">토끼</option>
+                  <option value="햄스터">햄스터</option>
+                  <option value="기타 아이들">기타 아이들</option>
                 </select>
               </div>
               {errors.animal && <div className="error-message">{errors.animal}</div>}
