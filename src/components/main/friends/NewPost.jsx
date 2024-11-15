@@ -5,20 +5,28 @@ import Header from "../section/Header";
 import Nav from "../section/Nav";
 import newpostImg from "../../../assets/img/friends/newpost-img.svg";
 import "../../../assets/scss/components/newpost.scss";
-import plusIcon from '../../../assets/img/plus-icon.svg';
+import plusIcon from "../../../assets/img/plus-icon.svg";
 import AlertWhen from "../../Util/AlertWhen";
-import MemAlert from "../../../assets/img/friends/memory-alert.svg"
-
+import MemAlert from "../../../assets/img/friends/memory-alert.svg";
 
 const NewPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(null);  // 선택된 이미지 인덱스를 저장
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null); // 선택된 이미지 인덱스를 저장
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const fileInputRef = useRef(null);
   const [alertmem, setAlertMem] = useState(false);
+  const textareaRef = useRef(null);
+
+  const handleContentChange = (e) => {
+    setContent(e.target.value);
+
+    // 높이를 자동으로 조정
+    textareaRef.current.style.height = "auto"; // 높이를 초기화
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // 내용에 따라 높이 설정
+  };
 
   // 이미지 선택 핸들러
   const handleImageChange = (event) => {
@@ -27,10 +35,10 @@ const NewPost = () => {
       // 선택된 이미지가 있을 경우 해당 이미지를 갱신
       setImages((prevImages) => {
         const updatedImages = [...prevImages];
-        updatedImages[selectedImageIndex] = selectedFiles[0];  // 새 파일로 교체
+        updatedImages[selectedImageIndex] = selectedFiles[0]; // 새 파일로 교체
         return updatedImages;
       });
-      setSelectedImageIndex(null);  // 수정이 끝났으므로 인덱스 초기화
+      setSelectedImageIndex(null); // 수정이 끝났으므로 인덱스 초기화
     } else {
       // 새로운 이미지를 추가
       setImages((prevImages) => [...prevImages, ...selectedFiles]);
@@ -39,8 +47,8 @@ const NewPost = () => {
 
   // 이미지를 클릭하면 파일 선택 창을 열도록 하는 함수
   const handleImageClick = (index) => {
-    setSelectedImageIndex(index);  // 수정할 이미지의 인덱스를 저장
-    fileInputRef.current.click();  // 파일 선택 창 열기
+    setSelectedImageIndex(index); // 수정할 이미지의 인덱스를 저장
+    fileInputRef.current.click(); // 파일 선택 창 열기
   };
 
   // 폼 제출 핸들러
@@ -50,16 +58,21 @@ const NewPost = () => {
       return;
     }
     if (!content.trim()) {
-      
       setAlertMem(true);
       return;
     }
+
+    const handleContentChange = (e) => {
+      setContent(e.target.value);
+      e.target.style.height = "auto"; // 높이를 자동으로 초기화
+      e.target.style.height = `${e.target.scrollHeight}px`; // 내용에 따라 높이 조정
+    };
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
 
-    const imagesToUpload = images.slice(0, 5);  // 배열에서 5개까지만 선택
+    const imagesToUpload = images.slice(0, 5); // 배열에서 5개까지만 선택
     imagesToUpload.forEach((image) => formData.append("images", image));
 
     try {
@@ -73,7 +86,7 @@ const NewPost = () => {
       const response = await axios.post(`${BASE_URL}/api/articles`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token, 
+          Authorization: token,
         },
       });
 
@@ -93,7 +106,7 @@ const NewPost = () => {
       }
     }
   };
-  
+
   return (
     <div className="newpost-wrap">
       <div className="newpost-container" style={{ backgroundColor: "#FAF7FE" }}>
@@ -107,31 +120,18 @@ const NewPost = () => {
               <label htmlFor="file-upload" className="custom-file-upload">
                 <img src={newpostImg} alt="Upload" />
               </label>
-              <input 
-                id="file-upload" 
-                type="file" 
-                multiple 
-                accept="image/*" 
-                onChange={handleImageChange} 
-                style={{ display: "none" }}
-                ref={fileInputRef}  
-              />
+              <input id="file-upload" type="file" multiple accept="image/*" onChange={handleImageChange} style={{ display: "none" }} ref={fileInputRef} />
               <div className="preview-images">
-              {images.slice(0, 5).map((img, idx) => (
-                <div className="oneImg" key={idx} onClick={() => handleImageClick(idx)}>
-                  <img 
-                    src={URL.createObjectURL(img)} 
-                    alt="Preview" 
-                    className="addedImg" 
-                  />
-                  <div className="plus-icon">
-                    <img src={plusIcon} alt="plus" />
+                {images.slice(0, 5).map((img, idx) => (
+                  <div className="oneImg" key={idx} onClick={() => handleImageClick(idx)}>
+                    <img src={URL.createObjectURL(img)} alt="Preview" className="addedImg" />
+                    <div className="plus-icon">
+                      <img src={plusIcon} alt="plus" />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
                 {/* 5개 이상 이미지를 추가하려고 할 때 안내 메시지 */}
                 {images.length > 5 && <AlertWhen message="이미지는 최대 5개까지만 업로드할 수 있습니다." />}
-
               </div>
             </div>
           </div>
@@ -148,14 +148,33 @@ const NewPost = () => {
               <h4>아이와의 추억</h4>
               <p>* 필수 입력 항목입니다. 추억은 300자 이내로 작성해주세요.</p>
             </div>
-            <input placeholder="아이와의 추억을 작성해주세요." value={content} onChange={(e) => setContent(e.target.value)} />
+            <textarea
+              ref={textareaRef} // ref를 textarea에 연결
+              placeholder="아이와의 추억을 작성해주세요."
+              value={content}
+              onChange={handleContentChange}
+              rows={1} // 초기 한 줄 설정
+              style={{
+                resize: "none", // 사용자가 수동으로 크기 조정 불가
+                width: "100%", // 부모 컨테이너에 맞춤
+                fontSize: "16px", // 가독성을 위해 적절한 크기 설정
+                overflow: "hidden", // 스크롤 숨기기
+              }}
+            />
           </div>
         </div>
         <button className="memory-btn" onClick={handleSubmit}>
           추억 등록하기
-          {alertmem?<p className="memory-alert"> <img src={MemAlert} alt="alert" />필수 입력 항목을 모두 작성해주세요.</p>:<></>}
+          {alertmem ? (
+            <p className="memory-alert">
+              {" "}
+              <img src={MemAlert} alt="alert" />
+              필수 입력 항목을 모두 작성해주세요.
+            </p>
+          ) : (
+            <></>
+          )}
         </button>
-       
       </div>
     </div>
   );

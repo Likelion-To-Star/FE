@@ -5,7 +5,7 @@ import "../../../assets/scss/components/friends.scss";
 import Profile from "../../../assets/img/profile-colored.png";
 import plusIcon from "../../../assets/img/plus-icon.svg";
 import logoGray from "../../../assets/img/friends/logo-gray.svg";
-import postIcon1 from "../../../assets/img/friends/post-icon1.svg";
+import mention from "../../../assets/img/friends/post-icon1.svg";
 import postIcon2 from "../../../assets/img/friends/post-icon2.svg";
 import postIcon3 from "../../../assets/img/friends/post-icon3.svg";
 import memory from "../../../assets/img/friends/memory.svg";
@@ -18,7 +18,6 @@ const Friends = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const newPost = location.state?.newPost;
-
   const [posts, setPosts] = useState([]);
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {});
   const [friends, setFriends] = useState([]);
@@ -37,6 +36,26 @@ const Friends = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    const fetchMyInfo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${BASE_URL}/api/user/info`, {
+          headers: { Authorization: token },
+        });
+        if (response.data.isSuccess) {
+          setMyId(response.data.result.userId); // 사용자 ID 저장
+        } else {
+          alert("사용자 정보를 가져올 수 없습니다. 다시 로그인해주세요.");
+        }
+      } catch (error) {
+        console.error("사용자 정보 조회 오류:", error.response || error);
+      }
+    };
+
+    fetchMyInfo();
+  }, []);
 
   // 친구 목록 조회
   const fetchFriends = async () => {
@@ -291,10 +310,12 @@ const Friends = () => {
   //   setPostToDelete(null);
   // };
 
-  const handleEditClick = (articleId, authorId) => {
-    if (authorId === myId) {
+  const handleEditClick = (articleId, owner) => {
+    if (owner) {
+      // 게시물 소유자인 경우 수정 페이지로 이동
       navigate(`/main/friends/editpost/${articleId}`);
     } else {
+      // 소유자가 아닌 경우 경고 메시지
       setNotOwner(true);
       setTimeout(() => {
         setNotOwner(false);
@@ -363,13 +384,39 @@ const Friends = () => {
         </div>
         <div className="pro-cnt">
           <div className="pro-img-cnt">
-            <img src={userInfo.profileImage || Profile} alt="Profile" />
+            <img
+              src={
+                selectedProfile === "myProfile"
+                  ? userInfo.profileImage || Profile // 본인의 프로필 이미지
+                  : friends.find((friend) => friend.id === selectedProfile)?.profileImage || Profile // 선택된 친구의 프로필 이미지
+              }
+              alt="Profile"
+            />
             <div className="pro-words">
-              <h4>{userInfo.petName || "반려동물 이름"}</h4>
+              <h4>
+                {selectedProfile === "myProfile"
+                  ? userInfo.petName || "반려동물 이름" // 본인의 이름
+                  : friends.find((friend) => friend.id === selectedProfile)?.petName || "친구의 반려동물 이름"}{" "}
+              </h4>
               <div className="pro-p-cnt">
-                <p id="animal">{userInfo.category || "종류"} •</p>
-                <p id="birth-date">생일 {userInfo.birthDay}</p>
-                <p id="star-date">별이된 날 {userInfo.starDay}</p>
+                <p id="animal">
+                  {selectedProfile === "myProfile"
+                    ? userInfo.category || "종류" // 본인의 동물 종류
+                    : friends.find((friend) => friend.id === selectedProfile)?.category || "친구의 동물 종류"}{" "}
+                  •
+                </p>
+                <p id="birth-date">
+                  생일{" "}
+                  {selectedProfile === "myProfile"
+                    ? userInfo.birthDay || "생일 없음" // 본인의 생일
+                    : friends.find((friend) => friend.id === selectedProfile)?.birthday || "친구의 생일"}
+                </p>
+                <p id="star-date">
+                  별이된 날{" "}
+                  {selectedProfile === "myProfile"
+                    ? userInfo.starDay || "날짜 없음" // 본인의 별이된 날
+                    : friends.find((friend) => friend.id === selectedProfile)?.starDay || "친구의 별이된 날"}
+                </p>
               </div>
             </div>
           </div>
@@ -377,17 +424,34 @@ const Friends = () => {
 
         {posts && posts.length > 0 ? (
           posts.map((post) => (
-            <div key={post.articleId} className="post-cnt">
-              <h4>{post.title}</h4>
-              <p>{post.content}</p>
-              <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
-              <div className="post-icons-cnt">
-                <div className="post-icons">
-                  <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
-                  <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId, post.author.userId)} />
-                  <img src={postIcon3} alt="mention Delete" onClick={() => openModal(post.articleId)} />
+            <div className="friend-profile-container">
+              <div className="friend-posts">
+                <div key={post.articleId} className="post-cnt">
+                  <h4>{post.title}</h4>
+                  <p>{post.content}</p>
+                  <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
+                  <div className="post-icons-cnt">
+                    <div className="post-icons">
+                      {/* 댓글 버튼 */}
+                      <img src={mention} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
+
+                      {post.owner && (
+                        <>
+                          {/* 수정 버튼 */}
+                          <img
+                            src={postIcon2}
+                            alt="Edit Icon"
+                            onClick={() => handleEditClick(post.articleId, post.owner)} // owner 값 전달
+                          />
+                          {/* 삭제 버튼 */}
+                          <img src={postIcon3} alt="Delete Icon" onClick={() => openModal(post.articleId)} />
+                        </>
+                      )}
+                    </div>
+
+                    <p>{new Date(post.updatedAt).toISOString().slice(0, 10).replace(/-/g, ".")}</p>
+                  </div>
                 </div>
-                <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
             </div>
           ))
@@ -398,8 +462,8 @@ const Friends = () => {
             <p>다른 친구를 검색해주세요.</p>
           </div>
         )}
-        <div ref={observerRef} style={{ height: "20px" }}></div>
 
+        <div ref={observerRef} style={{ height: "20px" }}></div>
         <img src={memory} className="memory-fixed" onClick={handleMemory} alt="Memory" />
       </div>
       {/* 댓글 섹션 */}

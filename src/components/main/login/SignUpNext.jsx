@@ -14,7 +14,7 @@ const SignUpNext = () => {
   const location = useLocation();
   const { name, email, password } = location.state || {}; // SignUp 페이지에서 전달된 데이터 가져오기
   const [parentName, setParentName] = useState("");
-  const [childName,setChildName] = useState("");
+  const [childName, setChildName] = useState("");
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedAnimal, setSelectedAnimal] = useState("");
   const [birthDate, setBirthDate] = useState(null);
@@ -127,7 +127,13 @@ const SignUpNext = () => {
                 <h3>우리 아이 이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <input type="text" className="sign-input" placeholder="아이의 이름을 작성해주세요." value={childName} onChange={(e) => setChildName(e.target.value)} />
+              <input
+                type="text"
+                className="sign-input"
+                placeholder="아이의 이름을 작성해주세요."
+                value={childName}
+                onChange={(e) => setChildName(e.target.value)}
+              />
               {errors.petName && <div className="error-message">{errors.petName}</div>}
             </div>
 
@@ -137,7 +143,13 @@ const SignUpNext = () => {
                 <h3>아이에게 보호자님의 이름</h3>
                 <p>* 필수 입력 항목입니다.</p>
               </div>
-              <input type="text" className="sign-input" placeholder="아이에게 보호자님의 이름을 작성해주세요." value={parentName} onChange={(e) => setParentName(e.target.value)} />
+              <input
+                type="text"
+                className="sign-input"
+                placeholder="아이에게 보호자님의 이름을 작성해주세요."
+                value={parentName}
+                onChange={(e) => setParentName(e.target.value)}
+              />
               {errors.petName && <div className="error-message">{errors.petName}</div>}
             </div>
 
@@ -161,7 +173,6 @@ const SignUpNext = () => {
               {errors.gender && <div className="error-message">{errors.gender}</div>}
             </div>
 
-            
             {/* 종류 */}
             <div className="form-container">
               <div className="form-group">

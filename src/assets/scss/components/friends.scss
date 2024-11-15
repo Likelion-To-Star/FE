@@ -163,6 +163,7 @@
         width: 64px;
         height: 64px;
         border-radius: 50%;
+        border: 2px solid #7058cb !important;
       }
 
       .pro-words {
@@ -197,7 +198,7 @@
     display: block;
     padding: 30px 40px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    
+
     h4 {
       font-size: 18px;
       font-weight: bold;

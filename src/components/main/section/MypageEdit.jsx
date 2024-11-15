@@ -148,6 +148,7 @@ const MypageEdit = () => {
       setErrors(newErrors);
     }
   };
+
   return (
     <div className="signup-background">
       <div className="signup-container">

@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/scss/components/friends.scss";
 import "../../../assets/scss/components/friends-search.scss";
-import Header from "../section/Header";
-import Nav from "../section/Nav";
 import moon from "../../../assets/img/moon.svg";
 import friendsSearchBtn from "../../../assets/img/friends/friends-search-btn.svg";
 import searchIcon from "../../../assets/img/friends/search.svg";
 import noresult from "../../../assets/img/friends/no-results-icon.svg";
 import mention from "../../../assets/img/friends/post-icon1.svg";
-import postIcon1 from "../../../assets/img/friends/post-icon1.svg";
 import postIcon2 from "../../../assets/img/friends/post-icon2.svg";
 import postIcon3 from "../../../assets/img/friends/post-icon3.svg";
 import plusIcon from "../../../assets/img/plus-icon.svg";
 import EXIT from "../../../assets/img/friends/exit.svg";
 import SendInput from "../../../assets/img/friends/input-send.svg";
+import Profile from "../../../assets/img/profile-colored.png";
 
 const FriendsSearch = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -32,6 +31,33 @@ const FriendsSearch = () => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [currentComment, setCurrentComment] = useState("");
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const [selectedProfile, setSelectedProfile] = useState("myProfile"); // 초기 상태: 자기 자신
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [myId, setMyId] = useState(null);
+  const [notOwner, setNotOwner] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+
+  useEffect(() => {
+    const fetchMyInfo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${BASE_URL}/api/user/info`, {
+          headers: { Authorization: token },
+        });
+        if (response.data.isSuccess) {
+          setMyId(response.data.result.userId); // myId 설정
+        } else {
+          alert("사용자 정보를 가져오지 못했습니다. 다시 로그인해주세요.");
+        }
+      } catch (error) {
+        console.error("사용자 정보 조회 오류:", error.response || error);
+      }
+    };
+
+    fetchMyInfo();
+  }, []);
 
   // 친구 목록 조회
   const fetchFriends = async () => {
@@ -174,7 +200,7 @@ const FriendsSearch = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${BASE_URL}/api/comment`,
+        `${BASE_URL}/api/comment/${selectedPostId}`,
         {
           articleId: selectedPostId,
           content: currentComment,
@@ -193,25 +219,6 @@ const FriendsSearch = () => {
     } catch (error) {
       console.error("댓글 추가 오류:", error.response || error);
       alert("댓글 추가 중 오류가 발생했습니다.");
-    }
-  };
-
-  // 댓글 삭제
-  const handleDeleteComment = async (commentId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(`${BASE_URL}/api/comment/${commentId}`, {
-        headers: { Authorization: token },
-      });
-      if (response.data.isSuccess) {
-        alert(response.data.message);
-        setComments((prevComments) => prevComments.filter((comment) => comment.commentId !== commentId));
-      } else {
-        alert("댓글 삭제에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("댓글 삭제 오류:", error.response || error);
-      alert("댓글 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -239,6 +246,25 @@ const FriendsSearch = () => {
     } catch (error) {
       console.error("댓글 수정 오류:", error.response || error);
       alert("댓글 수정 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(`${BASE_URL}/api/comment/${commentId}`, {
+        headers: { Authorization: token },
+      });
+      if (response.data.isSuccess) {
+        alert(response.data.message);
+        setComments((prevComments) => prevComments.filter((comment) => comment.commentId !== commentId));
+      } else {
+        alert("댓글 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("댓글 삭제 오류:", error.response || error);
+      alert("댓글 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -298,18 +324,85 @@ const FriendsSearch = () => {
     fetchMyPosts();
   }, []);
 
+  // 프로필 클릭 시 게시물 초기화 및 재조회
+  const handleMyprofileClick = () => {
+    setPosts([]);
+    setPage(0);
+    setHasMore(true);
+    setSelectedProfile("myProfile");
+    fetchMyPosts(0);
+  };
+
+  // 게시물 수정
+  const handleEditClick = (articleId, authorId) => {
+    if (authorId === myId) {
+      navigate(`/main/friends/editpost/${articleId}`);
+    } else {
+      setNotOwner(true);
+      setTimeout(() => {
+        setNotOwner(false);
+      }, 3000);
+    }
+  };
+
+  const openModal = (articleId) => {
+    setPostToDelete(articleId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPostToDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (postToDelete !== null) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(`${BASE_URL}/api/articles/${postToDelete}`, {
+          headers: { Authorization: token },
+        });
+
+        if (response.data.isSuccess) {
+          alert("게시물이 성공적으로 삭제되었습니다.");
+          setPosts((prevPosts) => prevPosts.filter((post) => post.articleId !== postToDelete));
+          closeModal();
+        } else {
+          alert("게시물 삭제에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("게시물 삭제 오류:", error.response || error);
+        alert("게시물 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
   return (
     <div className="friendSrh-wrap">
       <div className="main-container">
         <div className="main-moon-starFriends">
           <div className="slide-cnt">
             <div className="friends-with-slide">
-              <div className="moon-pro" onClick={() => fetchMyPosts()}>
-                <img src={userInfo.profileImage || moon} alt="Profile" className="moon-img" />
-                <p>{userInfo.petName || "내 이름"}</p>
+              <div
+                className={`moon-pro ${selectedProfile === "myProfile" ? "selected" : ""}`}
+                onClick={() => {
+                  setSelectedProfile("myProfile"); // 선택 상태 업데이트
+                  fetchMyPosts();
+                }}
+              >
+                <img src={userInfo.profileImage || Profile} alt="Profile" className="moon-img" />
+                <p>{userInfo.petName || "애완동물 이름"}</p>
               </div>
+
               {friends.map((friend) => (
-                <div className="friend-with-pro" key={friend.id} onClick={() => handleFriendClick(friend)}>
+                <div
+                  className={`friend-with-pro ${selectedProfile === friend.id ? "selected" : ""}`}
+                  key={friend.id}
+                  onClick={() => {
+                    setSelectedProfile(friend.id);
+                    handleFriendClick(friend);
+                  }}
+                >
                   <img src={friend.profileImage || moon} alt={friend.petName} className="friends-img" />
                   <p>{friend.petName}</p>
                 </div>
@@ -379,15 +472,18 @@ const FriendsSearch = () => {
                     {selectedFriend.category} · 생일: {selectedFriend.birthday} · 별이 된 날: {selectedFriend.starDay}
                   </p>
                 </div>
-                {friends.some((friend) => friend.id === selectedFriend.id) ? (
-                  <button onClick={() => removeFriend(selectedFriend.id)} className="friend-unfriend-btn">
-                    별나라 친구 종료하기
-                  </button>
-                ) : (
-                  <button onClick={() => addFriend(selectedFriend.id)} className="friend-unfriend-btn">
-                    별나라 친구 시작하기
-                  </button>
-                )}
+
+                {/* 친구 추가/종료 버튼 조건부 렌더링 */}
+                {selectedProfile !== "myProfile" &&
+                  (friends.some((friend) => friend.id === selectedFriend.id) ? (
+                    <button onClick={() => removeFriend(selectedFriend.id)} className="friend-unfriend-btn">
+                      별나라 친구 종료하기
+                    </button>
+                  ) : (
+                    <button onClick={() => addFriend(selectedFriend.id)} className="friend-unfriend-btn">
+                      별나라 친구 시작하기
+                    </button>
+                  ))}
               </div>
             </>
           )}
@@ -400,10 +496,29 @@ const FriendsSearch = () => {
                 <div className="post-cnt">
                   <h4>{post.title}</h4>
                   <p>{post.content}</p>
-                  <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
+
+                  {/* 이미지가 있는 경우에만 렌더링 */}
+                  {post.images && post.images.length > 0 && (
+                    <div className="post-img-cnt">
+                      {post.images.map((image) => (
+                        <img key={image.imageId} src={image.url} alt="Post" />
+                      ))}
+                    </div>
+                  )}
+
                   <div className="post-icons-cnt">
                     <div className="post-icons">
+                      {/* 댓글 버튼 */}
                       <img src={mention} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
+
+                      {post.owner && (
+                        <>
+                          {/* 수정 버튼 */}
+                          <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId, post.author.userId)} />
+                          {/* 삭제 버튼 */}
+                          <img src={postIcon3} alt="Delete Icon" onClick={() => openModal(post.articleId)} />
+                        </>
+                      )}
                     </div>
                     <p>{new Date(post.updatedAt).toISOString().slice(0, 10).replace(/-/g, ".")}</p>
                   </div>
@@ -448,6 +563,22 @@ const FriendsSearch = () => {
                 )}
               </div>
             ))}
+            {isModalOpen && (
+              <>
+                {/* 모달 배경 */}
+                <div className="modal-overlay" onClick={closeModal}></div>
+                {/* 모달 내용 */}
+                <div className="modal">
+                  <p>이 게시물을 삭제하시겠습니까?</p>
+                  <button className="modal-yes" onClick={confirmDelete}>
+                    삭제
+                  </button>
+                  <button className="modal-no" onClick={closeModal}>
+                    취소
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
