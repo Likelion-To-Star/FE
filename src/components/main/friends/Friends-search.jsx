@@ -33,6 +33,7 @@ const FriendsSearch = () => {
   const [currentComment, setCurrentComment] = useState("");
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
+  // 친구 목록 조회
   const fetchFriends = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -49,6 +50,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 내 게시물 조회
   const fetchMyPosts = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -67,6 +69,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 친구가 아닌 사용자 게시물 조회
   const fetchOtherPosts = async (page = 1, size = 5) => {
     try {
       const token = localStorage.getItem("token");
@@ -87,6 +90,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 친구 게시물 조회
   const fetchUserPosts = async (friend) => {
     try {
       const token = localStorage.getItem("token");
@@ -107,6 +111,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 친구 검색
   const searchFriends = async () => {
     const token = localStorage.getItem("token");
 
@@ -141,6 +146,7 @@ const FriendsSearch = () => {
     fetchUserPosts(friend);
   };
 
+  // 댓글 조회
   const fetchComments = async (articleId) => {
     try {
       const token = localStorage.getItem("token");
@@ -161,6 +167,7 @@ const FriendsSearch = () => {
     fetchComments(postId);
   };
 
+  // 댓글 추가
   const handleAddComment = async () => {
     if (!currentComment) return;
 
@@ -189,6 +196,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 댓글 삭제
   const handleDeleteComment = async (commentId) => {
     try {
       const token = localStorage.getItem("token");
@@ -207,6 +215,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 댓글 수정
   const handleEditComment = async (commentId) => {
     const newContent = prompt("수정할 댓글 내용을 입력하세요:");
     if (!newContent) return;
@@ -233,6 +242,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 친구 추가
   const addFriend = async (friendId) => {
     try {
       const token = localStorage.getItem("token");
@@ -258,6 +268,7 @@ const FriendsSearch = () => {
     }
   };
 
+  // 친구 삭제
   const removeFriend = async (friendId) => {
     try {
       const token = localStorage.getItem("token");

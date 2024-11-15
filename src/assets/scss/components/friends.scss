@@ -264,15 +264,22 @@
 
 /* 모달 창 */
 .modal {
+  position: fixed; /* 화면 전체 기준으로 고정 */
+  top: 50%; /* 화면 중앙 (수직) */
+  left: 50%; /* 화면 중앙 (수평) */
+  transform: translate(-50%, -50%); /* 정확히 중앙에 배치 */
   background: white;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  p {
-    margin-top: 20px;
-    color: #8a8888;
-  }
+  z-index: 1000; /* 다른 모든 요소 위에 표시 */
+  width: 300px; /* 적절한 너비 설정 */
+}
+
+.modal p {
+  margin-top: 20px;
+  color: #8a8888;
 }
 
 .modal button {
@@ -293,6 +300,17 @@
   border: 1px solid #fff;
   border-radius: 5px;
   color: #fff;
+}
+
+/* 모달 백그라운드 (오버레이) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* 투명한 검정 배경 */
+  z-index: 999; /* 모달 아래, 다른 요소 위에 표시 */
 }
 
 /* 댓글 창 */

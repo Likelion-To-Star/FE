@@ -32,12 +32,12 @@ const Friends = () => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [commentOpen, setCommentOpen] = useState(false);
   const starfriend = localStorage.getItem("starfriend");
-  const [selectedProfile, setSelectedProfile] = useState('myProfile');
+  const [selectedProfile, setSelectedProfile] = useState("myProfile");
   const observerRef = useRef(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  
+
   // 친구 목록 조회
   const fetchFriends = async () => {
     try {
@@ -103,26 +103,23 @@ const Friends = () => {
     const target = entries[0];
     if (target.isIntersecting && hasMore) {
       const nextPage = page + 1;
-      if (selectedProfile === 'myProfile') {
+      if (selectedProfile === "myProfile") {
         fetchMyPosts(nextPage);
       } else {
         fetchUserPosts(selectedProfile, nextPage);
       }
     }
   };
-  
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, { threshold: 1.0 });
     if (observerRef.current) observer.observe(observerRef.current);
-  
+
     // 옵저버가 최신 상태를 반영할 수 있도록 설정
     return () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
     };
   }, [page, hasMore, selectedProfile, isInitialLoad]);
-  
-
 
   // 댓글 조회
   const fetchComments = async (articleId) => {
@@ -159,23 +156,37 @@ const Friends = () => {
     }
   };
 
-  // 게시물 삭제
   const confirmDelete = async () => {
     if (postToDelete !== null) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`${BASE_URL}/api/articles/user/${postToDelete}`, {
+        const response = await axios.delete(`${BASE_URL}/api/articles/${postToDelete}`, {
           headers: { Authorization: token },
         });
-        const updatedPosts = posts.filter((post) => post.article_id !== postToDelete);
-        setPosts(updatedPosts);
-        closeModal();
-        alert("게시물이 성공적으로 삭제되었습니다.");
+
+        if (response.data.isSuccess) {
+          alert("게시물이 성공적으로 삭제되었습니다.");
+          // 삭제된 게시물을 제외한 나머지 게시물로 업데이트
+          setPosts((prevPosts) => prevPosts.filter((post) => post.articleId !== postToDelete));
+          closeModal();
+        } else {
+          alert("게시물 삭제에 실패했습니다.");
+        }
       } catch (error) {
-        console.error("게시물 삭제 중 오류가 발생했습니다:", error);
+        console.error("게시물 삭제 중 오류가 발생했습니다:", error.response || error);
         alert("게시물 삭제 중 오류가 발생했습니다.");
       }
     }
+  };
+
+  const openModal = (articleId) => {
+    setPostToDelete(articleId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPostToDelete(null);
   };
 
   // 댓글 삭제 함수
@@ -224,27 +235,27 @@ const Friends = () => {
     }
   };
 
-// 초기 게시물 로딩
-useEffect(() => {
-  const initPosts = async () => {
-    await fetchFriends();
+  // 초기 게시물 로딩
+  useEffect(() => {
+    const initPosts = async () => {
+      await fetchFriends();
 
-    if (starfriend) {
-      // starfriend가 있을 경우 해당 유저의 게시물 조회
-      await fetchUserPosts(starfriend, 0);
-      setSelectedProfile(starfriend);
-    } else {
-      // starfriend가 없을 경우 자신의 게시물 조회
-      await fetchMyPosts(0);
-      setSelectedProfile('myProfile');
-    }
+      if (starfriend) {
+        // starfriend가 있을 경우 해당 유저의 게시물 조회
+        await fetchUserPosts(starfriend, 0);
+        setSelectedProfile(starfriend);
+      } else {
+        // starfriend가 없을 경우 자신의 게시물 조회
+        await fetchMyPosts(0);
+        setSelectedProfile("myProfile");
+      }
 
-    // 초기 로딩 완료 후 옵저버 활성화
-    setIsInitialLoad(false);
-  };
+      // 초기 로딩 완료 후 옵저버 활성화
+      setIsInitialLoad(false);
+    };
 
-  initPosts();
-}, []);
+    initPosts();
+  }, []);
 
   const handleMemory = () => {
     navigate("/main/friends/newpost");
@@ -253,23 +264,22 @@ useEffect(() => {
   const handleFriendsSearch = () => {
     navigate("/main/friendsSearch");
   };
- // 프로필 클릭 시 게시물 초기화 및 재조회
- const  handleMyprofileClick= () => {
-  setPosts([]);
-  setPage(0);
-  setHasMore(true);
-  setSelectedProfile('myProfile');
-  fetchMyPosts(0);
-};
+  // 프로필 클릭 시 게시물 초기화 및 재조회
+  const handleMyprofileClick = () => {
+    setPosts([]);
+    setPage(0);
+    setHasMore(true);
+    setSelectedProfile("myProfile");
+    fetchMyPosts(0);
+  };
 
-const handleProfileClick = (searchId) => {
-  setPosts([]);
-  setPage(0);
-  setHasMore(true);
-  setSelectedProfile(searchId);
-  fetchUserPosts(searchId, 0);
-};
-
+  const handleProfileClick = (searchId) => {
+    setPosts([]);
+    setPage(0);
+    setHasMore(true);
+    setSelectedProfile(searchId);
+    fetchUserPosts(searchId, 0);
+  };
 
   const openModal = (articleId) => {
     setPostToDelete(articleId);
@@ -364,7 +374,7 @@ const handleProfileClick = (searchId) => {
             </div>
           </div>
         </div>
-        
+
         {posts && posts.length > 0 ? (
           posts.map((post) => (
             <div key={post.articleId} className="post-cnt">
@@ -375,7 +385,7 @@ const handleProfileClick = (searchId) => {
                 <div className="post-icons">
                   <img src={postIcon1} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
                   <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId, post.author.userId)} />
-                  <img src={postIcon3} alt="Delete" onClick={() => openModal(post.articleId)} />
+                  <img src={postIcon3} alt="mention Delete" onClick={() => openModal(post.articleId)} />
                 </div>
                 <p>{new Date(post.createdAt).toLocaleDateString()}</p>
               </div>
@@ -434,6 +444,24 @@ const handleProfileClick = (searchId) => {
             <img src={SendInput} onClick={handleAddComment} />
           </div>
         </div>
+      )}
+      {/* 게시물 삭제 모달 창 */}
+      {isModalOpen && (
+        <>
+          {/* 모달 백그라운드 */}
+          <div className="modal-overlay" onClick={closeModal}></div>
+
+          {/* 모달 창 */}
+          <div className="modal">
+            <p>게시물을 삭제하시겠습니까?</p>
+            <button className="modal-yes" onClick={confirmDelete}>
+              삭제
+            </button>
+            <button className="modal-no" onClick={closeModal}>
+              취소
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

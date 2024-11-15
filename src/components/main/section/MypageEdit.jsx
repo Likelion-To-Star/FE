@@ -136,7 +136,7 @@ const MypageEdit = () => {
               profileImage,
             })
           );
-          navigate("/mypage");
+          navigate("-1");
         } else {
           setErrors({ submit: response.data.message });
         }

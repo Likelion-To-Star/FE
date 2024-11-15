@@ -11,22 +11,29 @@ import more from "../../../assets/img/mypage-more.svg";
 const Mypage = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     const savedUserInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
-    const savedUserInfo2 = JSON.parse(localStorage.getItem("userInfo2")) || {};
-    setUserInfo({ ...savedUserInfo, ...savedUserInfo2 });
+    const name = localStorage.getItem("userName") || savedUserInfo.userName || "";
+    const email = localStorage.getItem("userEmail") || savedUserInfo.email || "";
+
+    setUserInfo(savedUserInfo);
+    setUserName(name);
+    setUserEmail(email);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
-    localStorage.removeItem("userInfo2");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
     localStorage.removeItem("token");
     navigate("/login");
   };
 
   const handleEdit = () => {
-    navigate("/mypage/mypageEdit", { state: userInfo });
+    navigate("/main/mypage/mypageEdit", { state: userInfo });
   };
 
   const handleAgree = () => {
@@ -40,8 +47,8 @@ const Mypage = () => {
           <img src={userInfo.profileImage || "default-profile.png"} alt="Profile" />
           <div className="pro-info">
             <p>{userInfo.petName}와 함께</p>
-            <h4>{userInfo.userName}</h4>
-            <span>{userInfo.email}</span>
+            <h4>{userName}</h4>
+            <span>{userEmail}</span>
           </div>
         </div>
         <div className="mypage-container2">
