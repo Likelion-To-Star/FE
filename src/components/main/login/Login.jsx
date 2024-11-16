@@ -80,7 +80,7 @@ const Login = ({ onLogin }) => {
           <button type="submit" className="login-button">
             로그인
             {errorMessage && (
-            <div className="error-container" style={{ marginBottom: "5px" }}>
+            <div className="error-container" style={{ marginBottom: "5px", fontSize: "12px" }}>
               <img src={errorIcon} alt="Warning" className="error-icon" />
               <p className="error-message">{errorMessage}</p>
             </div>
