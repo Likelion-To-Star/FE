@@ -197,7 +197,7 @@ img {
 // 선택된 친구 클릭 시, 친구의 정보와 게시물 목록
 .friend-profile-container {
   display: block;
-  padding: 0 15px;
+  padding: 10px 15px;
   background-color: white;
   .friend-profile-header {
     display: flex;
@@ -205,9 +205,9 @@ img {
     margin-bottom: 20px;
     // justify-content: space-around;
     position: relative;
-    button{
+    button {
       position: absolute;
-      top:5px;
+      top: 5px;
       right: 20px;
       border-radius: 5px;
       border: 1px solid #7058cb;
@@ -223,7 +223,6 @@ img {
     .friend-info {
       display: flex;
       flex-direction: column;
-
 
       .friend-name {
         font-size: 18px; // 이름 폰트 크기 조정
@@ -241,7 +240,6 @@ img {
         font-weight: 400;
         line-height: 25px;
         letter-spacing: -0.40799999237060547px;
-
       }
     }
     //별나라 친구 종료하기
@@ -254,14 +252,11 @@ img {
       font-size: 11px;
       color: #6f4bde;
       font-family: "YiSunShin Dotum B", Arial, sans-serif;
-
     }
   }
 
   .friend-posts {
-
     .post-cnt {
-      margin-bottom: 20px;
       padding: 15px;
       background-color: #f9f9f9;
       border-radius: 10px;
@@ -288,14 +283,13 @@ img {
       .post-img-cnt {
         display: flex;
         overflow-x: auto;
-        height: 108px; 
+        gap: 10px; /* 이미지 간격 추가 */
         img {
           width: 147px;
           height: auto;
           border-radius: 8px;
           margin-bottom: 10px;
         }
-        /* 스크롤바 숨기기 (선택 사항) */
         &::-webkit-scrollbar {
           display: none;
         }
@@ -313,6 +307,7 @@ img {
           img {
             width: 20px;
             height: 20px;
+            margin-right: 10px;
           }
         }
 

@@ -193,8 +193,6 @@
             font-weight: 400;
             line-height: 25px;
             letter-spacing: -0.40799999237060547px;
-
-
           }
         }
       }
@@ -231,7 +229,6 @@
         width: 147px;
         height: 108px;
         object-fit: cover;
-        margin-left: 10px;
         border-radius: 5px;
         &:nth-child(1) {
           margin-left: 0px;
@@ -256,210 +253,206 @@
     }
   }
 
-
-
-/* 모달 배경 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-/* 모달 창 */
-.modal {
-  position: fixed; /* 화면 전체 기준으로 고정 */
-  top: 50%; /* 화면 중앙 (수직) */
-  left: 50%; /* 화면 중앙 (수평) */
-  transform: translate(-50%, -50%); /* 정확히 중앙에 배치 */
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* 다른 모든 요소 위에 표시 */
-  width: 300px; /* 적절한 너비 설정 */
-}
-
-.modal p {
-  margin-top: 20px;
-  color: #8a8888;
-}
-
-.modal button {
-  margin: 20px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-.modal-yes {
-  background-color: #fff;
-  border: 1px solid #7058cb;
-  border-radius: 5px;
-  color: #7058cb;
-}
-
-.modal-no {
-  background-color: #7058cb;
-  border: 1px solid #fff;
-  border-radius: 5px;
-  color: #fff;
-}
-
-/* 모달 백그라운드 (오버레이) */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* 투명한 검정 배경 */
-  z-index: 999; /* 모달 아래, 다른 요소 위에 표시 */
-}
-
-/* 댓글 창 */
-.comment-section {
-  font-family: "YiSunShin Dotum B", Arial, sans-serif;
-  z-index: 1000;
-  bottom: 0;
-  width: 100%;
-  height: 423px;
-  background-color: #faf7fe;
-  border-top: 1px solid #ddd;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  position: fixed;
-  bottom: 0;
-  transition: all 0.3s ease;
-  animation: slideIn 0.3s forwards;
-  /* keyframes 애니메이션 */
-  @keyframes slideIn {
-    0% {
-      height: 0;
-    }
-    100% {
-      height: 423px;
-    }
-  }
-  .comment-header {
-    display: flex;
-    justify-content: space-between;
-    justify-content: center;
-    color: #7058cb;
-    font-size: 18px;
-    position: relative;
-    border-bottom: 1px solid rgba(138, 136, 136, 0.3);
-    box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.1);
-
-    padding-bottom: 10px;
-    padding-top: 13px;
-    img {
-      width: 24px;
-      height: 24px;
-      position: absolute;
-      top: 13px;
-      right: 10px;
-    }
-  }
-
-  .comments-list {
-    max-height: 320px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    padding: 0 15px;
+  /* 모달 배경 */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    .comment-item {
-      margin: 20px 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  /* 모달 창 */
+  .modal {
+    position: fixed; /* 화면 전체 기준으로 고정 */
+    top: 50%; /* 화면 중앙 (수직) */
+    left: 50%; /* 화면 중앙 (수평) */
+    transform: translate(-50%, -50%); /* 정확히 중앙에 배치 */
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* 다른 모든 요소 위에 표시 */
+    width: 300px; /* 적절한 너비 설정 */
+  }
+
+  .modal p {
+    margin-top: 20px;
+    color: #8a8888;
+  }
+
+  .modal button {
+    margin: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+
+  .modal-yes {
+    background-color: #fff;
+    border: 1px solid #7058cb;
+    border-radius: 5px;
+    color: #7058cb;
+  }
+
+  .modal-no {
+    background-color: #7058cb;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    color: #fff;
+  }
+
+  /* 모달 백그라운드 (오버레이) */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* 투명한 검정 배경 */
+    z-index: 999; /* 모달 아래, 다른 요소 위에 표시 */
+  }
+
+  /* 댓글 창 */
+  .comment-section {
+    font-family: "YiSunShin Dotum B", Arial, sans-serif;
+    z-index: 1000;
+    bottom: 0;
+    width: 100%;
+    height: 423px;
+    background-color: #faf7fe;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    position: fixed;
+    bottom: 0;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s forwards;
+    /* keyframes 애니메이션 */
+    @keyframes slideIn {
+      0% {
+        height: 0;
+      }
+      100% {
+        height: 423px;
+      }
+    }
+    .comment-header {
       display: flex;
       justify-content: space-between;
-      position: relative; /* 아이콘 위치 조정을 위해 relative 추가 */
-      .comment-profile {
-        width: 47px;
-        height: 47px;
-        border-radius: 50%;
-        margin-right: 10px;
-      }
-      .comment-content {
-        background-color: transparent;
-        padding: 0;
-        width: 100%;
-        p {
-          color: #8a8888;
-          font-family: "YiSunShin Dotum M";
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 12.12px;
-          text-align: left;
-          text-underline-position: from-font;
-          text-decoration-skip-ink: none;
+      justify-content: center;
+      color: #7058cb;
+      font-size: 18px;
+      position: relative;
+      border-bottom: 1px solid rgba(138, 136, 136, 0.3);
+      box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.1);
 
-          strong {
+      padding-bottom: 10px;
+      padding-top: 13px;
+      img {
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        top: 13px;
+        right: 10px;
+      }
+    }
+
+    .comments-list {
+      max-height: 320px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding: 0 15px;
+      height: 100%;
+      .comment-item {
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        position: relative; /* 아이콘 위치 조정을 위해 relative 추가 */
+        .comment-profile {
+          width: 47px;
+          height: 47px;
+          border-radius: 50%;
+          margin-right: 10px;
+        }
+        .comment-content {
+          background-color: transparent;
+          padding: 0;
+          width: 100%;
+          p {
+            color: #8a8888;
             font-family: "YiSunShin Dotum M";
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 400;
-            line-height: 25px;
-            letter-spacing: -0.40799999237060547px;
-            color: #7058cb;
+            line-height: 12.12px;
+            text-align: left;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+
+            strong {
+              font-family: "YiSunShin Dotum M";
+              font-size: 15px;
+              font-weight: 400;
+              line-height: 25px;
+              letter-spacing: -0.40799999237060547px;
+              color: #7058cb;
+            }
           }
         }
       }
     }
+
+    .comment-input {
+      display: flex;
+      align-items: center;
+      position: relative;
+      input {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px;
+        background: #8480801a;
+        border: none;
+        margin: 0 15px;
+        width: 365px;
+        height: 36px;
+        padding-left: 15px;
+        border-radius: 10px;
+      }
+      input::placeholder {
+        font-family: "YiSunShin Dotum M";
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 12.12px;
+      }
+      img {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 20px;
+        cursor: pointer;
+        width: 20.44px;
+        height: 20.44px;
+      }
+    }
+
+    .comments-icons-cnt {
+      position: absolute; /* 오른쪽에 고정 위치 */
+      right: 0; /* 가장 오른쪽에 위치 */
+      bottom: -15px;
+      display: flex;
+      align-items: center;
+      img {
+        width: 20px;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+    }
   }
-
-  .comment-input {
-    display: flex;
-    align-items: center;
-    position: relative;
-    input {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-right: 10px;
-      background: #8480801a;
-      border: none;
-      margin: 0 15px;
-      width: 365px;
-      height: 36px;
-      padding-left: 15px;
-      border-radius: 10px;
-    }
-    input::placeholder {
-      font-family: "YiSunShin Dotum M";
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 12.12px;
-    }
-    img {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      right: 20px;
-      cursor: pointer;
-      width: 20.44px;
-      height: 20.44px;
-    }
-  }
-
-  .comments-icons-cnt {
-    position: absolute; /* 오른쪽에 고정 위치 */
-    right: 0; /* 가장 오른쪽에 위치 */
-    bottom: -15px;
-    display: flex;
-    align-items: center;
-    img {
-      width: 20px;
-      margin-right: 5px;
-      cursor: pointer;
-    }
-  }
-}
-
-
 }

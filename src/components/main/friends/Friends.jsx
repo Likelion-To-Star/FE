@@ -38,8 +38,7 @@ const Friends = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   //댓글 수정하는 중
   const [editing, setEditing] = useState(false);
-  const [commentId,setCommentId] = useState(null);
-
+  const [commentId, setCommentId] = useState(null);
 
   useEffect(() => {
     const fetchMyInfo = async () => {
@@ -159,53 +158,52 @@ const Friends = () => {
 
   // 댓글 추가하기
   const handleAddComment = async () => {
-    if(editing===false){
-    if (currentComment.trim() === "") return;
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${BASE_URL}/api/comment/${selectedPostId}`,
-        {
-          content: currentComment,
-        },
-        {
-          headers: { Authorization: token },
-        }
-      );
-      const newComment = response.data.result;
-      setComments((prev) => [...prev, newComment]);
-      setCurrentComment("");
-    } catch (error) {
-      console.error("댓글 추가 중 오류:", error);
-    }
-  }
-  else{ // 수정으로 전환했을때
-    if (currentComment.trim()=== "") return;
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        `${BASE_URL}/api/comment/${commentId}`,
-        { content: currentComment },
-        {
-          headers: { Authorization: token },
-        }
-      );
-
-      if (response.data.isSuccess) {
-        alert(response.data.message); // "성공입니다." 메시지 출력
-        setComments((prevComments) => prevComments.map((comment) => (comment.commentId === commentId ? { ...comment, content: currentComment } : comment)));
-        setEditing(false);
-        setCurrentComment(""); // 수정 내용 초기화
-      } else {
-        alert("댓글 수정에 실패했습니다.");
+    if (editing === false) {
+      if (currentComment.trim() === "") return;
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          `${BASE_URL}/api/comment/${selectedPostId}`,
+          {
+            content: currentComment,
+          },
+          {
+            headers: { Authorization: token },
+          }
+        );
+        const newComment = response.data.result;
+        setComments((prev) => [...prev, newComment]);
+        setCurrentComment("");
+      } catch (error) {
+        console.error("댓글 추가 중 오류:", error);
       }
-    } catch (error) {
-      console.error("댓글 수정 오류:", error.response || error);
-      alert("댓글 수정 중 오류가 발생했습니다.");
+    } else {
+      // 수정으로 전환했을때
+      if (currentComment.trim() === "") return;
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.put(
+          `${BASE_URL}/api/comment/${commentId}`,
+          { content: currentComment },
+          {
+            headers: { Authorization: token },
+          }
+        );
+
+        if (response.data.isSuccess) {
+          alert(response.data.message); // "성공입니다." 메시지 출력
+          setComments((prevComments) => prevComments.map((comment) => (comment.commentId === commentId ? { ...comment, content: currentComment } : comment)));
+          setEditing(false);
+          setCurrentComment(""); // 수정 내용 초기화
+        } else {
+          alert("댓글 수정에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("댓글 수정 오류:", error.response || error);
+        alert("댓글 수정 중 오류가 발생했습니다.");
+      }
     }
-  }
-    
   };
 
   const confirmDelete = async () => {
@@ -261,11 +259,10 @@ const Friends = () => {
   };
   // 댓글 수정 함수
   const handleEditComment = async (comI, comcontent) => {
-    setEditing(true)
-    setCurrentComment(comcontent); 
-   setCommentId(comI);
+    setEditing(true);
+    setCurrentComment(comcontent);
+    setCommentId(comI);
   };
-
 
   // 초기 게시물 로딩
   useEffect(() => {
@@ -435,7 +432,14 @@ const Friends = () => {
                 <div key={post.articleId} className="post-cnt">
                   <h4>{post.title}</h4>
                   <p>{post.content}</p>
-                  <div className="post-img-cnt">{post.images && post.images.map((image) => <img key={image.imageId} src={image.url} alt="Post" />)}</div>
+                  {/* 이미지가 있을 경우에만 렌더링 */}
+                  {post.images && post.images.length > 0 && (
+                    <div className="post-img-cnt">
+                      {post.images.map((image) => (
+                        <img key={image.imageId} src={image.url} alt="Post" />
+                      ))}
+                    </div>
+                  )}
                   <div className="post-icons-cnt">
                     <div className="post-icons">
                       {/* 댓글 버튼 */}
@@ -512,7 +516,7 @@ const Friends = () => {
               type="text"
               value={currentComment}
               onChange={(e) => setCurrentComment(e.target.value)}
-              placeholder={editing? "수정창입니다!" :"다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!"}
+              placeholder={editing ? "수정창입니다!" : "다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!"}
             />
             <img src={SendInput} onClick={handleAddComment} />
           </div>

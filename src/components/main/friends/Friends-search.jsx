@@ -14,6 +14,7 @@ import plusIcon from "../../../assets/img/plus-icon.svg";
 import EXIT from "../../../assets/img/friends/exit.svg";
 import SendInput from "../../../assets/img/friends/input-send.svg";
 import Profile from "../../../assets/img/profile-colored.png";
+import AlertWhen from "../../Util/AlertWhen";
 
 const FriendsSearch = () => {
   const location = useLocation();
@@ -38,6 +39,9 @@ const FriendsSearch = () => {
   const [notOwner, setNotOwner] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
+  const [error, setError] = useState(false);
+  const [addFriendAlert, setAddFriend] = useState(false);
+  const [commentDeleteAlert, setCommentDelteAlert] = useState(false);
 
   useEffect(() => {
     const fetchMyInfo = async () => {
@@ -124,6 +128,7 @@ const FriendsSearch = () => {
       }
     } catch (error) {
       console.error("친구가 아닌 사용자 게시물 조회 오류:", error.response || error);
+      setError(true);
     }
   };
 
@@ -260,7 +265,6 @@ const FriendsSearch = () => {
       );
 
       if (response.data.isSuccess) {
-        alert(response.data.message);
         setComments((prevComments) => prevComments.map((comment) => (comment.commentId === commentId ? { ...comment, content: newContent } : comment)));
       } else {
         alert("댓글 수정에 실패했습니다.");
@@ -279,8 +283,9 @@ const FriendsSearch = () => {
         headers: { Authorization: token },
       });
       if (response.data.isSuccess) {
-        alert(response.data.message);
         setComments((prevComments) => prevComments.filter((comment) => comment.commentId !== commentId));
+        setCommentDelteAlert(true); // 에러 상태 업데이트
+        setTimeout(() => setCommentDelteAlert(false), 3000); // 3초 후 알림 숨김
       } else {
         alert("댓글 삭제에 실패했습니다.");
       }
@@ -305,8 +310,9 @@ const FriendsSearch = () => {
         }
       );
       if (response.data.isSuccess) {
-        alert(response.data.message);
         fetchFriends();
+        setAddFriend(true); // 에러 상태 업데이트
+        setTimeout(() => setAddFriend(false), 3000); // 3초 후 알림 숨김
       } else {
         alert(response.data.message);
       }
@@ -329,9 +335,10 @@ const FriendsSearch = () => {
       });
 
       if (response.data.isSuccess) {
-        alert(response.data.message);
         setFriends((prevFriends) => prevFriends.filter((friend) => friend.id !== friendId));
         setSelectedFriend(null);
+        setError(true); // 에러 상태 업데이트
+        setTimeout(() => setError(false), 3000); // 3초 후 알림 숨김
       } else {
         alert(response.data.message);
       }
@@ -394,6 +401,9 @@ const FriendsSearch = () => {
 
   return (
     <div className="friendSrh-wrap">
+      {error && <AlertWhen message="별나라 친구가 종료되었어요." />} {/* 알림 메시지 */}
+      {addFriendAlert && <AlertWhen message="별나라 친구가 되었어요." />} {/* 알림 메시지 */}
+      {commentDeleteAlert && <AlertWhen message="댓글이 삭제 되었어요." />} {/* 알림 메시지 */}
       <div className="main-container">
         <div className="main-moon-starFriends">
           <div className="slide-cnt">
@@ -488,10 +498,10 @@ const FriendsSearch = () => {
               </div>
 
               <div className="friend-posts">
-                <div className="post-cnt">
+                <div key={post.articleId} className="post-cnt">
                   <h4>{post.title}</h4>
                   <p>{post.content}</p>
-
+                  {/* 이미지가 있을 경우에만 렌더링 */}
                   {post.images && post.images.length > 0 && (
                     <div className="post-img-cnt">
                       {post.images.map((image) => (
@@ -499,18 +509,25 @@ const FriendsSearch = () => {
                       ))}
                     </div>
                   )}
-
                   <div className="post-icons-cnt">
                     <div className="post-icons">
+                      {/* 댓글 버튼 */}
                       <img src={mention} alt="Comment" onClick={() => handleCommentClick(post.articleId)} />
 
                       {post.owner && (
                         <>
-                          <img src={postIcon2} alt="Edit Icon" onClick={() => handleEditClick(post.articleId, post.author.userId)} />
+                          {/* 수정 버튼 */}
+                          <img
+                            src={postIcon2}
+                            alt="Edit Icon"
+                            onClick={() => handleEditClick(post.articleId, post.owner)} // owner 값 전달
+                          />
+                          {/* 삭제 버튼 */}
                           <img src={postIcon3} alt="Delete Icon" onClick={() => openModal(post.articleId)} />
                         </>
                       )}
                     </div>
+
                     <p>{new Date(post.updatedAt).toISOString().slice(0, 10).replace(/-/g, ".")}</p>
                   </div>
                 </div>
@@ -548,7 +565,7 @@ const FriendsSearch = () => {
                     ))}
                   </div>
                   <div className="comment-input">
-                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요" />
+                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요." />
                     <img src={SendInput} onClick={handleAddComment} />
                   </div>
                 </div>
