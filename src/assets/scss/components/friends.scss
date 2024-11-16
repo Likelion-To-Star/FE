@@ -16,25 +16,32 @@
       display: block;
       padding-top: 15px;
       padding-left: 20px;
+      padding-right: 20px;
       font-family: "YiSunShin Dotum B", Arial, sans-serif;
 
       p {
-        margin-bottom: 20px;
         font-size: 21px;
         font-weight: bold;
         color: #7058cb;
       }
 
       .slide-cnt {
-        display: flex;
+        display: flex; /* 슬라이드와 버튼 나란히 배치 */
+
+        background-color: rgba(255, 255, 255, 0); /* 투명한 배경 설정 */
+        position: relative; /* 버튼 위치 조정을 위해 추가 */
+        z-index: 1;
+
         .friends-with-slide {
           display: flex;
-          width: 100%;
-          overflow-x: scroll;
-          -ms-overflow-style: none; // IE 스크롤바 숨김
-          scrollbar-width: none; // Firefox 스크롤바 숨김
+          flex-grow: 1; /* 슬라이드 영역 확장 */
+          overflow-x: auto; /* 가로 스크롤 허용 */
+          scrollbar-width: none; /* Firefox 스크롤 숨김 */
+          -ms-overflow-style: none; /* IE 스크롤 숨김 */
+          padding-right: 70px; /* 버튼과 겹치지 않도록 여백 추가 */
+          background-color: rgba(255, 255, 255, 0); /* 슬라이드 배경 투명 */
           &::-webkit-scrollbar {
-            display: none; // Chrome, Safari 스크롤바 숨김
+            display: none; /* 크롬 스크롤 숨김 */
           }
 
           .moon-pro,
@@ -93,9 +100,10 @@
         }
         .new-friends-cnt {
           height: 58px;
-          position: relative;
-          margin: 0 20px;
+          right: 0;
           background-color: transparent;
+          position: absolute;
+
           .plus-icon {
             position: absolute;
             top: 40px;
@@ -116,10 +124,9 @@
           }
 
           .new-friends-btn {
-            position: relative;
             width: 58px;
             height: 58px;
-            margin-right: 5px;
+
             box-shadow: 0px 1px 3px 0px #00000040;
             border-radius: 50%;
             cursor: pointer;
@@ -137,6 +144,7 @@
           p {
             font-size: 12px;
             color: #8a8888;
+            margin-left: 5px;
           }
         }
       }

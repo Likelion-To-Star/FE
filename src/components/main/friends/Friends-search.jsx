@@ -433,7 +433,7 @@ const FriendsSearch = () => {
                 </div>
               ))}
             </div>
-            <div className="friends-search-cnt">
+            <div className="new-friends-btn">
               <img src={friendsSearchBtn} onClick={handleOtherFriendsClick} alt="Search Button" />
               <button onClick={handleOtherFriendsClick}>다른 친구들</button>
             </div>
@@ -565,7 +565,7 @@ const FriendsSearch = () => {
                     ))}
                   </div>
                   <div className="comment-input">
-                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="댓글을 입력하세요." />
+                    <input type="text" value={currentComment} onChange={(e) => setCurrentComment(e.target.value)} placeholder="" />
                     <img src={SendInput} onClick={handleAddComment} />
                   </div>
                 </div>
