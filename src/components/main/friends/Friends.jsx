@@ -36,7 +36,10 @@ const Friends = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  //친구 추가에 쓰임
+  //댓글 수정하는 중
+  const [editing, setEditing] = useState(false);
+  const [commentId,setCommentId] = useState(null);
+
 
   useEffect(() => {
     const fetchMyInfo = async () => {
@@ -156,6 +159,7 @@ const Friends = () => {
 
   // 댓글 추가하기
   const handleAddComment = async () => {
+    if(editing===false){
     if (currentComment.trim() === "") return;
     try {
       const token = localStorage.getItem("token");
@@ -174,6 +178,34 @@ const Friends = () => {
     } catch (error) {
       console.error("댓글 추가 중 오류:", error);
     }
+  }
+  else{ // 수정으로 전환했을때
+    if (currentComment.trim()=== "") return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${BASE_URL}/api/comment/${commentId}`,
+        { content: currentComment },
+        {
+          headers: { Authorization: token },
+        }
+      );
+
+      if (response.data.isSuccess) {
+        alert(response.data.message); // "성공입니다." 메시지 출력
+        setComments((prevComments) => prevComments.map((comment) => (comment.commentId === commentId ? { ...comment, content: currentComment } : comment)));
+        setEditing(false);
+        setCurrentComment(""); // 수정 내용 초기화
+      } else {
+        alert("댓글 수정에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("댓글 수정 오류:", error.response || error);
+      alert("댓글 수정 중 오류가 발생했습니다.");
+    }
+  }
+    
   };
 
   const confirmDelete = async () => {
@@ -227,61 +259,13 @@ const Friends = () => {
       alert("댓글 삭제 중 오류가 발생했습니다.");
     }
   };
-
   // 댓글 수정 함수
-  const [editCommentId, setEditCommentId] = useState(null); // 수정 중인 댓글 ID
-  const [editContent, setEditContent] = useState(""); // 수정 중인 댓글 내용
-
-  useEffect(() => {
-    if (editCommentId !== null) {
-      const commentToEdit = comments.find((comment) => comment.commentId === editCommentId);
-      if (commentToEdit) {
-        setEditContent(commentToEdit.content); // 기존 댓글 내용을 불러옴
-      }
-    }
-  }, [editCommentId]);
-
-  // 수정 시작
-  const startEditComment = (commentId) => {
-    setEditCommentId(commentId);
+  const handleEditComment = async (comI, comcontent) => {
+    setEditing(true)
+    setCurrentComment(comcontent); 
+   setCommentId(comI);
   };
 
-  // 댓글 저장
-  const saveEditComment = async () => {
-    if (!editContent.trim()) {
-      alert("댓글 내용을 입력하세요.");
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        `${BASE_URL}/api/comment/${editCommentId}`,
-        { content: editContent },
-        {
-          headers: { Authorization: token },
-        }
-      );
-
-      if (response.data.isSuccess) {
-        alert(response.data.message); // 성공 메시지
-        setComments((prevComments) => prevComments.map((comment) => (comment.commentId === editCommentId ? { ...comment, content: editContent } : comment)));
-        setEditCommentId(null); // 수정 상태 초기화
-        setEditContent(""); // 수정 내용 초기화
-      } else {
-        alert("댓글 수정에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("댓글 수정 오류:", error.response || error);
-      alert("댓글 수정 중 오류가 발생했습니다.");
-    }
-  };
-
-  // 수정 취소
-  const cancelEditComment = () => {
-    setEditCommentId(null); // 수정 상태 초기화
-    setEditContent(""); // 수정 내용 초기화
-  };
 
   // 초기 게시물 로딩
   useEffect(() => {
@@ -498,6 +482,8 @@ const Friends = () => {
               onClick={() => {
                 setSelectedPostId(null);
                 setCommentOpen(false);
+                setEditing(false);
+                setCurrentComment("");
               }}
             />
           </div>
@@ -509,23 +495,14 @@ const Friends = () => {
                   <p>
                     <strong>{comment.petName}</strong>
                   </p>
-                  {editCommentId === comment.commentId ? (
-                    <input type="text" value={editContent} onChange={(e) => setEditContent(e.target.value)} placeholder="댓글을 수정하세요" />
-                  ) : (
-                    <p>{comment.content}</p>
-                  )}
+                  <p>{comment.content}</p>
                 </div>
-                <div className="comments-icons-cnt">
-                  {editCommentId === comment.commentId ? (
-                    <>
-                      <img src={SendInput} onClick={saveEditComment} alt="수정 저장" />
-                      <img src={postIcon3} onClick={cancelEditComment} alt="수정 취소" />
-                    </>
-                  ) : (
-                    <img src={postIcon2} onClick={() => startEditComment(comment.commentId)} alt="수정" />
-                  )}
-                  <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
-                </div>
+                {comment.isMine && (
+                  <div className="comments-icons-cnt">
+                    <img src={postIcon2} onClick={() => handleEditComment(comment.commentId, comment.content)} alt="수정" />
+                    <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -535,7 +512,7 @@ const Friends = () => {
               type="text"
               value={currentComment}
               onChange={(e) => setCurrentComment(e.target.value)}
-              placeholder="다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!"
+              placeholder={editing? "수정창입니다!" :"다들 너무 감사합니다. 우리 아이들 생각하면서 오늘도 힘내봐요!"}
             />
             <img src={SendInput} onClick={handleAddComment} />
           </div>
