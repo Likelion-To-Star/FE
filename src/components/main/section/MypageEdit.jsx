@@ -73,7 +73,8 @@ const MypageEdit = () => {
         localStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
 
         // 상태 업데이트
-        setParentName(userInfo.petName || "");
+        setChildName(userInfo.petName || "");
+        setParentName(userInfo.ownerName || "");
         setSelectedGender(userInfo.petGender || "");
         setSelectedAnimal(userInfo.category || "");
         setBirthDate(userInfo.birthDay ? new Date(userInfo.birthDay) : null);
