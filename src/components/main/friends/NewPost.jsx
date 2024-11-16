@@ -112,7 +112,9 @@ const NewPost = () => {
         setError(true);
       } else {
         console.log("네트워크 오류 또는 서버에 문제가 발생했습니다.");
-        setError(true);
+        if(!error314){
+          setError(true);
+        }
       }
     }
   };

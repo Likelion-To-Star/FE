@@ -122,7 +122,9 @@ const EditPost = () => {
     }
       } catch (error) {
       console.error("게시물 수정 중 오류가 발생했습니다:", error);
-      setError(true);
+        if(!error314){
+          setError(true);
+        }
     }
   };
 
