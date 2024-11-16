@@ -20,6 +20,8 @@ const EditPost = () => {
   const [alertmem, setAlertMem] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null); // 선택된 이미지 인덱스를 저장
   const textareaRef = useRef(null);
+  const [error314,setError314] =useState(false);
+  const [error,setError] =useState(false);
 
   async function urlToFile(url, filename) {
     const response = await fetch(url);
@@ -62,7 +64,7 @@ const EditPost = () => {
         setAllImages(imageFiles);
       } catch (error) {
         console.error("게시물 불러오기 오류:", error);
-        alert("게시물 데이터를 불러오는 중 오류가 발생했습니다.");
+        setError(true);
       }
     };
     fetchPost();
@@ -104,22 +106,30 @@ const EditPost = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`${BASE_URL}/api/articles/${articleId}`, formData, {
+      const response =await axios.put(`${BASE_URL}/api/articles/${articleId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `${token}`,
         },
       });
-      alert("게시물이 성공적으로 수정되었습니다.");
+          // 413 오류 처리
+    if (response.status === 413) {
+      setError314("true");
+      return;
+    }
+    if (response.data.isSuccess){
       navigate("/main/friends"); // Navigate to the posts list page after success
-    } catch (error) {
+    }
+      } catch (error) {
       console.error("게시물 수정 중 오류가 발생했습니다:", error);
-      alert("게시물 수정 중 오류가 발생했습니다.");
+      setError(true);
     }
   };
 
   return (
     <div className="newpost-wrap">
+    {error314 && <AlertWhen message="이미지 크기가 너무 큽니다." />}
+    {error && <AlertWhen message="별나라에 추억을 보내지 못했어요. 다시 한번 시도해 주세요." />}
       <div className="newpost-container" style={{ backgroundColor: "#FAF7FE" }}>
         <div className="new-cnt">
           <div className="new-img-plus">

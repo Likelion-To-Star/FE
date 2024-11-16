@@ -19,6 +19,8 @@ const NewPost = () => {
   const fileInputRef = useRef(null);
   const [alertmem, setAlertMem] = useState(false);
   const textareaRef = useRef(null);
+  const [error314,setError314] =useState(false);
+  const [error,setError] =useState(false);
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
@@ -90,9 +92,15 @@ const NewPost = () => {
         },
       });
 
+         // 413 오류 처리
+    if (response.status === 413) {
+      setError314("true");
+      return;
+    }
       if (response.data.isSuccess) {
         const newPost = response.data.result;
         navigate("/main/friends", { state: { newPost } });
+        
       } else {
         alert(response.data.message);
       }
@@ -100,15 +108,19 @@ const NewPost = () => {
       console.error("게시물 등록 중 오류가 발생했습니다:", error);
       if (error.response) {
         console.error("서버 응답:", error.response.data);
-        alert(`게시물 등록 중 오류가 발생했습니다: ${error.response.data.message}`);
+        console.log(`게시물 등록 중 오류가 발생했습니다: ${error.response.data.message}`);
+        setError(true);
       } else {
-        alert("네트워크 오류 또는 서버에 문제가 발생했습니다.");
+        console.log("네트워크 오류 또는 서버에 문제가 발생했습니다.");
+        setError(true);
       }
     }
   };
 
   return (
     <div className="newpost-wrap">
+      {error314 && <AlertWhen message="이미지 크기가 너무 큽니다." />}
+      {error && <AlertWhen message="별나라에 추억을 보내지 못했어요. 다시 한번 시도해 주세요." />}
       <div className="newpost-container" style={{ backgroundColor: "#FAF7FE" }}>
         <div className="new-cnt">
           <div className="new-img-plus">

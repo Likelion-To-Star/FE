@@ -125,7 +125,15 @@
           background-color: #fff;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
           color: #3a305e;
+        &::placeholder{
+          font-family: "YiSunShin Dotum M";
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 14.14px;
+          color: var(--black500) ;
         }
+        }
+        
         .new-text-cnt input::placeholder {
           color: var(--black500) !important; // Placeholder 색상
         }
