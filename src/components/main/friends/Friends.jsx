@@ -229,23 +229,45 @@ const Friends = () => {
   };
 
   // 댓글 수정 함수
-  const handleEditComment = async (commentId) => {
-    const newContent = prompt("수정할 댓글 내용을 입력하세요:");
-    if (!newContent) return;
+  const [editCommentId, setEditCommentId] = useState(null); // 수정 중인 댓글 ID
+  const [editContent, setEditContent] = useState(""); // 수정 중인 댓글 내용
+
+  useEffect(() => {
+    if (editCommentId !== null) {
+      const commentToEdit = comments.find((comment) => comment.commentId === editCommentId);
+      if (commentToEdit) {
+        setEditContent(commentToEdit.content); // 기존 댓글 내용을 불러옴
+      }
+    }
+  }, [editCommentId]);
+
+  // 수정 시작
+  const startEditComment = (commentId) => {
+    setEditCommentId(commentId);
+  };
+
+  // 댓글 저장
+  const saveEditComment = async () => {
+    if (!editContent.trim()) {
+      alert("댓글 내용을 입력하세요.");
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `${BASE_URL}/api/comment/${commentId}`,
-        { content: newContent },
+        `${BASE_URL}/api/comment/${editCommentId}`,
+        { content: editContent },
         {
           headers: { Authorization: token },
         }
       );
 
       if (response.data.isSuccess) {
-        alert(response.data.message); // "성공입니다." 메시지 출력
-        setComments((prevComments) => prevComments.map((comment) => (comment.commentId === commentId ? { ...comment, content: newContent } : comment)));
+        alert(response.data.message); // 성공 메시지
+        setComments((prevComments) => prevComments.map((comment) => (comment.commentId === editCommentId ? { ...comment, content: editContent } : comment)));
+        setEditCommentId(null); // 수정 상태 초기화
+        setEditContent(""); // 수정 내용 초기화
       } else {
         alert("댓글 수정에 실패했습니다.");
       }
@@ -255,17 +277,22 @@ const Friends = () => {
     }
   };
 
+  // 수정 취소
+  const cancelEditComment = () => {
+    setEditCommentId(null); // 수정 상태 초기화
+    setEditContent(""); // 수정 내용 초기화
+  };
+
   // 초기 게시물 로딩
   useEffect(() => {
     const initPosts = async () => {
       await fetchFriends();
 
-      if (starfriend!=="myProfile"&&starfriend!==null) {
+      if (starfriend !== "myProfile" && starfriend !== null) {
         // starfriend가 있을 경우 해당 유저의 게시물 조회
         await fetchUserPosts(starfriend, 0);
         setSelectedProfile(starfriend);
         console.log(starfriend);
-        
       } else {
         // starfriend가 없을 경우 자신의 게시물 조회
         setPosts([]);
@@ -273,7 +300,6 @@ const Friends = () => {
         setHasMore(true);
         setSelectedProfile("myProfile");
         await fetchMyPosts(0);
-        
       }
 
       // 초기 로딩 완료 후 옵저버 활성화
@@ -337,8 +363,6 @@ const Friends = () => {
     setCommentOpen(true);
     fetchComments(postId);
   };
-
-
 
   return (
     <div className="friends-wrap">
@@ -485,17 +509,27 @@ const Friends = () => {
                   <p>
                     <strong>{comment.petName}</strong>
                   </p>
-                  <p>{comment.content}</p>
+                  {editCommentId === comment.commentId ? (
+                    <input type="text" value={editContent} onChange={(e) => setEditContent(e.target.value)} placeholder="댓글을 수정하세요" />
+                  ) : (
+                    <p>{comment.content}</p>
+                  )}
                 </div>
-                {comment.isMine && (
-                  <div className="comments-icons-cnt">
-                    <img src={postIcon2} onClick={() => handleEditComment(comment.commentId)} alt="수정" />
-                    <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
-                  </div>
-                )}
+                <div className="comments-icons-cnt">
+                  {editCommentId === comment.commentId ? (
+                    <>
+                      <img src={SendInput} onClick={saveEditComment} alt="수정 저장" />
+                      <img src={postIcon3} onClick={cancelEditComment} alt="수정 취소" />
+                    </>
+                  ) : (
+                    <img src={postIcon2} onClick={() => startEditComment(comment.commentId)} alt="수정" />
+                  )}
+                  <img src={postIcon3} onClick={() => handleDeleteComment(comment.commentId)} alt="삭제" />
+                </div>
               </div>
             ))}
           </div>
+
           <div className="comment-input">
             <input
               type="text"
