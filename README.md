@@ -1,4 +1,5 @@
 ![Likelion-To-Star](https://capsule-render.vercel.app/api?type=waving&color=588beb&text=Likelion-To-Star&height=200&fontSize=60&fontAlign=50&fontColor=ffffff)
+<img src="https://github.com/user-attachments/assets/c66e7ec8-97f1-4b51-ae82-314ba2fd8042"/>
 
 ## 👋 Likelion-To-Star GitHub Organization 👋  
 **Likelion-To-Star**는 펫로스로 인한 상실감을 치유하고 소중한 추억을 되새길 수 있는 따뜻한 서비스입니다.
@@ -7,7 +8,7 @@
     <img src="https://img.shields.io/github/stars/Likelion-To-Star/backend?style=social" alt="GitHub stars">
     <img src="https://img.shields.io/github/license/Likelion-To-Star/backend" alt="GitHub license">
 </p>
-<img src="https://github.com/user-attachments/assets/c66e7ec8-97f1-4b51-ae82-314ba2fd8042"/>
+
 
 ## I. 팀원 소개 (Team Members) 👥  
 | 고희주(BE) | 김보미(PM) | 김혜진(BE) | 장서원(FE) | 최강(BE) | 최윤영(FE) |
@@ -31,6 +32,16 @@
    사용자가 서로의 게시물을 공유하고 친구를 추가하며 더 깊은 교류를 할 수 있습니다. 
 
 <br><br>
+<img src="https://github.com/user-attachments/assets/2485d448-f1fc-448a-afb2-e42a56e3efa5" alt="image (8)">
+<img src="https://github.com/user-attachments/assets/9aa9149f-10fb-44a0-bae3-2e0d1ee719f5" alt="image (7)">
+<img src="https://github.com/user-attachments/assets/5d58e01c-4a39-4e06-ac0f-eb999890136e" alt="image (6)">
+<img src="https://github.com/user-attachments/assets/0917fb84-2696-4058-809e-139387c36100" alt="image (5)">
+<img src="https://github.com/user-attachments/assets/c78425d4-16a7-4a72-aa18-8e3b5bdf07a0" alt="image (4)">
+<img src="https://github.com/user-attachments/assets/0c02e4a6-e90b-4fac-b30b-7152d86a98e2" alt="image (3)" width="997">
+<img src="https://github.com/user-attachments/assets/c24f9fe1-d531-4677-816d-2e80c3c1e34e" alt="image (2)">
+<img src="https://github.com/user-attachments/assets/03247549-c6ce-4749-b9c6-22fccea8c8ab" alt="image (1)">
+<img src="https://github.com/user-attachments/assets/9f3246ea-1b3d-4827-b00c-d2a6f3ff0f78" alt="image (10)">
+<img src="https://github.com/user-attachments/assets/f612f730-ea05-4b37-907b-141714842345" alt="image (9)">
 
 
 ## III. 📚 기술 스택 (Tech Stack) 📚  
