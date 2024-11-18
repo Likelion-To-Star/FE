@@ -98,8 +98,12 @@
 해당 프로젝트는 펫로스 증후군 치유하기 위해 전문가들이 제시하는 3가지 단계(반려동물과 행복했던 추억을 상기, 자신의 감정을 솔직하게 표현, 편지나 글로 마음을 전달)에 따라 회고글쓰기 게시판, 실시간 채팅, 편지쓰기 3가지 주요 페이지를 기획, 개발하였습니다.
 <br><br>
 프론트 배포 링크 : fe-tostar.vercel.app   (서버 유효기간 종료로 기능하지 않을 수 있음)
-<br>
-https://github.com/user-attachments/assets/1a1af767-3226-41b6-b912-a47ce71b4303
+<br><br>
+
+
+https://github.com/user-attachments/assets/a7683054-08cc-491b-ab23-87e64320f487
+
+
 <br><br>
 
 -메인페이지/로그인,회원가입
