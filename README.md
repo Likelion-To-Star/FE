@@ -7,6 +7,7 @@
     <img src="https://img.shields.io/github/stars/Likelion-To-Star/backend?style=social" alt="GitHub stars">
     <img src="https://img.shields.io/github/license/Likelion-To-Star/backend" alt="GitHub license">
 </p>
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/78dead46-8030-4353-b23c-20fe31498071/156ae490-876d-4519-abd1-1fd107d4d5b5/image.png)
 
 ## I. 팀원 소개 (Team Members) 👥  
 | 고희주(BE) | 김보미(PM) | 김혜진(BE) | 장서원(FE) | 최강(BE) | 최윤영(FE) |
