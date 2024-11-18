@@ -1,4 +1,3 @@
-![Likelion-To-Star](https://capsule-render.vercel.app/api?type=waving&color=588beb&text=Likelion-To-Star&height=200&fontSize=60&fontAlign=50&fontColor=ffffff)
 <img src="https://github.com/user-attachments/assets/c66e7ec8-97f1-4b51-ae82-314ba2fd8042"/>
 
 ## 👋 Likelion-To-Star GitHub Organization 👋  
@@ -31,27 +30,7 @@
 3. **게시물 등록 및 친구 추가🐶** :  
    사용자가 서로의 게시물을 공유하고 친구를 추가하며 더 깊은 교류를 할 수 있습니다. 
 
-<br><br>
 
-4. **프로젝트 상세 소개** :
-해당 프로젝트는 펫로스 증후군 치유하기 위해 전문가들이 제시하는 3가지 단계(반려동물과 행복했던 추억을 상기, 자신의 감정을 솔직하게 표현, 편지나 글로 마음을 전달)에 따라 회고글쓰기 게시판, 실시간 채팅, 편지쓰기 3가지 주요 페이지를 기획, 개발하였습니다.
-<br><br>
-
--메인페이지/로그인,회원가입
-<img src="https://github.com/user-attachments/assets/0c02e4a6-e90b-4fac-b30b-7152d86a98e2" alt="image (3)" width="997">
-<br><br>
--친구들과 
-<img src="https://github.com/user-attachments/assets/c78425d4-16a7-4a72-aa18-8e3b5bdf07a0" alt="image (4)">
-<img src="https://github.com/user-attachments/assets/5d58e01c-4a39-4e06-ac0f-eb999890136e" alt="image (6)">
-<img src="https://github.com/user-attachments/assets/0917fb84-2696-4058-809e-139387c36100" alt="image (5)">
-<br><br>
--커뮤니티
-<img src="https://github.com/user-attachments/assets/9aa9149f-10fb-44a0-bae3-2e0d1ee719f5" alt="image (7)">
-<img src="https://github.com/user-attachments/assets/2485d448-f1fc-448a-afb2-e42a56e3efa5" alt="image (8)">
--별이에게
-
-<img src="https://github.com/user-attachments/assets/9f3246ea-1b3d-4827-b00c-d2a6f3ff0f78" alt="image (10)">
-<img src="https://github.com/user-attachments/assets/f612f730-ea05-4b37-907b-141714842345" alt="image (9)">
 
 
 ## III. 📚 기술 스택 (Tech Stack) 📚  
@@ -114,9 +93,31 @@
      `./gradlew bootRun`
 
 <br><br>
+<br>
+## VII. 프로젝트 상세 소개##
+<video width="640" height="360" controls>
+  <source src="https://github.com/user-attachments/assets/315db188-64f4-49e5-87be-e5eba42fada8" type="video/mp4">
+</video>
+해당 프로젝트는 펫로스 증후군 치유하기 위해 전문가들이 제시하는 3가지 단계(반려동물과 행복했던 추억을 상기, 자신의 감정을 솔직하게 표현, 편지나 글로 마음을 전달)에 따라 회고글쓰기 게시판, 실시간 채팅, 편지쓰기 3가지 주요 페이지를 기획, 개발하였습니다.
+<br><br>
 
+-메인페이지/로그인,회원가입
+<img src="https://github.com/user-attachments/assets/0c02e4a6-e90b-4fac-b30b-7152d86a98e2" alt="image (3)" width="997">
+<br><br>
+-친구들과 
+<img src="https://github.com/user-attachments/assets/c78425d4-16a7-4a72-aa18-8e3b5bdf07a0" alt="image (4)">
+<img src="https://github.com/user-attachments/assets/5d58e01c-4a39-4e06-ac0f-eb999890136e" alt="image (6)">
+<img src="https://github.com/user-attachments/assets/0917fb84-2696-4058-809e-139387c36100" alt="image (5)">
+<br><br>
+-커뮤니티
+<img src="https://github.com/user-attachments/assets/9aa9149f-10fb-44a0-bae3-2e0d1ee719f5" alt="image (7)">
+<img src="https://github.com/user-attachments/assets/2485d448-f1fc-448a-afb2-e42a56e3efa5" alt="image (8)">
+-별이에게
 
-## VII.⭐ README 소개 (About this README) ⭐  
+<img src="https://github.com/user-attachments/assets/9f3246ea-1b3d-4827-b00c-d2a6f3ff0f78" alt="image (10)">
+<img src="https://github.com/user-attachments/assets/f612f730-ea05-4b37-907b-141714842345" alt="image (9)">
+
+## VIII.⭐ README 소개 (About this README) ⭐  
 이 README는 **Likelion-To-Star** 프로젝트의 기술 스택, 구조, 시작 가이드를 간결하고 명확하게 설명합니다.
 
 <br><br>
